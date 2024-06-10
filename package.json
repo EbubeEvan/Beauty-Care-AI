@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-slot": "^1.0.2",
     "ai": "^3.1.27",
     "buffer": "^6.0.3",
     "class-variance-authority": "^0.7.0",
@@ -16,6 +18,7 @@
     "lucide-react": "^0.383.0",
     "mammoth": "^1.7.2",
     "next": "14.2.3",
+    "next-themes": "^0.3.0",
     "pdf-lib": "^1.17.1",
     "pdf-parse": "^1.1.1",
     "react": "^18",
