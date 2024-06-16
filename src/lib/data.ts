@@ -17,7 +17,7 @@ export const CardItems = [
       id: 3,
       icon: Bot,
       title: "AI-Powered Chatbot",
-      description: "Our advanced AI technology allows you to have natural conversations and receive tailored recommendations for your skin and hair concerns.",
+      description: "Have natural conversations and receive tailored recommendations for your skin and hair concerns.",
     },
     {
       id: 4,
