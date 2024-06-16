@@ -66,7 +66,7 @@ export default function Features() {
                 animate={isInView ? "animate" : "initial"}
                 transition={{ duration: 0.3, delay: item.id * 0.4 }}
               >
-                <Card className="text-left">
+                <Card className="text-left h-[15rem]">
                   <CardHeader>
                     <item.icon className="h-8 w-8 text-pink-500 dark:text-purple-400" />
                   </CardHeader>
