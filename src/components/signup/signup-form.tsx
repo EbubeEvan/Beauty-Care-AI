@@ -30,7 +30,7 @@ export default function SignupForm() {
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
           <CardDescription>
-            Begin your journey to your beauty goals
+          Begin your journey to achieving your beauty goals
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
