@@ -28,13 +28,11 @@ export default function About() {
               Tailored to your skin and hair
             </h2>
             <p className="text-lg text-gray-700 dark:text-gray-400">
-              Our AI analyzes your unique skin and hair concerns to provide
-              personalized product recommendations and routines.
+              Get tailored beauty advice based on your unique skin and hair profile.
             </p>
             <Link
-              href="#"
+              href="/signup"
               className="inline-flex items-center gap-2 rounded-md bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500 dark:focus:ring-purple-400"
-              prefetch={false}
             >
               <WebcamIcon className="h-5 w-5" />
               Start Consultation

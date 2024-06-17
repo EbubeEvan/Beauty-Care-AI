@@ -59,9 +59,8 @@ export default function Testimonials() {
                 View Testimonials
               </Link>
               <Link
-                href="#"
+                href="/signup"
                 className="inline-flex items-center gap-2 rounded-md bg-transparent border border-pink-500 px-6 py-3 text-sm font-medium text-pink-500 shadow-sm transition-colors hover:bg-pink-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:border-purple-400 dark:text-purple-400 dark:hover:bg-purple-400 dark:hover:text-gray-900 dark:focus:ring-purple-400"
-                prefetch={false}
               >
                 <WebcamIcon className="h-5 w-5" />
                 Start Consultation
