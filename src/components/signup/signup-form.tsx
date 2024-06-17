@@ -30,11 +30,11 @@ export default function SignupForm() {
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account.
+            Begin your journey to your beauty goals
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-            
+
           {/* firstname */}
           <div className="grid gap-2">
             <Label htmlFor="firstname">First name</Label>
