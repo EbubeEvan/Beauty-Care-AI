@@ -49,8 +49,9 @@ export default function Features() {
           <p className="text-lg text-gray-700 dark:text-gray-400">
             <TypeAnimation
               sequence={[
-                "Our advanced AI analyzes your unique skin and hair concerns to provide personalized product recommendations and routines.",
+                "",
                 5000,
+                "Our advanced AI analyzes your unique skin and hair concerns to provide personalized product recommendations and routines.",
               ]}
               wrapper="span"
               speed={50}
