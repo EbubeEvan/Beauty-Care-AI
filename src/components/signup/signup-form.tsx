@@ -14,15 +14,21 @@ import { Label } from "@/components/ui/label";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { SignUpType } from "@/lib/types";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SignupForm() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<SignUpType>();
 
-  const onSubmit: SubmitHandler<SignUpType> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<SignUpType> = (data) => {
+    console.log(data);
+    router.push("/signup/onboarding");
+  };
 
   return (
     <Card className="w-full max-w-sm mt-10 min-[1200px]:mt-16 mb-10">
@@ -30,17 +36,16 @@ export default function SignupForm() {
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
           <CardDescription>
-          Begin your journey to achieving your beauty goals
+            Begin your journey to achieving your beauty goals
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-
           {/* firstname */}
           <div className="grid gap-2">
             <Label htmlFor="firstname">First name</Label>
             <Input
               id="firstname"
-              type="email"
+              type="text"
               placeholder="Jane"
               {...register("firstName", {
                 required: "First name is required",
@@ -48,7 +53,7 @@ export default function SignupForm() {
             />
             {errors.firstName && (
               <p className="text-red-700 text-sm text-left">
-                {errors.email?.message}
+                {errors.firstName?.message}
               </p>
             )}
           </div>
@@ -58,7 +63,7 @@ export default function SignupForm() {
             <Label htmlFor="lastname">Last name</Label>
             <Input
               id="lastname"
-              type="email"
+              type="text"
               placeholder="Doe"
               {...register("lastName", {
                 required: "Last name is required",
@@ -120,7 +125,7 @@ export default function SignupForm() {
             <Input
               id="confirmPassword"
               type="password"
-              {...register("password", {
+              {...register("confirmPassword", {
                 required: "Password is required",
                 min: {
                   value: 6,

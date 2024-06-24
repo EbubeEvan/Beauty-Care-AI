@@ -4,7 +4,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { motion, useInView } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 import { useRef } from "react";
-import { CardItems } from "@/lib/data";
+import { CARDITEMS } from "@/lib/data";
 
 export default function Features() {
   const ref = useRef(null);
@@ -59,7 +59,7 @@ export default function Features() {
             />
           </p>
           <ul ref={ref} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {CardItems.map((item) => (
+            {CARDITEMS.map((item) => (
               <motion.li
                 key={item.id}
                 variants={cardVariants}
