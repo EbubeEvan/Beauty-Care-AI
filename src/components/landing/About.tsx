@@ -28,7 +28,7 @@ export default function About() {
               Tailored to your skin and hair
             </h2>
             <p className="text-lg text-gray-700 dark:text-gray-400">
-              Get tailored beauty advice based on your unique skin and hair profile.
+              Get tailored holistic beauty advice based on your unique skin and hair profile.
             </p>
             <Link
               href="/signup"
