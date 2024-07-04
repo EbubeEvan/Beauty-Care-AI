@@ -1,7 +1,7 @@
 import About from "@/components/landing/About";
 import Features from "@/components/landing/Features";
 import Footer from "@/components/landing/Footer";
-import Heading from "@/components/landing/Heading";
+import Heading from "@/components/ui/Heading";
 import Hero from "@/components/landing/Hero";
 import Testimonials from "@/components/landing/Testimonials";
 
