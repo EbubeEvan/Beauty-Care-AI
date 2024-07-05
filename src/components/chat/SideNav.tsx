@@ -26,10 +26,10 @@ export default function SideNav({
           "justify-center" : !menuOpen,
           "justify-start" : menuOpen
         })}>
-          <Button className="hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full">
+          <Link href='/chat' className="hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full text-white px-3 py-2 flex gap-1">
             <Plus/>
             { menuOpen && 'New Chat'}
-          </Button>
+          </Link>
         </div>
         <div className={clsx("flex flex-col justify-center gap-3", {
           "hidden" : !menuOpen

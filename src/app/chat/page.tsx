@@ -1,10 +1,10 @@
-import SampleChat from "@/components/chat/SampleChat"
+import NewChat from "@/components/chat/SampleChat"
 
 export default function page() {
 
   return (
     <div>
-      <SampleChat/>
+      <NewChat/>
     </div>
   )
 }

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ImageIcon } from "lucide-react";
 import { Card } from "../ui/card";
 
-export default function SampleChat() {
+export default function NewChat() {
   const [messages, setMessages] = useState([
     { id: 1, sender: "bot", content: "Hello beautiful, how may I assist you?" },
   ]);
