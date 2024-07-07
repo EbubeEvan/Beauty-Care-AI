@@ -10,14 +10,14 @@ export default function NewChat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
 
   return (
-    <div className="flex flex-col h-screen pt-10 md:px-10">
+    <div className="flex flex-col h-screen pt-10">
       {" "}
       {/* New container */}
-      <div className="flex-1 h-full overflow-y-auto">
+      <div className="flex-1 h-full overflow-y-auto flex flex-col gap-10">
         {/* Message container */}
-        <div className="flex flex-1 h-full flex-col overflow-y-auto">
+        <div className="flex flex-1 h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full">
           <div className="mb-4 flex items-start gap-2">
-            <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400" />
+            {/* <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400" /> */}
             <Card className="bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors focus:outline-none dark:bg-purple-500 border-none">
               Hello beautiful, how may I assist you?
             </Card>
@@ -25,29 +25,31 @@ export default function NewChat() {
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`mb-4 flex items-start gap-2 ${
+              className={`mb-4 flex items-start ${
                 message.role === "assistant" ? "justify-start" : "justify-end"
               }`}
             >
-              {message.role === "assistant" && (
-                <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400" />
-              )}
-              <Card className="bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors focus:outline-none dark:bg-purple-500 border-none">
+              {/* {message.role === "assistant" && (
+                <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400 min-w-24" />
+              )} */}
+              <Card className={`bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors focus:outline-none dark:bg-purple-500 border-none ${
+                message.role === "user" && "bg-pink-800 dark:bg-purple-800"
+              }`}>
                 {message.content}
               </Card>
-              {message.role === "user" && (
+              {/* {message.role === "user" && (
                 <CircleUser
                   size={30}
-                  className="h-6 w-6 text-pink-500 dark:text-purple-400"
+                  className="h-6 w-6 text-pink-500 dark:text-purple-400 min-w-24"
                 />
-              )}
+              )} */}
             </div>
           ))}
         </div>
       </div>
       {/* Form positioned at the bottom */}
       <form
-        className="flex items-center gap-4 mb-[5rem]"
+        className="flex items-center gap-4 mb-[5rem] md:px-10"
         onSubmit={handleSubmit}
       >
         <Textarea
