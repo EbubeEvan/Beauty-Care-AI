@@ -1,4 +1,4 @@
-import NewChat from "@/components/chat/SampleChat"
+import NewChat from "@/components/chat/NewChat"
 
 export default function page() {
 
