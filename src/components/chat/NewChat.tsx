@@ -7,7 +7,7 @@ import { FlowerIcon, ImageIcon, CircleUser } from "lucide-react";
 import { Card } from "../ui/card";
 
 export default function NewChat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, input, handleInputChange, handleSubmit, error } = useChat();
 
   return (
     <div className="flex flex-col h-screen pt-10">
@@ -74,6 +74,7 @@ export default function NewChat() {
           Send
         </Button>
       </form>
+      { error && (<p className="text-red-500 my-3">{error.message}</p>)}
     </div>
   );
 }
