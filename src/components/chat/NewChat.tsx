@@ -17,7 +17,7 @@ export default function NewChat() {
         {/* Message container */}
         <div className="flex flex-1 h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full">
           <div className="mb-4 flex items-start gap-2">
-            {/* <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400" /> */}
+            <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400" />
             <Card className="bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors focus:outline-none dark:bg-purple-500 border-none">
               Hello beautiful, how may I assist you?
             </Card>
@@ -29,20 +29,19 @@ export default function NewChat() {
                 message.role === "assistant" ? "justify-start" : "justify-end"
               }`}
             >
-              {/* {message.role === "assistant" && (
-                <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400 min-w-24" />
-              )} */}
+              {message.role === "assistant" && (
+                <FlowerIcon className="h-6 w-6 ml-[-2.1rem] text-pink-500 dark:text-purple-400 min-w-24" />
+              )}
               <Card className={`bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors focus:outline-none dark:bg-purple-500 border-none ${
-                message.role === "user" && "bg-pink-800 dark:bg-purple-800"
+                message.role === "user" ? 'mr-[-1.8rem]' : 'ml-[-1.8rem]'
               }`}>
                 {message.content}
               </Card>
-              {/* {message.role === "user" && (
+              {message.role === "user" && (
                 <CircleUser
-                  size={30}
-                  className="h-6 w-6 text-pink-500 dark:text-purple-400 min-w-24"
+                  className="h-6 w-6 mr-[-2.1rem] text-pink-500 dark:text-purple-400 min-w-24"
                 />
-              )} */}
+              )}
             </div>
           ))}
         </div>
