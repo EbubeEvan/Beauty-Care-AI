@@ -26,7 +26,7 @@ export default function NewChat() {
     setUrls(urlList);
   };
 
-  const submit = (event : FormEvent<HTMLFormElement>) => {
+  const submit = (event: FormEvent<HTMLFormElement>) => {
     handleSubmit(event, {
       experimental_attachments: files,
     });
@@ -37,11 +37,12 @@ export default function NewChat() {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  }
+  };
 
   return (
     <div className="flex flex-col h-screen pt-10">
       {/* New container */}
+
       <div className="flex-1 h-full overflow-y-auto flex flex-col gap-10">
         {/* Message container */}
         <div className="flex flex-1 h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">
@@ -102,6 +103,7 @@ export default function NewChat() {
       {/* Form positioned at the bottom */}
       <div className="flex justify-center">
         <div className="flex flex-col w-[90%] items-center py-2 mb-[5rem] px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
+          {/* Selected Images */}
           <div className="flex gap-3 -mb-1">
             {urls.map((url, index) => (
               <Image
@@ -113,10 +115,8 @@ export default function NewChat() {
               />
             ))}
           </div>
-          <form
-            className="flex w-full items-center gap-4"
-            onSubmit={submit}
-          >
+          {/* Form */}
+          <form className="flex w-full items-center gap-4" onSubmit={submit}>
             <label htmlFor="image-upload" className="cursor-pointer">
               <ImageIcon className="h-6 w-6 text-pink-500 dark:text-purple-500 overflow" />
               <input
