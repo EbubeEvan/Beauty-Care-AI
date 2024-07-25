@@ -22,7 +22,7 @@ export default function Hero() {
           <p className="text-lg text-gray-700 dark:text-gray-400">
             <TypeAnimation
               sequence={[
-                "Our AI-powered chatbot analyzes your skin and hair concerns to provide tailored product suggestions and routines.",
+                "Our AI Beauty Specialist analyzes your skin and hair concerns to provide tailored product suggestions and routines.",
                 1000,
               ]}
               wrapper="span"

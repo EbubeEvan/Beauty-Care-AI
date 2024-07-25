@@ -23,6 +23,8 @@
     "framer-motion": "^11.2.10",
     "lucide-react": "^0.383.0",
     "markdown-it": "^14.1.0",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.5.1",
     "next": "14.2.3",
     "next-themes": "^0.3.0",
     "react": "^18",
@@ -36,6 +38,7 @@
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
     "@types/markdown-it": "^14.1.1",
+    "@types/mongoose": "^5.11.96",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -46,3 +49,4 @@
     "typescript": "^5"
   }
 }
+

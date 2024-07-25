@@ -48,7 +48,7 @@ export default function NewChat() {
         <div className="flex flex-1 h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">
           <div className="mb-4 flex items-start gap-2">
             <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400" />
-            <Card className="bg-pink-500 px-6 py-3 text-lg font-medium text-white shadow-sm transition-colors focus:outline-none dark:bg-purple-500 border-none">
+            <Card className="bg-gray-200 dark:bg-gray-700  px-6 py-3 text-lg font-medium shadow-sm transition-colors focus:outline-none">
               Hello beautiful, how may I assist you?
             </Card>
           </div>
@@ -64,7 +64,7 @@ export default function NewChat() {
                   <FlowerIcon className="h-6 w-6 ml-[-2.1rem] text-pink-500 dark:text-purple-400 min-w-24" />
                 )}
                 <Card
-                  className={`bg-pink-500 px-6 py-3 text-lg font-medium text-white shadow-sm transition-colors focus:outline-none dark:bg-purple-500 border-none ${
+                  className={`bg-gray-200 dark:bg-gray-700  px-6 py-3 text-lg font-medium shadow-sm transition-colors focus:outline-none border-none ${
                     message.role === "user" ? "mr-[-1.8rem]" : "ml-[-1.8rem]"
                   }`}
                 >
@@ -101,7 +101,7 @@ export default function NewChat() {
       </div>
 
       {/* Form positioned at the bottom */}
-      <div className="flex justify-center">
+      <div className="flex justify-center pt-5">
         <div className="flex flex-col w-[90%] items-center py-2 mb-[5rem] px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
           {/* Selected Images */}
           <div className="flex gap-3 -mb-1">
