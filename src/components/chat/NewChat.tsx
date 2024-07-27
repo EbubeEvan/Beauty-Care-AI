@@ -39,6 +39,9 @@ export default function NewChat() {
     }
   };
 
+  console.log(messages);
+  
+
   return (
     <div className="flex flex-col h-screen pt-10">
       {/* New container */}
@@ -48,7 +51,7 @@ export default function NewChat() {
         <div className="flex flex-1 h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">
           <div className="mb-4 flex items-start gap-2">
             <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400" />
-            <Card className="bg-gray-200 dark:bg-gray-700  px-6 py-3 text-lg font-medium shadow-sm transition-colors focus:outline-none">
+            <Card className="bg-gray-200 dark:bg-gray-700  px-6 py-3 text-[1.11rem] font-medium shadow-sm transition-colors focus:outline-none">
               Hello beautiful, how may I assist you?
             </Card>
           </div>
@@ -64,7 +67,7 @@ export default function NewChat() {
                   <FlowerIcon className="h-6 w-6 ml-[-2.1rem] text-pink-500 dark:text-purple-400 min-w-24" />
                 )}
                 <Card
-                  className={`bg-gray-200 dark:bg-gray-700  px-6 py-3 text-lg font-medium shadow-sm transition-colors focus:outline-none border-none ${
+                  className={`bg-gray-200 dark:bg-gray-700  px-6 py-3 text-[1.11rem] leading-8 font-medium shadow-sm transition-colors focus:outline-none border-none ${
                     message.role === "user" ? "mr-[-1.8rem]" : "ml-[-1.8rem]"
                   }`}
                 >
@@ -131,7 +134,7 @@ export default function NewChat() {
             </label>
             <Input
               placeholder="Type your message..."
-              className="flex-1 rounded-lg px-4 py-8 bg-gray-200 dark:bg-gray-700 max-md:w-[80%] focus-visible:ring-transparent dark:focus-visible:ring-transparent text-lg"
+              className="flex-1 rounded-lg px-4 bg-gray-200 dark:bg-gray-700 max-md:w-[80%] focus-visible:ring-transparent dark:focus-visible:ring-transparent text-[1.11rem]"
               value={input}
               onChange={handleInputChange}
             />

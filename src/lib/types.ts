@@ -41,3 +41,23 @@ export const beautyProfileSchema = z.object({
     sensitivity: z.string({ message: 'Sensitivity is required' }),
     albino: z.string({ message: 'Please indicate if you are an albino' }),
   });
+
+export interface beautyProfileType {
+    hairColor: string;
+    hairType: string;
+    strandThickness: string;
+    chemicalTreatment: string;
+    hairVolume: string;
+    skinColor: string;
+    skinType: string;
+    sensitivity: string;
+    albino: string;
+  }
+  
+export interface messageSchematype {
+    content: string;
+    createdAt: Date;
+    experimental_attachments?: string;
+    id: string;
+    role: "assistant" | "user";
+  }  
