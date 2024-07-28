@@ -38,7 +38,7 @@ export default function OnboardingForm() {
     register,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isLoading },
   } = useForm<BeautyProfile>({
     resolver: zodResolver(beautyProfileSchema),
   });
@@ -198,6 +198,7 @@ export default function OnboardingForm() {
           <Button
             type="submit"
             className="w-full bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500 dark:focus:ring-purple-400"
+            disabled={isLoading}
           >
             Submit
           </Button>

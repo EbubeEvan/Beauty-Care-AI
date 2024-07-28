@@ -13,22 +13,22 @@ export interface SignUpType {
     confirmPassword : string
 }
 
-export interface OnboardingType {
-    hairColor : string,
-    hairType : string;
-    strandThickness : string;
-    chemicalTreatments : string;
-    hairVolume : string,
-    skinColor : string;
-    skinType : string;
-    sensitivity : string;
-    albino: string
-}
-
 export interface selectProps {
     items : string[];
     id : string
 }
+
+export const signUpSchema = z.object({
+    firstName : z.string().min(1, {message : "First name is required"}),
+    lastName : z.string().min(1, {message : "Last name is required"}),
+    email : z.string().min(1, {message : "email is required"}),
+    password : z.string().min(1, {message : "password is required"}),
+})
+
+export const loginSchema = z.object({
+    email : z.string().min(1, {message : "email is required"}),
+    password : z.string().min(1, {message : "password is required"}),
+})
 
 export const beautyProfileSchema = z.object({
     hairColor: z.string().min(1, { message: 'Hair color is required' }),

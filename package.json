@@ -37,6 +37,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/dompurify": "^3.0.5",
     "@types/markdown-it": "^14.1.1",
     "@types/mongoose": "^5.11.96",
