@@ -84,4 +84,15 @@ export const CARDITEMS = [
     { name: 'Yes', value: 'Yes' },
     { name: 'No', value: 'No' },
   ];
-  
+
+  export const beautyProfileDefault = {
+    hairColor: '',
+    hairType: '',
+    strandThickness: '',
+    chemicalTreatment: '',
+    hairVolume: '',
+    skinColor: '',
+    skinType: '',
+    sensitivity: '',
+    albino: '',
+  }

@@ -7,7 +7,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   creditBalance?: number;
-  beautyProfile?: beautyProfileType;
+  beautyProfile: beautyProfileType;
   chatHistory?: {
     title: string;
     messages: messageSchematype[];

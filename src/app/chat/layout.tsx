@@ -4,6 +4,11 @@ import { useState } from "react";
 import clsx from "clsx";
 import ChatHeader from "@/components/chat/ChatHeader";
 import SideNav from "@/components/chat/SideNav";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'chat',
+  };
 
 export default function Layout({
     children,

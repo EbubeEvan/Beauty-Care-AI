@@ -1,4 +1,9 @@
 import OnboardingForm from "@/components/onboarding/onboarding-form"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: 'Onboarding',
+};
 
 export default function page() {
   return (

@@ -6,8 +6,12 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Beautycare AI",
-  description: "A skin and haircare chatbot",
+  title: {
+    template: "%s | Beautycare AI",
+    default: "Beautycare AI",
+  },
+  description: "An AI Beauty Specialist",
+  metadataBase: new URL("https://beauty-care-ai.vercel.app/"),
 };
 
 export default function RootLayout({
