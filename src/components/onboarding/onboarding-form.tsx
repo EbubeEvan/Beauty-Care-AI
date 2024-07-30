@@ -113,10 +113,10 @@ export default function OnboardingForm() {
             optionTitle="name"
             optionValue="value"
             placeholder="Select"
-            value={watch().chemicalTreatments}
-            error={!!errors.chemicalTreatments?.message}
-            helperText={errors.chemicalTreatments?.message}
-            onValueChange={(e) => setValue("chemicalTreatments", e)}
+            value={watch().chemicalTreatment}
+            error={!!errors.chemicalTreatment?.message}
+            helperText={errors.chemicalTreatment?.message}
+            onValueChange={(e) => setValue("chemicalTreatment", e)}
           />
 
           {/* Hair Volume */}
