@@ -14,6 +14,7 @@ import {
 import { beautyProfileDefault } from "./data";
 import User, { IUser } from "./database/user.model";
 import bcrypt from "bcrypt";
+import { signIn } from "@/auth";
 
 export async function createUser(user: SignUpType) {
   const validatedFields = signUpSchema.safeParse(user);
@@ -39,6 +40,7 @@ export async function createUser(user: SignUpType) {
     await dbConnect();
 
     const savedUser = await newUser.save();
+
     return {
       id: savedUser.id as string,
       message: "User created successfully!",
@@ -63,19 +65,20 @@ export async function addBeautyProfile(
     };
   }
 
-  const user: IUser | null = await User.findOne({ id: userId });
-
-  if (!user) {
-    throw new Error("User not found");
-  }
-  user.beautyProfile = validatedFields.data;
-
   try {
     await dbConnect();
 
-    await user.save();
+    const user: IUser | null = await User.findOneAndUpdate(
+      { _id: userId },
+      { beautyProfile: validatedFields.data },
+    );
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     return {
-      message: "User created successfully!",
+      message: "Beauty profile added successfully!",
     };
   } catch (error: any) {
     return {
@@ -83,3 +86,17 @@ export async function addBeautyProfile(
     };
   }
 }
+
+export const authenticate = async (
+  data : LoginType
+) => {
+  try {
+    await signIn("credentials", data);
+  } catch (error) {
+    console.log(error);
+    if ((error as Error).message.includes("CredentialsSignin")) {
+      return "CredentialsSignin";
+    }
+    throw error;
+  }
+};

@@ -76,17 +76,17 @@ export interface userReturn {
 }
 
 export interface beautyReturn {
-    id?: string;
-    message?: string;
-    errors?: {
-        hairColor: string;
-        hairType: string;
-        strandThickness: string;
-        chemicalTreatment: string;
-        hairVolume: string;
-        skinColor: string;
-        skinType: string;
-        sensitivity: string;
-        albino: string;
-    };
-  }
+  id?: string;
+  message?: string;
+  errors?: {
+    hairColor: string;
+    hairType: string;
+    strandThickness: string;
+    chemicalTreatment: string;
+    hairVolume: string;
+    skinColor: string;
+    skinType: string;
+    sensitivity: string;
+    albino: string;
+  };
+}
