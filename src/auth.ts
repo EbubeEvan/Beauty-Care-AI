@@ -2,10 +2,9 @@ import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
-import User, {IUser} from "./lib/database/user.model";
+import User, {IUser} from "./lib/database/models/user.model";
 import dbConnect from "./lib/database/dbConnect";
 import bcrypt from "bcrypt";
-
 
 
 const getUser = async(userEmail: string): Promise<IUser | null> => {

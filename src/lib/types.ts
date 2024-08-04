@@ -18,6 +18,19 @@ export interface selectProps {
   id: string;
 }
 
+export const signUpFormSchema = z.object({
+  firstName: z.string().min(1, { message: "First name is required" }),
+  lastName: z.string().min(1, { message: "Last name is required" }),
+  email: z.string().min(1, { message: "email is required" }).regex(
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+    "Invalid email address"
+  ),
+  password: z.string().min(6, { message: "Password must be minimum of 6 characters" }),
+  confirmPassword: z.string().min( 6,{
+    message: "confirmPassword must be minimum of 6 characters",
+  },),
+});
+
 export const signUpSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
@@ -68,10 +81,10 @@ export interface userReturn {
   id?: string;
   message?: string;
   errors?: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
+    firstName?: string[];
+    lastName?: string[];
+    email?: string[];
+    password?: string[];
   };
 }
 
@@ -79,14 +92,14 @@ export interface beautyReturn {
   id?: string;
   message?: string;
   errors?: {
-    hairColor: string;
-    hairType: string;
-    strandThickness: string;
-    chemicalTreatment: string;
-    hairVolume: string;
-    skinColor: string;
-    skinType: string;
-    sensitivity: string;
-    albino: string;
+    hairColor?: string[];
+    hairType?: string[];
+    strandThickness?: string[];
+    chemicalTreatment?: string[];
+    hairVolume?: string[];
+    skinColor?: string[];
+    skinType?: string[];
+    sensitivity?: string[];
+    albino?: string[];
   };
 }

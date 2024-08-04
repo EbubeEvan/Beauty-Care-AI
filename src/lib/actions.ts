@@ -12,17 +12,18 @@ import {
   beautyReturn,
 } from "./types";
 import { beautyProfileDefault } from "./data";
-import User, { IUser } from "./database/user.model";
+import User, { IUser } from "./database/models/user.model";
 import bcrypt from "bcrypt";
 import { signIn } from "@/auth";
+import { AuthError } from "next-auth";
 
-export async function createUser(user: SignUpType) {
+export async function createUser(user: SignUpType) : Promise<userReturn> {
   const validatedFields = signUpSchema.safeParse(user);
 
   if (!validatedFields.success) {
     return {
       message: "Missing fields. Failed to create user",
-      errors: validatedFields.error.flatten(),
+      errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
@@ -71,6 +72,7 @@ export async function addBeautyProfile(
     const user: IUser | null = await User.findOneAndUpdate(
       { _id: userId },
       { beautyProfile: validatedFields.data },
+      {new : true}
     );
 
     if (!user) {
@@ -87,16 +89,21 @@ export async function addBeautyProfile(
   }
 }
 
-export const authenticate = async (
-  data : LoginType
-) => {
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
   try {
-    await signIn("credentials", data);
+    await signIn('credentials', formData);
   } catch (error) {
-    console.log(error);
-    if ((error as Error).message.includes("CredentialsSignin")) {
-      return "CredentialsSignin";
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
     }
     throw error;
   }
-};
+}

@@ -9,24 +9,42 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { SignUpType } from "@/lib/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createUser } from "@/lib/actions";
+import useStore from "@/lib/store/useStore";
+import { useState } from "react";
+import FormInput from "../ui/FormInput";
+import { signUpFormSchema } from "@/lib/types";
+import { z } from "zod";
 
 export default function SignupForm() {
   const router = useRouter();
+  const { setId } = useStore();
+
+  const [errmMsg, setErrMsg] = useState("");
+
+  type SignUp = z.infer<typeof signUpFormSchema>;
 
   const {
     register,
     handleSubmit,
     formState: { errors, isLoading },
-  } = useForm<SignUpType>();
+  } = useForm<SignUpType>({
+    resolver: zodResolver(signUpFormSchema),
+  });
 
-  const onSubmit: SubmitHandler<SignUpType> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<SignUp> = async (data) => {
+    const user = await createUser(data);
+    if (user.errors) {
+      setErrMsg(user.message!);
+      return;
+    }
+
+    setId(user?.id!);
     router.push("/signup/onboarding");
   };
 
@@ -41,104 +59,49 @@ export default function SignupForm() {
         </CardHeader>
         <CardContent className="grid gap-4">
           {/* firstname */}
-          <div className="grid gap-2">
-            <Label htmlFor="firstname">First name</Label>
-            <Input
-              id="firstname"
-              type="text"
-              placeholder="Jane"
-              {...register("firstName", {
-                required: "First name is required",
-              })}
-            />
-            {errors.firstName && (
-              <p className="text-red-700 text-sm text-left">
-                {errors.firstName?.message}
-              </p>
-            )}
-          </div>
+          <FormInput
+            {...register("firstName")}
+            errorText={errors.firstName?.message!}
+            id="firstName"
+            label="firstName"
+            placeholder="Jane"
+          />
 
           {/* lastname */}
-          <div className="grid gap-2">
-            <Label htmlFor="lastname">Last name</Label>
-            <Input
-              id="lastname"
-              type="text"
-              placeholder="Doe"
-              {...register("lastName", {
-                required: "Last name is required",
-              })}
-            />
-            {errors.email && (
-              <p className="text-red-700 text-sm text-left">
-                {errors.lastName?.message}
-              </p>
-            )}
-          </div>
+          <FormInput
+            {...register("lastName")}
+            errorText={errors.lastName?.message!}
+            id="lastName"
+            label="lastName"
+            placeholder="Doe"
+          />
 
           {/* email */}
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: "Invalid email address",
-                },
-              })}
-            />
-            {errors.email && (
-              <p className="text-red-700 text-sm text-left">
-                {errors.email?.message}
-              </p>
-            )}
-          </div>
+          <FormInput
+            {...register("email")}
+            errorText={errors.email?.message!}
+            id="email"
+            label="email"
+            placeholder="m@example.com"
+          />
 
           {/* password */}
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              {...register("password", {
-                required: "Password is required",
-                min: {
-                  value: 6,
-                  message: "Password must be minimum of 6 characters",
-                },
-              })}
-            />
-            {errors.email && (
-              <p className="text-red-700 text-sm text-left">
-                {errors.password?.message}
-              </p>
-            )}
-          </div>
+          <FormInput
+            {...register("password")}
+            errorText={errors.password?.message!}
+            id="password"
+            label="password"
+            placeholder="Doe"
+          />
 
           {/* confirm password */}
-          <div className="grid gap-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              {...register("confirmPassword", {
-                required: "Password is required",
-                min: {
-                  value: 6,
-                  message: "Password must be minimum of 6 characters",
-                },
-              })}
-            />
-            {errors.email && (
-              <p className="text-red-700 text-sm text-left">
-                {errors.confirmPassword?.message}
-              </p>
-            )}
-          </div>
+          <FormInput
+            {...register("confirmPassword")}
+            errorText={errors.confirmPassword?.message!}
+            id="confirmPassword"
+            label="confirmPassword"
+            placeholder="Doe"
+          />
         </CardContent>
         <CardFooter className="flex flex-col">
           <Button
