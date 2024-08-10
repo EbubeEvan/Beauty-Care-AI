@@ -15,19 +15,16 @@ import { SignUpType } from "@/lib/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions";
-import useStore from "@/lib/store/useStore";
 import { useState } from "react";
 import FormInput from "../ui/FormInput";
-import { signUpFormSchema } from "@/lib/types";
+import { signUpFormSchema, userErrors } from "@/lib/types";
 import { z } from "zod";
 
 export default function SignupForm() {
   const router = useRouter();
-  const { setId } = useStore();
 
   const [errmMsg, setErrMsg] = useState("");
-
-  type SignUp = z.infer<typeof signUpFormSchema>;
+  const [serverErrors, setServerErrors] = useState<userErrors | null>(null)
 
   const {
     register,
@@ -37,22 +34,21 @@ export default function SignupForm() {
     resolver: zodResolver(signUpFormSchema),
   });
 
-  const onSubmit: SubmitHandler<SignUp> = async (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof signUpFormSchema>> = async (data) => {
     const user = await createUser(data);
     if (user.errors) {
       setErrMsg(user.message!);
       return;
     }
-
-    setId(user?.id!);
+    
     router.push("/signup/onboarding");
   };
 
   return (
-    <Card className="w-full max-w-sm mt-10 min-[1200px]:mt-16 mb-10">
+    <Card className="w-full max-w-lg mt-10 min-[1200px]:mt-16 mb-10">
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardHeader>
-          <CardTitle className="text-2xl">Sign Up</CardTitle>
+          <CardTitle className="text-2xl mb-3">Sign Up</CardTitle>
           <CardDescription>
             Begin your journey to achieving your beauty goals
           </CardDescription>

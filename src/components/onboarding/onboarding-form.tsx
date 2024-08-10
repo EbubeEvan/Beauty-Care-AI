@@ -9,8 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import FormInput from "../ui/FormInput";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,12 +25,10 @@ import {
   ALBINO,
   CHEMICALTREATMENTS,
 } from "@/lib/data";
+import { beautyProfileType } from "@/lib/types";
 
 export default function OnboardingForm() {
   const router = useRouter();
-
-  // Define the form data type based on the Zod schema
-  type BeautyProfile = z.infer<typeof beautyProfileSchema>;
 
   const {
     handleSubmit,
@@ -39,20 +36,22 @@ export default function OnboardingForm() {
     setValue,
     watch,
     formState: { errors, isLoading },
-  } = useForm<BeautyProfile>({
+  } = useForm<beautyProfileType>({
     resolver: zodResolver(beautyProfileSchema),
   });
 
-  const onSubmit: SubmitHandler<BeautyProfile> = (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof beautyProfileSchema>> = (
+    data
+  ) => {
     console.log("Form submitted with data:", data);
     router.push("/chat");
   };
 
   return (
-    <Card className="w-full max-w-sm mt-10 min-[1200px]:mt-16 mb-10">
+    <Card className="w-full max-w-lg mt-10 min-[1200px]:mt-16 mb-10">
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardHeader>
-          <CardTitle className="text-2xl">Beauty Profile</CardTitle>
+          <CardTitle className="text-2xl mb-3">Beauty Profile</CardTitle>
           <CardDescription>
             Please fill in the following information to the best of your
             knowledge. Feel free to click or type &quot;No idea&quot; if you
@@ -62,20 +61,13 @@ export default function OnboardingForm() {
         <CardContent className="grid gap-4">
           <h4 className="text-center">Hair Profile</h4>
           {/* Hair Color */}
-          <div className="grid gap-2">
-            <Label htmlFor="hair-color">Hair Color</Label>
-            <Input
-              id="hair-color"
-              type="text"
-              placeholder="Black/Brown etc..."
-              {...register("hairColor", { required: "Hair color is required" })}
-            />
-            {errors.hairColor && (
-              <p className="text-red-700 text-sm text-left">
-                {errors.hairColor?.message}
-              </p>
-            )}
-          </div>
+          <FormInput
+            {...register("hairColor")}
+            errorText={errors.hairColor?.message!}
+            id="hair-color"
+            label="hair-color"
+            placeholder="Black/Brown etc..."
+          />
 
           {/* Hair Type */}
           <SelectItems
@@ -105,7 +97,7 @@ export default function OnboardingForm() {
             onValueChange={(e) => setValue("strandThickness", e)}
           />
 
-            {/* Chemical Treatment */}
+          {/* Chemical Treatment */}
           <SelectItems
             label="Chemical Treatment"
             name="Chemical Treatment"
@@ -137,20 +129,13 @@ export default function OnboardingForm() {
           <h4 className="text-center">Skin Profile</h4>
 
           {/* Skin Color */}
-          <div className="grid gap-2">
-            <Label htmlFor="skin-color">Skin Color</Label>
-            <Input
-              id="skin-color"
-              type="text"
-              placeholder="Dark Brown/Light Brown/ Pale etc..."
-              {...register("skinColor", { required: "Skin color is required" })}
-            />
-            {errors.skinColor && (
-              <p className="text-red-700 text-sm text-left">
-                {errors.skinColor?.message}
-              </p>
-            )}
-          </div>
+          <FormInput
+            {...register("skinColor")}
+            errorText={errors.skinColor?.message!}
+            id="skin-color"
+            label="skin-color"
+            placeholder="Dark Brown/Light Brown/ Pale etc..."
+          />
 
           {/* Skin Type */}
           <SelectItems

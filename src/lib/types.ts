@@ -14,44 +14,59 @@ export interface SignUpType {
 }
 
 export interface selectProps {
-  items: string[];
+  items: string[]; 
   id: string;
 }
 
 export const signUpFormSchema = z.object({
-  firstName: z.string().min(1, { message: "First name is required" }),
-  lastName: z.string().min(1, { message: "Last name is required" }),
-  email: z.string().min(1, { message: "email is required" }).regex(
-    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-    "Invalid email address"
-  ),
-  password: z.string().min(6, { message: "Password must be minimum of 6 characters" }),
-  confirmPassword: z.string().min( 6,{
-    message: "confirmPassword must be minimum of 6 characters",
-  },),
+  firstName: z.string({ message: "First name is required" }).min(1),
+  lastName: z.string({ message: "Last name is required" }).min(1),
+  email: z
+    .string({ message: "email is required" })
+    .min(1)
+    .regex(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Invalid email address"
+    ),
+  password: z
+    .string({ message: "password is required" })
+    .min(6, { message: "minimum of 6 characters required" }),
+  confirmPassword: z
+    .string({ message: "password is required" })
+    .min(6, { message: "minimum of 6 characters required" }),
 });
 
 export const signUpSchema = z.object({
-  firstName: z.string().min(1, { message: "First name is required" }),
-  lastName: z.string().min(1, { message: "Last name is required" }),
-  email: z.string().min(1, { message: "email is required" }),
-  password: z.string().min(1, { message: "password is required" }),
+  firstName: z.string({ message: "First name is required" }).min(1),
+  lastName: z.string({ message: "Last name is required" }).min(1),
+  email: z.string({ message: "email is required" }).min(1),
+  password: z
+    .string({ message: "password is required" })
+    .min(6, { message: "minimum of 6 characters required" }),
 });
 
 export const loginSchema = z.object({
-  email: z.string().min(1, { message: "email is required" }),
-  password: z.string().min(1, { message: "password is required" }),
+  email: z
+    .string({ message: "email is required" })
+    .min(1)
+    .regex(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Invalid email address"
+    ),
+  password: z
+    .string({ message: "password is required" })
+    .min(6, { message: "minimum of 6 characters required" }),
 });
 
 export const beautyProfileSchema = z.object({
-  hairColor: z.string().min(1, { message: "Hair color is required" }),
+  hairColor: z.string({ message: "Hair color is required" }).min(1),
   hairType: z.string({ message: "Hair type is required" }),
   strandThickness: z.string({ message: "Strand thickness is required" }),
   chemicalTreatment: z.string({
     message: "Please indicate if your hair is treated",
   }),
   hairVolume: z.string({ message: "Hair volume is required" }),
-  skinColor: z.string().min(1, { message: "Skin color is required" }),
+  skinColor: z.string({ message: "Skin color is required" }).min(1),
   skinType: z.string({ message: "Skin type is required" }),
   sensitivity: z.string({ message: "Sensitivity is required" }),
   albino: z.string({ message: "Please indicate if you are an albino" }),
@@ -78,7 +93,6 @@ export interface messageSchematype {
 }
 
 export interface userReturn {
-  id?: string;
   message?: string;
   errors?: {
     firstName?: string[];
@@ -86,6 +100,13 @@ export interface userReturn {
     email?: string[];
     password?: string[];
   };
+}
+
+export interface userErrors {
+  firstName?: string[];
+  lastName?: string[];
+  email?: string[];
+  password?: string[];
 }
 
 export interface beautyReturn {
@@ -103,3 +124,15 @@ export interface beautyReturn {
     albino?: string[];
   };
 }
+
+export interface beautyError {
+  hairColor?: string[];
+  hairType?: string[];
+  strandThickness?: string[];
+  chemicalTreatment?: string[];
+  hairVolume?: string[];
+  skinColor?: string[];
+  skinType?: string[];
+  sensitivity?: string[];
+  albino?: string[];
+} 

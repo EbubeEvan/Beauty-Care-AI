@@ -16,7 +16,7 @@ export async function POST(req: Request) {
         `You are polite and warm` +
         `You only answer beauty related prompts and politely decline other topics.`,
       messages,
-      temperature: 0,
+      temperature: 0,  
     });
 
     return result.toAIStreamResponse();

@@ -43,7 +43,6 @@ export async function createUser(user: SignUpType) : Promise<userReturn> {
     const savedUser = await newUser.save();
 
     return {
-      id: savedUser.id as string,
       message: "User created successfully!",
     };
   } catch (error: any) {
@@ -56,13 +55,13 @@ export async function createUser(user: SignUpType) : Promise<userReturn> {
 export async function addBeautyProfile(
   profile: beautyProfileType,
   userId: string
-) {
+) : Promise<beautyReturn> {
   const validatedFields = beautyProfileSchema.safeParse(profile);
 
   if (!validatedFields.success) {
     return {
       message: "Missing fields. Failed to create user",
-      errors: validatedFields.error.flatten(),
+      errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
@@ -90,9 +89,8 @@ export async function addBeautyProfile(
 }
 
 export async function authenticate(
-  prevState: string | undefined,
   formData: FormData,
-) {
+) : Promise<"Invalid credentials." | "Something went wrong." | undefined> {
   try {
     await signIn('credentials', formData);
   } catch (error) {

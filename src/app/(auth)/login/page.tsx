@@ -7,8 +7,8 @@ export const metadata: Metadata = {
 
 export default function page() {
   return (
-    <section className="flex flex-col justify-center items-center max-md:px-10 min-h-[100dvh]">
-      <div className="">
+    <section className="flex flex-col justify-center items-center max-md:px-5 min-h-[100dvh]">
+      <div className="w-full flex justify-center">
         <LoginForm />
       </div>
     </section>
