@@ -125,7 +125,7 @@ export interface beautyReturn {
   };
 }
 
-export interface beautyError {
+export interface beautyErrors {
   hairColor?: string[];
   hairType?: string[];
   strandThickness?: string[];

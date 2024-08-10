@@ -18,7 +18,7 @@ export default function FormInput({
       <Label htmlFor={id}>{label}</Label>
       <Input id={id} type="text" placeholder={placeholder} />
       {errorText && (
-        <p className="text-red-700 text-sm text-left">{errorText}</p>
+        <p className="mt-2 text-sm text-red-500 text-left">{errorText}</p>
       )}
     </div>
   );

@@ -13,17 +13,32 @@ import FormInput from "../ui/FormInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { LoginType, loginSchema } from "@/lib/types";
+import { useState } from "react";
+import { authenticate } from "@/lib/actions";
 import Link from "next/link";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
+
+  const [errmMsg, setErrMsg] = useState("");
+
   const {
     register,
     handleSubmit,
     formState: { errors, isLoading },
-  } = useForm<LoginType>({resolver: zodResolver(loginSchema),});
+  } = useForm<LoginType>({ resolver: zodResolver(loginSchema) });
 
-  const onSubmit: SubmitHandler<z.infer<typeof loginSchema>> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<z.infer<typeof loginSchema>> = async (data) => {
+    const user = await authenticate(data);
+    if (user) {
+      setErrMsg(user);
+      return;
+    } else {
+      router.push("/chat");
+    }
+  };
 
   return (
     <Card className="w-full max-w-lg mt-10 min-[1200px]:mt-16 mb-10">
@@ -35,7 +50,6 @@ export default function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          
           {/* email */}
           <FormInput
             {...register("email")}
@@ -73,6 +87,9 @@ export default function LoginForm() {
             </Link>
           </p>
         </CardFooter>
+        {errmMsg && (
+          <p className="mt-2 text-sm text-red-500 text-center">{errmMsg}</p>
+        )}
       </form>
     </Card>
   );

@@ -89,10 +89,10 @@ export async function addBeautyProfile(
 }
 
 export async function authenticate(
-  formData: FormData,
+  user: LoginType,
 ) : Promise<"Invalid credentials." | "Something went wrong." | undefined> {
   try {
-    await signIn('credentials', formData);
+    await signIn('credentials', user);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

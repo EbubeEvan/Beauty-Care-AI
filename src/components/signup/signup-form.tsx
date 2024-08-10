@@ -24,7 +24,7 @@ export default function SignupForm() {
   const router = useRouter();
 
   const [errmMsg, setErrMsg] = useState("");
-  const [serverErrors, setServerErrors] = useState<userErrors | null>(null)
+  const [serverErrors, setServerErrors] = useState<userErrors | null>(null);
 
   const {
     register,
@@ -34,14 +34,17 @@ export default function SignupForm() {
     resolver: zodResolver(signUpFormSchema),
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof signUpFormSchema>> = async (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof signUpFormSchema>> = async (
+    data
+  ) => {
     const user = await createUser(data);
     if (user.errors) {
       setErrMsg(user.message!);
+      setServerErrors(user.errors);
       return;
+    } else {
+      router.push("/signup/onboarding");
     }
-    
-    router.push("/signup/onboarding");
   };
 
   return (
@@ -62,6 +65,12 @@ export default function SignupForm() {
             label="firstName"
             placeholder="Jane"
           />
+          {serverErrors?.firstName &&
+            serverErrors.firstName.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* lastname */}
           <FormInput
@@ -71,6 +80,12 @@ export default function SignupForm() {
             label="lastName"
             placeholder="Doe"
           />
+          {serverErrors?.lastName &&
+            serverErrors.lastName.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* email */}
           <FormInput
@@ -80,6 +95,12 @@ export default function SignupForm() {
             label="email"
             placeholder="m@example.com"
           />
+          {serverErrors?.email &&
+            serverErrors.email.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* password */}
           <FormInput
@@ -89,6 +110,12 @@ export default function SignupForm() {
             label="password"
             placeholder="Doe"
           />
+          {serverErrors?.password &&
+            serverErrors.password.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* confirm password */}
           <FormInput
@@ -118,6 +145,9 @@ export default function SignupForm() {
             </Link>
           </p>
         </CardFooter>
+        {errmMsg && (
+          <p className="mt-2 text-sm text-red-500 text-center">{errmMsg}</p>
+        )}
       </form>
     </Card>
   );

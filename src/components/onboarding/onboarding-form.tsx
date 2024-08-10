@@ -12,6 +12,7 @@ import {
 import FormInput from "../ui/FormInput";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { beautyProfileSchema } from "@/lib/types";
 import { useRouter } from "next/navigation";
@@ -25,10 +26,14 @@ import {
   ALBINO,
   CHEMICALTREATMENTS,
 } from "@/lib/data";
-import { beautyProfileType } from "@/lib/types";
+import { beautyProfileType, beautyErrors } from "@/lib/types";
+import { addBeautyProfile } from "@/lib/actions";
 
-export default function OnboardingForm() {
+export default function OnboardingForm({ userId }: { userId: string }) {
   const router = useRouter();
+
+  const [errmMsg, setErrMsg] = useState("");
+  const [serverErrors, setServerErrors] = useState<beautyErrors | null>(null);
 
   const {
     handleSubmit,
@@ -40,11 +45,17 @@ export default function OnboardingForm() {
     resolver: zodResolver(beautyProfileSchema),
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof beautyProfileSchema>> = (
+  const onSubmit: SubmitHandler<z.infer<typeof beautyProfileSchema>> = async (
     data
   ) => {
-    console.log("Form submitted with data:", data);
-    router.push("/chat");
+    const profile = await addBeautyProfile(data, userId);
+    if (profile.errors) {
+      setErrMsg(profile.message!);
+      setServerErrors(profile.errors);
+      return;
+    } else {
+      router.push("/chat");
+    }
   };
 
   return (
@@ -68,6 +79,12 @@ export default function OnboardingForm() {
             label="hair-color"
             placeholder="Black/Brown etc..."
           />
+          {serverErrors?.hairColor &&
+            serverErrors.hairColor.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* Hair Type */}
           <SelectItems
@@ -82,6 +99,12 @@ export default function OnboardingForm() {
             helperText={errors.hairType?.message}
             onValueChange={(e) => setValue("hairType", e)}
           />
+          {serverErrors?.hairType &&
+            serverErrors.hairType.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* Strand Thickness */}
           <SelectItems
@@ -96,6 +119,12 @@ export default function OnboardingForm() {
             helperText={errors.strandThickness?.message}
             onValueChange={(e) => setValue("strandThickness", e)}
           />
+          {serverErrors?.strandThickness &&
+            serverErrors.strandThickness.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* Chemical Treatment */}
           <SelectItems
@@ -110,6 +139,12 @@ export default function OnboardingForm() {
             helperText={errors.chemicalTreatment?.message}
             onValueChange={(e) => setValue("chemicalTreatment", e)}
           />
+          {serverErrors?.chemicalTreatment &&
+            serverErrors.chemicalTreatment.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* Hair Volume */}
           <SelectItems
@@ -124,6 +159,12 @@ export default function OnboardingForm() {
             helperText={errors.hairVolume?.message}
             onValueChange={(e) => setValue("hairVolume", e)}
           />
+          {serverErrors?.hairVolume &&
+            serverErrors.hairVolume.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* Skin section */}
           <h4 className="text-center">Skin Profile</h4>
@@ -136,6 +177,12 @@ export default function OnboardingForm() {
             label="skin-color"
             placeholder="Dark Brown/Light Brown/ Pale etc..."
           />
+          {serverErrors?.skinColor &&
+            serverErrors.skinColor.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* Skin Type */}
           <SelectItems
@@ -150,6 +197,12 @@ export default function OnboardingForm() {
             helperText={errors.skinType?.message}
             onValueChange={(e) => setValue("skinType", e)}
           />
+          {serverErrors?.skinType &&
+            serverErrors.skinType.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* Sensitivity */}
           <SelectItems
@@ -164,6 +217,12 @@ export default function OnboardingForm() {
             helperText={errors.sensitivity?.message}
             onValueChange={(e) => setValue("sensitivity", e)}
           />
+          {serverErrors?.sensitivity &&
+            serverErrors.sensitivity.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
 
           {/* Albino */}
           <SelectItems
@@ -178,6 +237,12 @@ export default function OnboardingForm() {
             helperText={errors.albino?.message}
             onValueChange={(e) => setValue("albino", e)}
           />
+          {serverErrors?.albino &&
+            serverErrors.albino.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
         </CardContent>
         <CardFooter className="flex flex-col">
           <Button
@@ -188,6 +253,9 @@ export default function OnboardingForm() {
             Submit
           </Button>
         </CardFooter>
+        {errmMsg && (
+          <p className="mt-2 text-sm text-red-500 text-center">{errmMsg}</p>
+        )}
       </form>
     </Card>
   );

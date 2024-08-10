@@ -7,7 +7,7 @@ import dbConnect from "./lib/database/dbConnect";
 import bcrypt from "bcrypt";
 
 
-const getUser = async(userEmail: string): Promise<IUser | null> => {
+export const getUser = async(userEmail: string): Promise<IUser | null> => {
   try {
     dbConnect()
     const user : IUser | null =  await User.findOne({email : userEmail})
