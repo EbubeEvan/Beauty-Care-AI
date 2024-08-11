@@ -8,12 +8,11 @@ export const metadata: Metadata = {
 };
 
 export default async function page () {
-  const session = await auth()
-
+  
   return (
     <section className="flex flex-col justify-center items-center max-md:px-5 min-h-[100dvh]">
       <div className="w-full flex justify-center">
-        <OnboardingForm userId={session?.user?.id!}/>
+        <OnboardingForm/>
       </div>
     </section>
   )

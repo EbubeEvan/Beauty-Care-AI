@@ -86,13 +86,13 @@ export const CARDITEMS = [
   ];
 
   export const beautyProfileDefault = {
-    hairColor: '',
-    hairType: '',
-    strandThickness: '',
-    chemicalTreatment: '',
-    hairVolume: '',
-    skinColor: '',
-    skinType: '',
-    sensitivity: '',
-    albino: '',
+    hairColor: 'No idea',
+    hairType: 'No idea',
+    strandThickness: 'No idea',
+    chemicalTreatment: 'No idea',
+    hairVolume: 'No idea',
+    skinColor: 'No idea',
+    skinType: 'No idea',
+    sensitivity: 'No idea',
+    albino: 'No idea',
   }

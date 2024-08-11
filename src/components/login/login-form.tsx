@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import FormInput from "../ui/FormInput";
+import {FormInput} from "../ui/FormInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { LoginType, loginSchema } from "@/lib/types";
@@ -32,12 +32,7 @@ export default function LoginForm() {
 
   const onSubmit: SubmitHandler<z.infer<typeof loginSchema>> = async (data) => {
     const user = await authenticate(data);
-    if (user) {
-      setErrMsg(user);
-      return;
-    } else {
-      router.push("/chat");
-    }
+    user && setErrMsg(user)
   };
 
   return (
@@ -71,7 +66,7 @@ export default function LoginForm() {
         <CardFooter className="flex flex-col">
           <Button
             type="submit"
-            className="w-full bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500 dark:focus:ring-purple-400"
+            className="w-full bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500 dark:focus:ring-purple-400 disabled:opacity-5"
             disabled={isLoading}
           >
             Login

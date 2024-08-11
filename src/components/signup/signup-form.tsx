@@ -16,12 +16,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions";
 import { useState } from "react";
-import FormInput from "../ui/FormInput";
+import {FormInput} from "../ui/FormInput";
 import { signUpFormSchema, userErrors } from "@/lib/types";
 import { z } from "zod";
+import useStore from "@/lib/store/useStore";
 
 export default function SignupForm() {
   const router = useRouter();
+
+  const {setId} = useStore()
 
   const [errmMsg, setErrMsg] = useState("");
   const [serverErrors, setServerErrors] = useState<userErrors | null>(null);
@@ -38,12 +41,12 @@ export default function SignupForm() {
     data
   ) => {
     const user = await createUser(data);
-    if (user.errors) {
-      setErrMsg(user.message!);
-      setServerErrors(user.errors);
-      return;
+    if (user?.errors) {
+      setErrMsg(user?.message!);
+      setServerErrors(user?.errors);
     } else {
-      router.push("/signup/onboarding");
+      setId(user?.id!)
+      router.push('/signup/onboarding')
     }
   };
 
@@ -116,15 +119,6 @@ export default function SignupForm() {
                 {error}
               </p>
             ))}
-
-          {/* confirm password */}
-          <FormInput
-            {...register("confirmPassword")}
-            errorText={errors.confirmPassword?.message!}
-            id="confirmPassword"
-            label="confirmPassword"
-            placeholder="Doe"
-          />
         </CardContent>
         <CardFooter className="flex flex-col">
           <Button

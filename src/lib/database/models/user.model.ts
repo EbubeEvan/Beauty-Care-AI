@@ -6,10 +6,10 @@ export interface IUser extends Document {
   lastName: string;
   email: string;
   password: string;
-  creditBalance?: number;
+  creditBalance: number;
   beautyProfile: beautyProfileType;
 }
-
+ 
 const BeautyProfileSchema = new Schema({
   hairColor: { type: String, required: true },
   hairType: { type: String, required: true },

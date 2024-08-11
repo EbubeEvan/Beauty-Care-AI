@@ -5,6 +5,7 @@ import { z } from "zod";
 import User, {IUser} from "./lib/database/models/user.model";
 import dbConnect from "./lib/database/dbConnect";
 import bcrypt from "bcrypt";
+import { loginSchema } from "./lib/types";
 
 
 export const getUser = async(userEmail: string): Promise<IUser | null> => {
@@ -24,13 +25,12 @@ export const { auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
-        const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
+        const parsedCredentials = loginSchema
           .safeParse(credentials);
 
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
-          const user = await getUser(email);
+          const user = await getUser(email.toLowerCase());
           if (!user) return null;
           const passwordsMatch = await bcrypt.compare(password, user.password);
 

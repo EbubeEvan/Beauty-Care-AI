@@ -9,13 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import FormInput from "../ui/FormInput";
+import {FormInput} from "../ui/FormInput";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { beautyProfileSchema } from "@/lib/types";
-import { useRouter } from "next/navigation";
 import { SelectItems } from "./select-items";
 import {
   HAIRTYPE,
@@ -28,9 +27,10 @@ import {
 } from "@/lib/data";
 import { beautyProfileType, beautyErrors } from "@/lib/types";
 import { addBeautyProfile } from "@/lib/actions";
+import useStore from "@/lib/store/useStore";
 
-export default function OnboardingForm({ userId }: { userId: string }) {
-  const router = useRouter();
+export default function OnboardingForm() {
+  const {id} = useStore()
 
   const [errmMsg, setErrMsg] = useState("");
   const [serverErrors, setServerErrors] = useState<beautyErrors | null>(null);
@@ -48,13 +48,10 @@ export default function OnboardingForm({ userId }: { userId: string }) {
   const onSubmit: SubmitHandler<z.infer<typeof beautyProfileSchema>> = async (
     data
   ) => {
-    const profile = await addBeautyProfile(data, userId);
-    if (profile.errors) {
-      setErrMsg(profile.message!);
-      setServerErrors(profile.errors);
-      return;
-    } else {
-      router.push("/chat");
+    const profile = await addBeautyProfile(data, id);
+    if (profile?.errors) {
+      setErrMsg(profile?.message!);
+      setServerErrors(profile?.errors);
     }
   };
 

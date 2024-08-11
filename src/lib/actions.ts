@@ -16,6 +16,7 @@ import User, { IUser } from "./database/models/user.model";
 import bcrypt from "bcrypt";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
+import { redirect } from "next/navigation";
 
 export async function createUser(user: SignUpType) : Promise<userReturn> {
   const validatedFields = signUpSchema.safeParse(user);
@@ -25,15 +26,18 @@ export async function createUser(user: SignUpType) : Promise<userReturn> {
       message: "Missing fields. Failed to create user",
       errors: validatedFields.error.flatten().fieldErrors,
     };
+  } else {
+    console.log('validated successfully!');
   }
-
+  
   const hashedPassword = await bcrypt.hash(validatedFields.data.password, 10);
 
   const newUser: IUser = new User({
     firstName: validatedFields.data.firstName,
     lastName: validatedFields.data.lastName,
-    email: validatedFields.data.email,
+    email: validatedFields.data.email.toLowerCase(),
     password: hashedPassword,
+    creditBalance: 20,
     beautyProfile: beautyProfileDefault,
   });
 
@@ -42,10 +46,14 @@ export async function createUser(user: SignUpType) : Promise<userReturn> {
 
     const savedUser = await newUser.save();
 
+    savedUser && console.log("User created successfully!");
+
     return {
-      message: "User created successfully!",
-    };
+      id : savedUser._id as string,
+      message : "User created successfully!"
+    }
   } catch (error: any) {
+    console.log(`Database error : ${error.message}`); 
     return {
       message: `Database error : ${error.message}`,
     };
@@ -63,6 +71,8 @@ export async function addBeautyProfile(
       message: "Missing fields. Failed to create user",
       errors: validatedFields.error.flatten().fieldErrors,
     };
+  } else {
+    console.log('validated successfully!');
   }
 
   try {
@@ -76,16 +86,18 @@ export async function addBeautyProfile(
 
     if (!user) {
       throw new Error("User not found");
+    } else {
+      console.log("Beauty profile added successfully!");
     }
 
-    return {
-      message: "Beauty profile added successfully!",
-    };
   } catch (error: any) {
+    console.log(`Database error : ${error.message}`);
     return {
       message: `Database error : ${error.message}`,
     };
   }
+
+  redirect("/login")
 }
 
 export async function authenticate(

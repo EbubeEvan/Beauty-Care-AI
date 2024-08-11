@@ -10,7 +10,6 @@ export interface SignUpType {
   lastName: string;
   email: string;
   password: string;
-  confirmPassword: string;
 }
 
 export interface selectProps {
@@ -29,9 +28,6 @@ export const signUpFormSchema = z.object({
       "Invalid email address"
     ),
   password: z
-    .string({ message: "password is required" })
-    .min(6, { message: "minimum of 6 characters required" }),
-  confirmPassword: z
     .string({ message: "password is required" })
     .min(6, { message: "minimum of 6 characters required" }),
 });
@@ -93,6 +89,7 @@ export interface messageSchematype {
 }
 
 export interface userReturn {
+  id? : string,
   message?: string;
   errors?: {
     firstName?: string[];
