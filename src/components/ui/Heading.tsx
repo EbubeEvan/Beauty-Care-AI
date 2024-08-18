@@ -3,7 +3,7 @@
 import { FlowerIcon } from 'lucide-react'
 import Link from 'next/link'
 import { Account } from './account'
-import { ModeToggle } from './mode-toggle'
+import { ModeToggle } from '../design-system/mode-toggle'
 import { usePathname } from 'next/navigation'
 
 export default function Heading() {

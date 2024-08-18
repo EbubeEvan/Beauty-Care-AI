@@ -1,7 +1,7 @@
 import { FlowerIcon } from "lucide-react";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
-import { ModeToggle } from "../ui/mode-toggle";
+import { ModeToggle } from "../design-system/mode-toggle";
 import { Menu } from "lucide-react";
 
 export default function ChatHeader({

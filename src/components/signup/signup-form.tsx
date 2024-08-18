@@ -16,7 +16,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions";
 import { useState } from "react";
-import {FormInput} from "../ui/FormInput";
+import {FormInput} from "../design-system/FormInput";
 import { signUpFormSchema, userErrors } from "@/lib/types";
 import { z } from "zod";
 import useStore from "@/lib/store/useStore";

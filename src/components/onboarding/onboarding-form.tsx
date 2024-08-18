@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {FormInput} from "../ui/FormInput";
+import {FormInput} from "../design-system/FormInput";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";

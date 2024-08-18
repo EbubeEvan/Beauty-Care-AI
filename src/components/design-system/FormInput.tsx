@@ -6,8 +6,8 @@ import {
   ReactNode,
   forwardRef,
 } from 'react';
-import { Input } from "./input";
-import { Label } from "./label";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   errorText: string;

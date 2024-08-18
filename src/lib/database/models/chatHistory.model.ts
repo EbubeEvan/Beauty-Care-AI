@@ -3,6 +3,8 @@ import { messageSchematype } from '../../types';
 
 export interface IChatHistory extends Document {
   userId: Schema.Types.ObjectId;
+  createdAt: Date;
+  chatId: string;
   title: string;
   messages: messageSchematype[];
 }
@@ -17,6 +19,8 @@ const messageSchema = new Schema({
 
 const chatHistorySchema = new Schema<IChatHistory>({
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  createdAt: { type: Date, required: true },
+  chatId: { type: String, required: true },
   title: { type: String, required: true },
   messages: [messageSchema],
 });

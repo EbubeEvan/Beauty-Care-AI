@@ -14,7 +14,7 @@ import {
 import { beautyProfileDefault } from "./data";
 import User, { IUser } from "./database/models/user.model";
 import bcrypt from "bcrypt";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 
@@ -116,4 +116,9 @@ export async function authenticate(
     }
     throw error;
   }
+}
+
+export const logout = async () => {
+  'use server';
+  await signOut();
 }

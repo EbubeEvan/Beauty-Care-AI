@@ -133,3 +133,28 @@ export interface beautyErrors {
   sensitivity?: string[];
   albino?: string[];
 } 
+
+export interface MessageType {
+  content: string;
+  createdAt: string;
+  experimental_attachments: string;
+  id: string;
+  role: string
+}
+
+export interface HistoryType {
+  userId: string;
+  chatId: string;
+  title: string;
+  messages: MessageType[]
+}
+
+export interface userType {
+  id : string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  creditBalance: number;
+  beautyProfile: beautyProfileType;
+}
