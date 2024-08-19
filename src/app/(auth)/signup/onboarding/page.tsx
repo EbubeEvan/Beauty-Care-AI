@@ -1,7 +1,5 @@
 import OnboardingForm from "@/components/onboarding/onboarding-form"
 import { Metadata } from "next"
-import { auth } from "@/auth";
-import { getUser } from "@/auth";
 
 export const metadata: Metadata = {
   title: 'Onboarding',
