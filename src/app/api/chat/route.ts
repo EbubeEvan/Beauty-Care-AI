@@ -1,27 +1,32 @@
-import { streamText } from "ai";
+import { streamText, generateId } from "ai";
 import { google } from "@ai-sdk/google";
 import dbConnect from "@/lib/database/dbConnect";
-import User from "@/lib/database/models/user.model";
-import { beautyProfileType } from "@/lib/types";
+import User, { IUser } from "@/lib/database/models/user.model";
+import ChatHistory, {
+  IChatHistory,
+} from "@/lib/database/models/chatHistory.model";
+import { beautyProfileType, messageSchematype } from "@/lib/types";
+import { Schema } from "mongoose";
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  const { messages, email } = await req.json();
+  const { messages, email, id } = await req.json();
 
   try {
     await dbConnect();
 
-    const profile = await User.findOne({ email: email }).select("beautyProfile");
+    const user: IUser | null = await User.findOne({ email: email });
 
-    // Handle the case where no profile is found
-    if (!profile || !profile.beautyProfile) {
+    const profile = user?.beautyProfile;
+
+    if (!profile) {
       return new Response("User profile not found", { status: 404 });
     } else {
-      console.log(profile);    
+      console.log(profile);
     }
 
-    const parsedProfile: beautyProfileType = profile.beautyProfile;
+    const parsedProfile: beautyProfileType = profile;
 
     const result = await streamText({
       model: google("models/gemini-1.5-pro-latest"),
@@ -35,6 +40,45 @@ export async function POST(req: Request) {
         `The profile of this particular client is as follows: Hair color = ${parsedProfile.hairColor}, Hair Type = ${parsedProfile.hairType}, Strand Thickness = ${parsedProfile.strandThickness}, Chemical Treatment = ${parsedProfile.chemicalTreatment}, Hair Volume = ${parsedProfile.hairVolume}, Skin Color = ${parsedProfile.skinColor}, Skin Type = ${parsedProfile.skinType}, Sensitivity = ${parsedProfile.sensitivity}, Albino = ${parsedProfile.albino}. Use this information while responding to prompts.`,
       messages,
       temperature: 0,
+      onFinish({ usage, text }) {
+        console.log(usage);
+
+        const newResponse = {
+          content: text,
+          createdAt: new Date(),
+          id: generateId(7),
+          role: "assistant",
+        };
+
+        if (messages.length === 1) {
+          const saveNewChat = async () => {
+            const newChat = new ChatHistory({
+              userId: user._id as Schema.Types.ObjectId,
+              createdAt: new Date(),
+              chatId: generateId(),
+              title: messages[0].content,
+              messages: [...messages, newResponse],
+            });
+
+            const savedChat = await newChat.save();
+            savedChat && console.log("chat saved!");
+          };
+
+          saveNewChat();
+        } else {
+          const updateChat = ChatHistory.findOneAndUpdate(
+            { chatId: id },
+            { messages: [...messages, newResponse] },
+            { new: true }
+          );
+
+          if (!updateChat) {
+            throw Error;
+          } else {
+            console.log("chat updated!");
+          }
+        }
+      },
     });
 
     return result.toAIStreamResponse();

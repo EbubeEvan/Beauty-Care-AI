@@ -29,14 +29,14 @@ export const fetchHistory = async (id: string): Promise<HistoryType[]> => {
   }
 };
 
-export const getUser = async(userEmail: string): Promise<userType | null> => {
+export const getUser = async(userEmail: string): Promise<IUser | null> => {
   try {
     dbConnect()
     const user : IUser | null =  await User.findOne({email : userEmail})
 
-    const parsedUser : userType = JSON.parse(JSON.stringify(user))
+    // const parsedUser : userType = JSON.parse(JSON.stringify(user))
 
-    return parsedUser
+    return user
   } catch (error) {
     console.error("Failed to fetch user:", error);
     throw new Error("Failed to fetch user.");

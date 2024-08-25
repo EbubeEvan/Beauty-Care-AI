@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { FlowerIcon, ImageIcon} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Loading({ email }: { email: string }) {
+export default function Loading() {
   return (
     <div className="flex flex-col h-screen pt-10">
       {/* New container */}
