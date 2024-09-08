@@ -8,9 +8,14 @@ export default async function page() {
   const session = await auth();
   const user = await getUser(session?.user?.email!);
 
+  console.log({user}); 
+
+  console.log((session?.user?.id!));
+  
+
   const parsedUser: userType = JSON.parse(JSON.stringify(user)); 
 
-  const history = await fetchHistory(session?.user?.id!);
+  const history = await fetchHistory(user?._id!);
   const newestChatId = history[0]?.chatId;
 
   return (

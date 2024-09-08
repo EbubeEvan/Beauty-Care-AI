@@ -7,26 +7,15 @@ import { Input } from "../ui/input";
 import { FlowerIcon, ImageIcon, CircleUser, Send } from "lucide-react";
 import { Card } from "../ui/card";
 import { sanitizeMessage } from "@/lib/utils";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
-export default function ResumeChat({ email }: { email: string }) {
+export default function ResumeChat({ email, id }: { email: string, id : string }) {
   const { messages, input, handleInputChange, handleSubmit, error } = useChat({
-    body: { email },
+    body: { email, id,  },
   });
-
-  const router = useRouter();
 
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const [urls, setUrls] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // useEffect(() => {
-  //   if(messages.length === 2){
-  //     router.push(`/chat/${newChatId}/continue-chat`)
-  //   }
-
-  // }, [messages])
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {

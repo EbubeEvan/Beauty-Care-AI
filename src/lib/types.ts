@@ -150,6 +150,7 @@ export interface HistoryType {
 }
 
 export interface userType {
+  _id : string;
   id : string;
   firstName: string;
   lastName: string;

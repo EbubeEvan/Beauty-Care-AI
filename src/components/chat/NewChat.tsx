@@ -20,11 +20,11 @@ export default function NewChat({email, newChatId, username} : {email : string, 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // useEffect(() => {
-  //   if(messages.length === 2){
-  //     router.push(`/chat/${newChatId}/continue-chat`)
+  //   if(messages.length === 1){
+  //     router.push(`/chat/${newChatId}`)
   //   }
 
-  // }, [messages])
+  // }, [messages, newChatId])
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {

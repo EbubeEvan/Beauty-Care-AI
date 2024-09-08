@@ -2,12 +2,15 @@ import dbConnect from "./database/dbConnect";
 import User, { IUser } from "./database/models/user.model";
 import ChatHistory, { IChatHistory } from "./database/models/chatHistory.model";
 import { HistoryType, userType } from "./types";
+import mongoose from "mongoose"; // Import mongoose to access the ObjectId constructor
 
 export const fetchHistory = async (id: string): Promise<HistoryType[]> => {
   try {
     await dbConnect();
 
-    const history = await ChatHistory.find<IChatHistory>({ userId: id }).sort({ createdAt: -1 });
+    const newId = new mongoose.Types.ObjectId(id); // Create a new ObjectId instance
+
+    const history = await ChatHistory.find<IChatHistory>({ userId: newId }).sort({ createdAt: -1 });
 
     // Check if history is null or undefined
     if (!history || history.length === 0) {
@@ -17,7 +20,7 @@ export const fetchHistory = async (id: string): Promise<HistoryType[]> => {
     const parsedHistory: HistoryType[] = JSON.parse(JSON.stringify(history));
 
     return parsedHistory;
-  } catch (error : any) {
+  } catch (error: any) {
     if (error.message.includes('timed out')) {
       console.error('Database operation timed out:', error);
       // Handle timeout, e.g., return an empty array or display an error message
@@ -29,14 +32,16 @@ export const fetchHistory = async (id: string): Promise<HistoryType[]> => {
   }
 };
 
-export const getUser = async(userEmail: string): Promise<IUser | null> => {
+
+export const getUser = async(userEmail: string): Promise<userType | null> => {
   try {
     dbConnect()
     const user : IUser | null =  await User.findOne({email : userEmail})
 
-    // const parsedUser : userType = JSON.parse(JSON.stringify(user))
-
-    return user
+    const parsedUser : userType = JSON.parse(JSON.stringify(user))
+    console.log({parsedUser});
+    
+    return parsedUser
   } catch (error) {
     console.error("Failed to fetch user:", error);
     throw new Error("Failed to fetch user.");

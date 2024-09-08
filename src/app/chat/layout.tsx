@@ -1,5 +1,5 @@
 import LayoutContent from "@/components/chat/LayoutContent";
-import { fetchHistory } from "@/lib/fetchData";
+import { fetchHistory, getUser } from "@/lib/fetchData";
 import { auth } from "@/auth"; 
 import { Metadata } from "next";
 
@@ -14,7 +14,11 @@ export default async function layout({
 }>) {
     const session = await auth()
 
-    const history = await fetchHistory(session?.user?.id!)
+    const user = await getUser(session?.user?.email!);
+
+    const history = await fetchHistory(user?._id!)
+    console.log({history});
+    
 
   return (
     <div>

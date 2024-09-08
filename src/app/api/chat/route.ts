@@ -2,9 +2,7 @@ import { streamText, generateId } from "ai";
 import { google } from "@ai-sdk/google";
 import dbConnect from "@/lib/database/dbConnect";
 import User, { IUser } from "@/lib/database/models/user.model";
-import ChatHistory, {
-  IChatHistory,
-} from "@/lib/database/models/chatHistory.model";
+import ChatHistory, { IChatHistory } from "@/lib/database/models/chatHistory.model";
 import { beautyProfileType, messageSchematype } from "@/lib/types";
 import { Schema } from "mongoose";
 
@@ -22,8 +20,6 @@ export async function POST(req: Request) {
 
     if (!profile) {
       return new Response("User profile not found", { status: 404 });
-    } else {
-      console.log(profile);
     }
 
     const parsedProfile: beautyProfileType = profile;
@@ -40,7 +36,7 @@ export async function POST(req: Request) {
         `The profile of this particular client is as follows: Hair color = ${parsedProfile.hairColor}, Hair Type = ${parsedProfile.hairType}, Strand Thickness = ${parsedProfile.strandThickness}, Chemical Treatment = ${parsedProfile.chemicalTreatment}, Hair Volume = ${parsedProfile.hairVolume}, Skin Color = ${parsedProfile.skinColor}, Skin Type = ${parsedProfile.skinType}, Sensitivity = ${parsedProfile.sensitivity}, Albino = ${parsedProfile.albino}. Use this information while responding to prompts.`,
       messages,
       temperature: 0,
-      onFinish({ usage, text }) {
+      onFinish: async ({ usage, text }) => {
         console.log(usage);
 
         const newResponse = {
@@ -50,32 +46,40 @@ export async function POST(req: Request) {
           role: "assistant",
         };
 
+        console.log(newResponse.id);
+        console.log(newResponse.createdAt);
+
         if (messages.length === 1) {
-          const saveNewChat = async () => {
-            const newChat = new ChatHistory({
-              userId: user._id as Schema.Types.ObjectId,
-              createdAt: new Date(),
-              chatId: generateId(),
-              title: messages[0].content,
-              messages: [...messages, newResponse],
-            });
+          const newChat: IChatHistory = new ChatHistory({
+            userId: user._id as Schema.Types.ObjectId,
+            createdAt: new Date(),
+            chatId: generateId(),
+            title: messages[0].content, // Assuming the first message has a `content` field
+            messages: [{ ...messages[0], id: generateId(7), createdAt: new Date() }, newResponse], // Adding `id` and `createdAt` to initial message
+          });
 
+          try {
             const savedChat = await newChat.save();
-            savedChat && console.log("chat saved!");
-          };
-
-          saveNewChat();
+            if (savedChat) console.log("Chat saved!");
+          } catch (err) {
+            console.error("Error saving new chat:", err);
+          }
         } else {
-          const updateChat = ChatHistory.findOneAndUpdate(
-            { chatId: id },
-            { messages: [...messages, newResponse] },
-            { new: true }
-          );
+          try {
+            const updateChat = await ChatHistory.findOneAndUpdate(
+              { chatId: id },
+              { messages: [...messages, newResponse] }, // Push the new response into the messages array
+              { new: true }
+            );
 
-          if (!updateChat) {
-            throw Error;
-          } else {
-            console.log("chat updated!");
+            if (!updateChat) {
+              console.error("Chat not found for update.");
+              throw new Error("Chat not found");
+            } else {
+              console.log("Chat updated!");
+            }
+          } catch (err) {
+            console.error("Error updating chat:", err);
           }
         }
       },
