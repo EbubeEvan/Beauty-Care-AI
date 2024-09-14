@@ -39,7 +39,7 @@ export default function LayoutContent({
                 </header>
                 <main
                     className="flex-1 px-[2rem]"
-                    onClick={() => setMenuOpen(false)}
+                    // onClick={() => setMenuOpen(false)}
                 >
                     {children}
                 </main>

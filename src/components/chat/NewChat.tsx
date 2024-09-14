@@ -9,9 +9,20 @@ import { Card } from "../ui/card";
 import { sanitizeMessage } from "@/lib/utils";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { generateId } from "ai";
 
-export default function NewChat({email, newChatId, username} : {email : string, newChatId: string; username: string}) {
-  const { messages, input, handleInputChange, handleSubmit, error } = useChat({body : {email}});
+export default function NewChat({
+  email,
+  username,
+}: {
+  email: string;
+  username: string;
+}) {
+  const newChatId = generateId(7);
+
+  const { messages, input, handleInputChange, handleSubmit, error } = useChat({
+    body: { email, newChatId },
+  });
 
   const router = useRouter();
 
@@ -19,12 +30,11 @@ export default function NewChat({email, newChatId, username} : {email : string, 
   const [urls, setUrls] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // useEffect(() => {
-  //   if(messages.length === 1){
-  //     router.push(`/chat/${newChatId}`)
-  //   }
-
-  // }, [messages, newChatId])
+  useEffect(() => {
+    if (messages.length === 2) {
+      router.push(`/chat/${newChatId}`);
+    }
+  }, [messages, newChatId]);
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -51,7 +61,6 @@ export default function NewChat({email, newChatId, username} : {email : string, 
   };
 
   console.log(messages);
-  
 
   return (
     <div className="flex flex-col h-screen pt-10">

@@ -7,7 +7,6 @@ const Logout = () => {
     <form  action={logout}>
       <button className="hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full text-white p-3">
         <LogOut size={20} className="w-6" />
-        {/* <div className="hidden md:block">Sign Out</div> */}
       </button>
     </form>
   )

@@ -1,21 +1,34 @@
 "use client";
 
 import { useChat } from "ai/react";
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { Input } from "../ui/input";
 import { FlowerIcon, ImageIcon, CircleUser, Send } from "lucide-react";
 import { Card } from "../ui/card";
 import { sanitizeMessage } from "@/lib/utils";
+import { chatType } from "@/lib/types";
 
-export default function ResumeChat({ email, id }: { email: string, id : string }) {
-  const { messages, input, handleInputChange, handleSubmit, error } = useChat({
-    body: { email, id,  },
+export default function ResumeChat({
+  email,
+  id,
+  chat,
+}: {
+  email: string;
+  id: string;
+  chat: chatType;
+}) {
+  const { messages, setMessages, input, handleInputChange, handleSubmit, error } = useChat({
+    body: { email, id },
   });
 
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const [urls, setUrls] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setMessages(chat?.messages)
+  }, [])
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {

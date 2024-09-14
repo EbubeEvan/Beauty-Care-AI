@@ -17,8 +17,6 @@ export default async function layout({
     const user = await getUser(session?.user?.email!);
 
     const history = await fetchHistory(user?._id!)
-    console.log({history});
-    
 
   return (
     <div>

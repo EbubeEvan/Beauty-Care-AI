@@ -2,14 +2,20 @@ import { streamText, generateId } from "ai";
 import { google } from "@ai-sdk/google";
 import dbConnect from "@/lib/database/dbConnect";
 import User, { IUser } from "@/lib/database/models/user.model";
-import ChatHistory, { IChatHistory } from "@/lib/database/models/chatHistory.model";
-import { beautyProfileType, messageSchematype } from "@/lib/types";
+import ChatHistory, {
+  IChatHistory,
+} from "@/lib/database/models/chatHistory.model";
+import { beautyProfileType } from "@/lib/types";
 import { Schema } from "mongoose";
+import { revalidatePath } from "next/cache";
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  const { messages, email, id } = await req.json();
+  const { messages, email, id, newChatId } = await req.json();
+
+  console.log({messages});
+  
 
   try {
     await dbConnect();
@@ -23,6 +29,25 @@ export async function POST(req: Request) {
     }
 
     const parsedProfile: beautyProfileType = profile;
+
+    if (messages.length === 1) {
+      const newChat: IChatHistory = new ChatHistory({
+        userId: user._id as Schema.Types.ObjectId,
+        createdAt: new Date(),
+        chatId: newChatId,
+        title: messages[0].content,
+        messages: [{ ...messages[0], id: generateId(7), createdAt: new Date() }],
+      });
+
+      try {
+        const savedChat = await newChat.save();
+        if (savedChat) console.log("Chat saved!");
+
+        // revalidatePath(`/chat/${newChatId}`);
+      } catch (err) {
+        console.error("Error saving new chat:", err);
+      }
+    }
 
     const result = await streamText({
       model: google("models/gemini-1.5-pro-latest"),
@@ -46,41 +71,22 @@ export async function POST(req: Request) {
           role: "assistant",
         };
 
-        console.log(newResponse.id);
-        console.log(newResponse.createdAt);
+        try {
+          const updateChat = await ChatHistory.findOneAndUpdate(
+            { chatId: id },
+            { messages: [...messages, newResponse] },
+            { new: true }
+          );
 
-        if (messages.length === 1) {
-          const newChat: IChatHistory = new ChatHistory({
-            userId: user._id as Schema.Types.ObjectId,
-            createdAt: new Date(),
-            chatId: generateId(),
-            title: messages[0].content, // Assuming the first message has a `content` field
-            messages: [{ ...messages[0], id: generateId(7), createdAt: new Date() }, newResponse], // Adding `id` and `createdAt` to initial message
-          });
-
-          try {
-            const savedChat = await newChat.save();
-            if (savedChat) console.log("Chat saved!");
-          } catch (err) {
-            console.error("Error saving new chat:", err);
+          if (!updateChat) {
+            console.error("Chat not found for update.");
+            throw new Error("Chat not found");
+          } else {
+            console.log("Chat updated!");
+            // revalidatePath(`/chat/${newChatId}`);
           }
-        } else {
-          try {
-            const updateChat = await ChatHistory.findOneAndUpdate(
-              { chatId: id },
-              { messages: [...messages, newResponse] }, // Push the new response into the messages array
-              { new: true }
-            );
-
-            if (!updateChat) {
-              console.error("Chat not found for update.");
-              throw new Error("Chat not found");
-            } else {
-              console.log("Chat updated!");
-            }
-          } catch (err) {
-            console.error("Error updating chat:", err);
-          }
+        } catch (err) {
+          console.error("Error updating chat:", err);
         }
       },
     });

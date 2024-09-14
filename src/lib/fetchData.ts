@@ -1,8 +1,8 @@
 import dbConnect from "./database/dbConnect";
 import User, { IUser } from "./database/models/user.model";
 import ChatHistory, { IChatHistory } from "./database/models/chatHistory.model";
-import { HistoryType, userType } from "./types";
-import mongoose from "mongoose"; // Import mongoose to access the ObjectId constructor
+import { chatType, HistoryType, userType } from "./types";
+import mongoose from "mongoose";
 
 export const fetchHistory = async (id: string): Promise<HistoryType[]> => {
   try {
@@ -10,19 +10,20 @@ export const fetchHistory = async (id: string): Promise<HistoryType[]> => {
 
     const newId = new mongoose.Types.ObjectId(id); // Create a new ObjectId instance
 
-    const history = await ChatHistory.find<IChatHistory>({ userId: newId }).sort({ createdAt: -1 });
+    const history = await ChatHistory.find<IChatHistory>({
+      userId: newId,
+    }).sort({ createdAt: -1 });
 
-    // Check if history is null or undefined
     if (!history || history.length === 0) {
-      return []; // Return an empty array if no history found
+      return [];
     }
 
     const parsedHistory: HistoryType[] = JSON.parse(JSON.stringify(history));
 
     return parsedHistory;
   } catch (error: any) {
-    if (error.message.includes('timed out')) {
-      console.error('Database operation timed out:', error);
+    if (error.message.includes("timed out")) {
+      console.error("Database operation timed out:", error);
       // Handle timeout, e.g., return an empty array or display an error message
       return [];
     } else {
@@ -32,16 +33,28 @@ export const fetchHistory = async (id: string): Promise<HistoryType[]> => {
   }
 };
 
-
-export const getUser = async(userEmail: string): Promise<userType | null> => {
+export const getChat = async (id: string) => {
   try {
-    dbConnect()
-    const user : IUser | null =  await User.findOne({email : userEmail})
+    dbConnect();
+    const chat: IChatHistory | null = await ChatHistory.findOne({ chatId: id });
 
-    const parsedUser : userType = JSON.parse(JSON.stringify(user))
-    console.log({parsedUser});
-    
-    return parsedUser
+    const parsedChat: chatType = JSON.parse(JSON.stringify(chat));
+
+    return parsedChat;
+  } catch (error) {
+    console.error("Failed to fetch chat:", error);
+    throw new Error("Failed to fetch chat.");
+  }
+};
+
+export const getUser = async (userEmail: string): Promise<userType | null> => {
+  try {
+    dbConnect();
+    const user: IUser | null = await User.findOne({ email: userEmail });
+
+    const parsedUser: userType = JSON.parse(JSON.stringify(user));
+
+    return parsedUser;
   } catch (error) {
     console.error("Failed to fetch user:", error);
     throw new Error("Failed to fetch user.");

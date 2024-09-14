@@ -13,7 +13,7 @@ export interface SignUpType {
 }
 
 export interface selectProps {
-  items: string[]; 
+  items: string[];
   id: string;
 }
 
@@ -80,16 +80,30 @@ export interface beautyProfileType {
   albino: string;
 }
 
+export interface Attachment {
+  name?: string;
+  contentType?: string;
+  url: string;
+}
+
 export interface messageSchematype {
   content: string;
   createdAt: Date;
-  experimental_attachments?: string;
+  experimental_attachments?: Attachment[];
   id: string;
   role: "assistant" | "user";
 }
 
+export interface chatType {
+  userId: string;
+  createdAt: Date;
+  chatId: string;
+  title: string;
+  messages: messageSchematype[];
+}
+
 export interface userReturn {
-  id? : string,
+  id?: string;
   message?: string;
   errors?: {
     firstName?: string[];
@@ -132,26 +146,18 @@ export interface beautyErrors {
   skinType?: string[];
   sensitivity?: string[];
   albino?: string[];
-} 
-
-export interface MessageType {
-  content: string;
-  createdAt: string;
-  experimental_attachments: string;
-  id: string;
-  role: string
 }
 
 export interface HistoryType {
   userId: string;
   chatId: string;
   title: string;
-  messages: MessageType[]
+  messages: messageSchematype[];
 }
 
 export interface userType {
-  _id : string;
-  id : string;
+  _id: string;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;

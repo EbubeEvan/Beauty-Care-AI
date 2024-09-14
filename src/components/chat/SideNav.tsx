@@ -46,13 +46,13 @@ export default function SideNav({
           </Link>
         </div>
         <div
-          className={clsx("flex flex-col justify-center gap-3", {
+          className={clsx("flex flex-col justify-center pt-5 gap-3 h-[20rem] overflow-y-auto", {
             hidden: !menuOpen,
           })}
         >
           {history.map((chat) => (
             <Link
-              href=""
+              href={`/chat/${chat.chatId}`}
               className="flex gap-2 text-white px-5 py-2 hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full"
               key={chat.chatId}
             >
