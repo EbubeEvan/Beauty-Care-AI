@@ -30,11 +30,11 @@ export default function NewChat({
   const [urls, setUrls] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (messages.length === 2) {
-      router.push(`/chat/${newChatId}`);
-    }
-  }, [messages, newChatId]);
+  // useEffect(() => {
+  //   if (messages.length === 2) {
+  //     router.push(`/chat/${newChatId}`);
+  //   }
+  // }, [messages, newChatId]);
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
