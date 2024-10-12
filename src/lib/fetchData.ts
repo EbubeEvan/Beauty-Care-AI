@@ -24,7 +24,6 @@ export const fetchHistory = async (id: string): Promise<HistoryType[]> => {
   } catch (error: any) {
     if (error.message.includes("timed out")) {
       console.error("Database operation timed out:", error);
-      // Handle timeout, e.g., return an empty array or display an error message
       return [];
     } else {
       console.log("Database error:", error);

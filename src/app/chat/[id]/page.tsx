@@ -14,7 +14,7 @@ export default async function page({ params }: { params: { id: string } }) {
 
   return (
     <div>
-      <ResumeChat email={session?.user?.email!} id={id} chat={chat}/>
+      <ResumeChat email={session?.user?.email!} id={id} chat={chat} userId={user?._id}/>
     </div>
   );
 }

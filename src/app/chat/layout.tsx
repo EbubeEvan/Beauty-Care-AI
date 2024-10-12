@@ -20,7 +20,7 @@ export default async function layout({
 
   return (
     <div>
-      <LayoutContent history={history!}>{children}</LayoutContent>
+      <LayoutContent id={user?._id!}>{children}</LayoutContent>
     </div>
   );
 }

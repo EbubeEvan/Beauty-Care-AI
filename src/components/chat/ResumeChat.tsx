@@ -1,34 +1,71 @@
-"use client";
+"use client"
 
 import { useChat } from "ai/react";
-import { ChangeEvent, FormEvent, useRef, useState, useEffect } from "react";
-import Image from "next/image";
+import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { Input } from "../ui/input";
 import { FlowerIcon, ImageIcon, CircleUser, Send } from "lucide-react";
 import { Card } from "../ui/card";
 import { sanitizeMessage } from "@/lib/utils";
+import useStore from "@/lib/store/useStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { generateId, Message } from "ai";
+import Image from "next/image";
 import { chatType } from "@/lib/types";
 
 export default function ResumeChat({
   email,
   id,
   chat,
+  userId,
 }: {
   email: string;
   id: string;
   chat: chatType;
+  userId?: string;
 }) {
-  const { messages, setMessages, input, handleInputChange, handleSubmit, error } = useChat({
+  const {
+    messages,
+    setMessages,
+    input,
+    handleInputChange,
+    append,
+    handleSubmit,
+    error,
+    isLoading,
+  } = useChat({
     body: { email, id },
   });
 
+  const { newPrompt } = useStore();
+  const queryClient = useQueryClient();
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const [urls, setUrls] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const initialMessageAppended = useRef(false); // Prevent appending the message multiple times
 
+  const newMessage: Message = {
+    content: newPrompt!,
+    createdAt: new Date(),
+    id: generateId(7),
+    role: "user",
+  };
+
+  // Use effect to handle chat initialization logic
   useEffect(() => {
-    setMessages(chat?.messages)
-  }, [])
+    if (chat) {
+      setMessages(chat?.messages);
+    } else if (messages.length === 0 && !initialMessageAppended.current) {
+      append(newMessage);
+      initialMessageAppended.current = true; // Set the ref to true after first append
+    }
+  }, []);
+
+  // Invalidate the query when there are exactly 2 messages
+  useEffect(() => {
+    if (messages.length === 2) {
+      queryClient.invalidateQueries({ queryKey: ["history", userId] });
+    }
+  }, [messages]);
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -54,12 +91,9 @@ export default function ResumeChat({
     }
   };
 
-  console.log(messages);
-
   return (
     <div className="flex flex-col h-screen pt-10">
       {/* New container */}
-
       <div className="flex-1 h-full overflow-y-auto flex flex-col gap-10">
         {/* Message container */}
         <div className="flex flex-1 h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">

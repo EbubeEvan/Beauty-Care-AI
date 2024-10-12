@@ -1,19 +1,22 @@
 'use client'
 
-import { useState } from "react";
 import clsx from "clsx";
 import ChatHeader from "@/components/chat/ChatHeader";
 import SideNav from "@/components/chat/SideNav";
-import { HistoryType } from "@/lib/types";
+import { useFetchHistory } from "@/hooks/useFetchHistory";
+import useStore from "@/lib/store/useStore";
 
 export default function LayoutContent({
     children,
-    history
+    id
 }: Readonly<{
     children: React.ReactNode;
-    history: HistoryType[]
+    id?: string
 }>) {
-    const [menuOpen, setMenuOpen] = useState(false);
+    const {data : history, isLoading} = useFetchHistory(id!)
+    const {menuOpen} = useStore()
+
+    console.log(history);
 
     return (
         <div className="flex h-full w-full">
@@ -26,7 +29,7 @@ export default function LayoutContent({
                     }
                 )}
             >
-                <SideNav menuOpen={menuOpen} setMenuOpen={setMenuOpen} history={history}/>
+                <SideNav id={id}/>
             </aside>
             <div
                 className={clsx("flex-1 h-screen transition-all bg-gradient-to-br from-[#f5d0fe] to-[#e879f9] dark:from-[#1e293b] dark:to-[#4c1d95] overflow-hidden", {
@@ -35,7 +38,7 @@ export default function LayoutContent({
                 })}
             >
                 <header className="w-full">
-                    <ChatHeader setMenuOpen={setMenuOpen} />
+                    <ChatHeader />
                 </header>
                 <main
                     className="flex-1 px-[2rem]"

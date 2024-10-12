@@ -1,4 +1,4 @@
-import { streamText, generateId } from "ai";
+import { streamText, generateId, Message } from "ai";
 import { google } from "@ai-sdk/google";
 import dbConnect from "@/lib/database/dbConnect";
 import User, { IUser } from "@/lib/database/models/user.model";
@@ -7,15 +7,11 @@ import ChatHistory, {
 } from "@/lib/database/models/chatHistory.model";
 import { beautyProfileType } from "@/lib/types";
 import { Schema } from "mongoose";
-import { revalidatePath } from "next/cache";
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  const { messages, email, id, newChatId } = await req.json();
-
-  console.log({messages});
-  
+  const { messages, email, id } = await req.json();
 
   try {
     await dbConnect();
@@ -30,27 +26,8 @@ export async function POST(req: Request) {
 
     const parsedProfile: beautyProfileType = profile;
 
-    if (messages.length === 1) {
-      const newChat: IChatHistory = new ChatHistory({
-        userId: user._id as Schema.Types.ObjectId,
-        createdAt: new Date(),
-        chatId: newChatId,
-        title: messages[0].content,
-        messages: [{ ...messages[0], id: generateId(7), createdAt: new Date() }],
-      });
-
-      try {
-        const savedChat = await newChat.save();
-        if (savedChat) console.log("Chat saved!");
-
-        // revalidatePath(`/chat/${newChatId}`);
-      } catch (err) {
-        console.error("Error saving new chat:", err);
-      }
-    }
-
     const result = await streamText({
-      model: google("models/gemini-1.5-pro-latest"),
+      model: google("models/gemini-1.5-flash-latest"),
       system:
         `You are a licensed trichologist, dermatologist, and cosmetologist but you don't book consultations.` +
         `You are a beauty specialist with a wealth and depth of knowledge on all hair and skin types. ` +
@@ -62,36 +39,59 @@ export async function POST(req: Request) {
       messages,
       temperature: 0,
       onFinish: async ({ usage, text }) => {
-        console.log(usage);
-
-        const newResponse = {
+        console.log({usage});
+        
+        const newResponse: Message = {
           content: text,
           createdAt: new Date(),
           id: generateId(7),
           role: "assistant",
         };
 
-        try {
-          const updateChat = await ChatHistory.findOneAndUpdate(
-            { chatId: id },
-            { messages: [...messages, newResponse] },
-            { new: true }
-          );
+        // Check if there's an existing chat document for this ID
+        const existingChat = await ChatHistory.findOne({ chatId: id });
 
-          if (!updateChat) {
-            console.error("Chat not found for update.");
-            throw new Error("Chat not found");
-          } else {
-            console.log("Chat updated!");
-            // revalidatePath(`/chat/${newChatId}`);
+        if (!existingChat) {
+          // No existing chat, create a new one
+          const newChat: IChatHistory = new ChatHistory({
+            userId: user._id as Schema.Types.ObjectId,
+            createdAt: new Date(),
+            chatId: id,
+            title: messages[0].content,
+            messages: [
+              { ...messages[0], id: generateId(7), createdAt: new Date(), },
+              {...newResponse}
+            ],
+          }); 
+
+          try {
+            await newChat.save();
+            console.log("Chat saved!");
+          } catch (err) {
+            console.error("Error saving new chat:", err);
           }
-        } catch (err) {
-          console.error("Error updating chat:", err);
+        } else {
+          // Existing chat found, update it
+          try {
+            const updatedChat = await ChatHistory.findOneAndUpdate(
+              { chatId: id },
+              { messages: [...messages, newResponse] },
+              { new: true }
+            );
+
+            if (!updatedChat) {
+              console.error("Chat not found for update.");
+            } else {
+              console.log("Chat updated!");
+            }
+          } catch (err) {
+            console.error("Error updating chat:", err);
+          }
         }
       },
     });
 
-    return result.toAIStreamResponse();
+    return result.toDataStreamResponse();
   } catch (error) {
     console.log(error);
     return new Response("Internal Server Error", { status: 500 });

@@ -1,9 +1,17 @@
-import { create, StateCreator } from 'zustand';
-import { persist, PersistOptions } from 'zustand/middleware';
+import { create, StateCreator } from "zustand";
+import { persist, PersistOptions } from "zustand/middleware";
 
 interface UserDetailsType {
   id: string;
   setId: (data: string) => void;
+  newPrompt: string | null;
+  setNewPrompt: (data: string | null) => void;
+  first: boolean;
+  setFirst: (data: boolean) => void;
+  menuOpen: boolean;
+  setMenuOpen: (data: boolean) => void;
+  messageCount: number;
+  setMessageCount: (data : number) => void;
 }
 
 // Define the store type including persist options
@@ -15,11 +23,19 @@ type MyPersist = (
 const useStore = create<UserDetailsType>(
   (persist as MyPersist)(
     (set) => ({
-      id: '',
+      id: "",
       setId: (data: string) => set({ id: data }),
+      newPrompt: null,
+      setNewPrompt: (data: string | null) => set({ newPrompt: data }),
+      first: false,
+      setFirst: (data: boolean) => set({ first: data }),
+      messageCount: 0,
+      setMessageCount: (data: number) => set({ messageCount: data }),
+      menuOpen: false,
+      setMenuOpen: (data: boolean) => set({ menuOpen: data }),
     }),
     {
-      name: 'user-storage',
+      name: "user-storage",
     }
   )
 );
