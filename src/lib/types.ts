@@ -102,6 +102,15 @@ export interface chatType {
   messages: messageSchematype[];
 }
 
+export interface priceType {
+  id : string,
+  credits : number,
+  p1 : number,
+  p2 : number,
+  p3 : number,
+  discount : number
+}
+
 export interface userReturn {
   id?: string;
   message?: string;

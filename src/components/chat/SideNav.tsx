@@ -83,6 +83,9 @@ export default function SideNav({
             ))
           )}
         </div>
+
+        <Link href="/buy-credits">Buy credits</Link>
+
         <div
           className={clsx("flex transition-all duration-300 px-3", {
             "justify-center": !menuOpen,

@@ -6,7 +6,6 @@ import {
   LoginType,
   beautyProfileType,
   signUpSchema,
-  loginSchema,
   beautyProfileSchema,
   userReturn,
   beautyReturn,

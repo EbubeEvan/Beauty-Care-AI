@@ -1,7 +1,8 @@
 import dbConnect from "./database/dbConnect";
 import User, { IUser } from "./database/models/user.model";
 import ChatHistory, { IChatHistory } from "./database/models/chatHistory.model";
-import { chatType, HistoryType, userType } from "./types";
+import Price, { IPrice } from "./database/models/price.model";
+import { chatType, HistoryType, userType, priceType } from "./types";
 import mongoose from "mongoose";
 
 export const fetchHistory = async (id: string): Promise<HistoryType[]> => {
@@ -57,5 +58,19 @@ export const getUser = async (userEmail: string): Promise<userType | null> => {
   } catch (error) {
     console.error("Failed to fetch user:", error);
     throw new Error("Failed to fetch user.");
+  }
+};
+
+export const getPrices = async () => {
+  try {
+    await dbConnect();
+    const prices: IPrice[] | null = await Price.find();
+
+    const parsedPrices: priceType[] = JSON.parse(JSON.stringify(prices));
+    
+    return parsedPrices;
+  } catch (error) {
+    console.error("Failed to fetch prices:", error); // Updated error message for clarity
+    throw new Error("Failed to fetch prices.");
   }
 };
