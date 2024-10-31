@@ -103,12 +103,19 @@ export interface chatType {
 }
 
 export interface priceType {
-  id : string,
-  credits : number,
-  p1 : number,
-  p2 : number,
-  p3 : number,
-  discount : number
+  _id: string;
+  credits: number;
+  p1: number;
+  p2: number;
+  p3: number;
+  discount: number;
+}
+
+export interface FinalPriceType {
+  id: string;
+  credits: number;
+  price: number;
+  discount: number;
 }
 
 export interface userReturn {

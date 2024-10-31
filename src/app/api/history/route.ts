@@ -39,7 +39,6 @@ export async function GET(req: Request) {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-
   } catch (error: any) {
     if (error.message.includes("timed out")) {
       console.error("Database operation timed out:", error);
@@ -51,10 +50,9 @@ export async function GET(req: Request) {
           headers: { "Content-Type": "application/json" },
         }
       );
-
     } else {
       console.error("Database error:", error);
-      
+
       return new Response(JSON.stringify({ error: "Internal server error" }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
