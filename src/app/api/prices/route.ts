@@ -5,7 +5,7 @@ import Price, { IPrice } from "@/lib/database/models/price.model";
 import { priceType, FinalPriceType } from "@/lib/types";
 import axios from "axios";
 
-const exchangeKey = "process.env.EXCHANGE_RATE_KEY";
+const exchangeKey = process.env.EXCHANGE_RATE_KEY;
 
 export async function GET(req: Request) {
   try {
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
 
     // Fetch exchange rates for conversion
     const { data: exchangeData } = await axios.get(
-      `https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE_KEY}/latest/NGN`
+      `https://v6.exchangerate-api.com/v6/${exchangeKey}/latest/NGN`
     );
     const conversionRate: number =
       exchangeData.conversion_rates[userCurrency] || 1;

@@ -15,13 +15,18 @@ export const sanitizeMessage = (message : string) => {
 
 export async function fetchPricingData() {
   try {
-    const response = await fetch('http://localhost:3000/api/prices', {
+    // Define the base URL dynamically
+    const baseUrl = process.env.API_BASE_URL || 'http://localhost:3000';
+    
+    const response = await fetch(`${baseUrl}/api/prices`, {
       method: 'GET',
       headers: {
         'Cache-Control': 'no-store',
       },
     });
+    
     if (!response.ok) throw new Error('Failed to fetch data');
+    
     const data = await response.json();
     return data;
   } catch (error) {
@@ -29,4 +34,5 @@ export async function fetchPricingData() {
     return { prices: [], currency: 'USD' }; // Default or fallback data
   }
 }
+
 
