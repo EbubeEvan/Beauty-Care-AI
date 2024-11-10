@@ -17,6 +17,8 @@ export async function fetchPricingData() {
   try {
     // Define the base URL dynamically
     const baseUrl = process.env.API_BASE_URL || 'http://localhost:3000';
+
+    console.log("Base URL in production:", baseUrl);
     
     const response = await fetch(`${baseUrl}/api/prices`, {
       method: 'GET',
