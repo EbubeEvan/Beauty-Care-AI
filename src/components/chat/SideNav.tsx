@@ -84,7 +84,7 @@ export default function SideNav({
           )}
         </div>
 
-        <Link href="/buy-credits" className={clsx({
+        <Link href="/buy-credits" className={clsx("text-white",{
           "hidden" : !menuOpen
         })}>Buy credits</Link>
 

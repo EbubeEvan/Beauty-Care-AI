@@ -1,25 +1,51 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { PaystackButton } from "react-paystack";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreditCard } from "lucide-react";
 import { FinalPriceType } from "@/lib/types";
+import { useState, useEffect } from "react";
+import { addCredits } from "@/lib/actions";
+import { useToast } from "@/hooks/use-toast";
+
+const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_KEY || "";
 
 export default function Pricing({
   prices,
   currency,
-}: Readonly<{ prices: FinalPriceType[]; currency: string }>) {
-  
+  email,
+  id,
+}: Readonly<{
+  prices: FinalPriceType[];
+  currency: string;
+  email: string;
+  id: string;
+}>) {
+  const [message, setMessage] = useState("");
+  const { toast } = useToast();
+
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: currency,
     }).format(amount);
+  };
+
+  // Trigger toast when `message` is updated
+  useEffect(() => {
+    if (message) {
+      toast({
+        variant: message.includes("successfully") ? "primary" : "destructive",
+        description: message,
+      });
+      setMessage(""); // Reset message to avoid repeated toasts
+    }
+  }, [message, toast]);
+
+  const handleSuccess = async (credits: number) => {
+    const response = await addCredits(credits, id); // Using price.credits directly
+    console.log({ response });
+    setMessage(response);
   };
 
   return (
@@ -37,16 +63,23 @@ export default function Pricing({
                 {price.credits} Credits
               </CardTitle>
               <p className="text-3xl font-bold">{formatPrice(price.price)}</p>
-              {price.discount && (
+              {!!price.discount && (
                 <p className="text-sm text-green-500 font-semibold">
                   Save {price.discount}%
                 </p>
               )}
             </CardHeader>
-            <CardFooter>
-              <Button className="w-full" variant={"outline"}>
-                Buy Now
-              </Button>
+            <CardFooter className="w-full flex justify-center">
+              <PaystackButton
+                className="w-full rounded-md py-2 mx-5 border border-slate-200 bg-white hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+                email={email}
+                amount={price.price * 100} // Paystack expects amount in kobo (for NGN), so multiply by 100
+                publicKey={publicKey}
+                currency={currency}
+                text="Buy"
+                onSuccess={() => handleSuccess(price.credits)}
+                onClose={() => console.log("Transaction closed")}
+              />
             </CardFooter>
           </Card>
         ))}

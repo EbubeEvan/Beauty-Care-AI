@@ -61,16 +61,16 @@ export const getUser = async (userEmail: string): Promise<userType | null> => {
   }
 };
 
-export const getPrices = async () => {
-  try {
-    await dbConnect();
-    const prices: IPrice[] | null = await Price.find();
+// export const getPrices = async () => {
+//   try {
+//     await dbConnect();
+//     const prices: IPrice[] | null = await Price.find();
 
-    const parsedPrices: priceType[] = JSON.parse(JSON.stringify(prices));
+//     const parsedPrices: priceType[] = JSON.parse(JSON.stringify(prices));
     
-    return parsedPrices;
-  } catch (error) {
-    console.error("Failed to fetch prices:", error); // Updated error message for clarity
-    throw new Error("Failed to fetch prices.");
-  }
-};
+//     return parsedPrices;
+//   } catch (error) {
+//     console.error("Failed to fetch prices:", error); // Updated error message for clarity
+//     throw new Error("Failed to fetch prices.");
+//   }
+// };
