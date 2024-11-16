@@ -26,7 +26,7 @@ export async function GET(req: Request) {
     const { data: locationData } = await axios.get(
       `https://ipapi.co/${clientIp}/json/`
     );
-    const userCurrency = locationData.currency || "NGN";
+    const userCurrency : string = locationData.currency || "NGN";
 
     console.log({ userCurrency });
 
@@ -78,6 +78,7 @@ export async function GET(req: Request) {
         headers: { "Content-Type": "application/json" },
       }
     );
+    
   } catch (error) {
     console.error("Failed to fetch prices:", error);
     return new Response(

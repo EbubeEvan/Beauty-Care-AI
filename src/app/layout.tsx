@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/design-system/theme-provider";
 import dynamic from "next/dynamic";
+import { Toaster } from "@/components/ui/toaster";
 
 const ClientProviders = dynamic(() => import("@/Providers/ClientProviders"), {
   ssr: false,
@@ -34,6 +35,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ClientProviders>{children}</ClientProviders>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

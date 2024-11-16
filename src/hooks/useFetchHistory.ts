@@ -14,14 +14,10 @@ export const useFetchHistory = (id: string) => {
         },
       });
 
-      if (!response.data) {
-        throw new Error("No data returned from the API");
-      }
-
       return response.data;
     } catch (error: any) {
       console.log(error);
-      throw Error;
+      throw Error("Unable to fetch history");
     }
   };
 

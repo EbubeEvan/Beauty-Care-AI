@@ -3,26 +3,29 @@
 import { PaystackButton } from "react-paystack";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreditCard } from "lucide-react";
-import { FinalPriceType } from "@/lib/types";
 import { useState, useEffect } from "react";
 import { addCredits } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
+import { useFetchPrices } from "@/hooks/useFetchPrices";
 
 const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_KEY || "";
 
 export default function Pricing({
-  prices,
-  currency,
   email,
   id,
 }: Readonly<{
-  prices: FinalPriceType[];
-  currency: string;
   email: string;
   id: string;
 }>) {
   const [message, setMessage] = useState("");
   const { toast } = useToast();
+  const { data , isLoading} = useFetchPrices();
+
+  console.log(data);
+  
+
+  const currency = data?.currency
+  const prices = data?.prices
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -42,10 +45,13 @@ export default function Pricing({
     }
   }, [message, toast]);
 
+  useEffect(() => {
+
+  }, [data])
+
   const handleSuccess = async (credits: number) => {
     const response = await addCredits(credits, id); // Using price.credits directly
     console.log({ response });
-    setMessage(response);
   };
 
   return (
@@ -55,7 +61,8 @@ export default function Pricing({
         Purchase the amount of credits you need
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {prices.map((price) => (
+      {isLoading && (<p>Loading...</p>)}
+        {prices?.map((price) => (
           <Card key={price.id} className="flex flex-col">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl flex items-center justify-center gap-2">

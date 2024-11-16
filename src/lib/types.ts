@@ -181,3 +181,7 @@ export interface userType {
   creditBalance: number;
   beautyProfile: beautyProfileType;
 }
+
+export interface PriceResponse {
+  prices: FinalPriceType[]; currency: string
+}
