@@ -183,5 +183,5 @@ export interface userType {
 }
 
 export interface PriceResponse {
-  prices: FinalPriceType[]; currency: string
+  prices: FinalPriceType[]; currency: string 
 }
