@@ -7,6 +7,7 @@ import ChatHistory, {
 } from "@/lib/database/models/chatHistory.model";
 import { beautyProfileType } from "@/lib/types";
 import { Schema } from "mongoose";
+import { creditsUpdate } from "@/lib/utils";
 
 export const maxDuration = 60;
 
@@ -16,7 +17,9 @@ export async function POST(req: Request) {
   try {
     await dbConnect();
 
-    const user: IUser | null = await User.findOne({ email: email });
+    console.log({messages});
+
+    const user = await User.findOne<IUser>({ email: email });
 
     const profile = user?.beautyProfile;
 
@@ -27,7 +30,7 @@ export async function POST(req: Request) {
     const parsedProfile: beautyProfileType = profile;
 
     const result = await streamText({
-      model: google("models/gemini-1.5-flash-latest"),
+      model: google("models/gemini-pro"),
       system:
         `You are a licensed trichologist, dermatologist, and cosmetologist but you don't book consultations.` +
         `You are a beauty specialist with a wealth and depth of knowledge on all hair and skin types. ` +
@@ -39,8 +42,8 @@ export async function POST(req: Request) {
       messages,
       temperature: 0,
       onFinish: async ({ usage, text }) => {
-        console.log({usage});
-        
+        console.log({ usage, text });
+
         const newResponse: Message = {
           content: text,
           createdAt: new Date(),
@@ -49,7 +52,7 @@ export async function POST(req: Request) {
         };
 
         // Check if there's an existing chat document for this ID
-        const existingChat = await ChatHistory.findOne({ chatId: id });
+        const existingChat = await ChatHistory.findOne<IChatHistory>({ chatId: id });
 
         if (!existingChat) {
           // No existing chat, create a new one
@@ -59,17 +62,19 @@ export async function POST(req: Request) {
             chatId: id,
             title: messages[0].content,
             messages: [
-              { ...messages[0], id: generateId(7), createdAt: new Date(), },
-              {...newResponse}
+              { ...messages[0], id: generateId(7), createdAt: new Date() },
+              { ...newResponse },
             ],
-          }); 
+          });
 
           try {
             await newChat.save();
             console.log("Chat saved!");
+            creditsUpdate(email);
           } catch (err) {
             console.error("Error saving new chat:", err);
           }
+          
         } else {
           // Existing chat found, update it
           try {
@@ -83,6 +88,7 @@ export async function POST(req: Request) {
               console.error("Chat not found for update.");
             } else {
               console.log("Chat updated!");
+              creditsUpdate(email);
             }
           } catch (err) {
             console.error("Error updating chat:", err);

@@ -2,8 +2,9 @@ export const dynamic = 'force-dynamic';
 
 import dbConnect from "@/lib/database/dbConnect";
 import Price, { IPrice } from "@/lib/database/models/price.model";
-import { priceType, FinalPriceType } from "@/lib/types";
+import { priceType } from "@/lib/types";
 import axios from "axios";
+import { priceConvert } from "@/lib/utils";
 
 const exchangeKey = process.env.EXCHANGE_RATE_KEY;
 
@@ -40,34 +41,7 @@ export async function GET(req: Request) {
     console.log({ conversionRate });
 
     // Convert each price in parsedPrices to the user's currency
-    const convertedPrices: FinalPriceType[] = parsedPrices.map((price) => {
-      let selectedPrice;
-
-      if (conversionRate >= 1) {
-        selectedPrice = price.p1; // If conversionRate is 1 or above
-        console.log("Selected Price set to p1");
-    } else if (conversionRate > 0.01 && conversionRate < 1) {
-        selectedPrice = price.p3; // If conversionRate is between 0.01 and 1
-        console.log("Selected Price set to p3");
-    } else if (conversionRate > 0.0001 && conversionRate < 0.01) {
-        selectedPrice = price.p2; // If conversionRate is between 0.0001 and 0.01
-        console.log("Selected Price set to p2");
-    } else {
-        selectedPrice = price.p1; // Fallback to p1 for any unexpected case
-        console.log("Selected Price set to fallback p1");
-    }
-
-      console.log({selectedPrice}); 
-
-      const convertedPrice = selectedPrice * conversionRate;
-
-      return {
-        id: price._id,
-        credits: price.credits,
-        price: convertedPrice,
-        discount: price.discount,
-      };
-    });
+    const convertedPrices = priceConvert(parsedPrices, conversionRate)
 
     console.log({ convertedPrices });
 

@@ -185,3 +185,7 @@ export interface userType {
 export interface PriceResponse {
   prices: FinalPriceType[]; currency: string 
 }
+
+export interface CreditsResponse {
+  credits : number
+}

@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
   try {
     await dbConnect();
-    const user: IUser | null = await User.findOne({ email: userEmail });
+    const user = await User.findOne<IUser>({ email: userEmail });
 
     if (!user) {
       return new Response(JSON.stringify({ error: "User not found" }), {
@@ -25,7 +25,7 @@ export async function GET(req: Request) {
     }
 
     const parsedUser: userType = JSON.parse(JSON.stringify(user));
-    return new Response(JSON.stringify(parsedUser), {
+    return new Response(JSON.stringify({credits : parsedUser.creditBalance}), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
