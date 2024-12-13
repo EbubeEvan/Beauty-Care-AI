@@ -1,7 +1,7 @@
-import dbConnect from "@/lib/database/dbConnect";
+import dbConnect from "@/database/dbConnect";
 import ChatHistory, {
   IChatHistory,
-} from "@/lib/database/models/chatHistory.model";
+} from "@/database/models/chatHistory.model";
 import { HistoryType } from "@/lib/types";
 import mongoose from "mongoose";
 

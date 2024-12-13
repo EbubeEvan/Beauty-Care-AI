@@ -1,6 +1,6 @@
 "use server";
 
-import dbConnect from "./database/dbConnect";
+import dbConnect from "@/database/dbConnect";
 import {
   SignUpType,
   LoginType,
@@ -11,7 +11,7 @@ import {
   beautyReturn,
 } from "./types";
 import { beautyProfileDefault } from "./data";
-import User, { IUser } from "./database/models/user.model";
+import User, { IUser } from "@/database/models/user.model";
 import bcrypt from "bcrypt";
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";

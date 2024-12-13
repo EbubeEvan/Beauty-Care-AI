@@ -1,6 +1,6 @@
-import dbConnect from "./database/dbConnect";
-import User, { IUser } from "./database/models/user.model";
-import ChatHistory, { IChatHistory } from "./database/models/chatHistory.model";
+import dbConnect from "@/database/dbConnect";
+import User, { IUser } from "@/database/models/user.model";
+import ChatHistory, { IChatHistory } from "@/database/models/chatHistory.model";
 import { chatType, userType } from "./types";
 
 export const getChat = async (id: string) => {

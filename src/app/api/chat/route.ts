@@ -1,10 +1,10 @@
 import { streamText, generateId, Message } from "ai";
 import { google } from "@ai-sdk/google";
-import dbConnect from "@/lib/database/dbConnect";
-import User, { IUser } from "@/lib/database/models/user.model";
+import dbConnect from "@/database/dbConnect";
+import User,{IUser} from "@/database/models/user.model";
 import ChatHistory, {
   IChatHistory,
-} from "@/lib/database/models/chatHistory.model";
+} from "@/database/models/chatHistory.model";
 import { beautyProfileType } from "@/lib/types";
 import { Schema } from "mongoose";
 import { creditsUpdate } from "@/lib/utils";

@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
-import dbConnect from "@/lib/database/dbConnect";
-import Price, { IPrice } from "@/lib/database/models/price.model";
+import dbConnect from "@/database/dbConnect";
+import Price, { IPrice } from "@/database/models/price.model";
 import { priceType } from "@/lib/types";
 import axios from "axios";
 import { priceConvert } from "@/lib/utils";

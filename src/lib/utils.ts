@@ -2,8 +2,8 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import markdownit from "markdown-it";
 import DOMPurify from "dompurify";
-import dbConnect from "./database/dbConnect";
-import User, { IUser } from "./database/models/user.model";
+import dbConnect from "@/database/dbConnect";
+import User, { IUser } from "@/database/models/user.model";
 import { FinalPriceType, priceType } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
