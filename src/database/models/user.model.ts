@@ -1,5 +1,5 @@
 import { Document, model, models, Schema } from 'mongoose';
-import { beautyProfileType } from '../../types';
+import { beautyProfileType } from '@/lib/types';
 
 export interface IUser extends Document {
   firstName: string;

@@ -1,11 +1,5 @@
 import { Document, model, models, Schema } from 'mongoose';
 
-// export interface IPrice extends Document {
-//   credits : 10,
-//   p1 : 1000,
-//   p2 : 8000,
-//   p3 : 5000
-// }
 export interface IPrice extends Document {
   credits : number,
   p1 : number,

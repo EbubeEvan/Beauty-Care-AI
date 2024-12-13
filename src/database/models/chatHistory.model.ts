@@ -1,5 +1,5 @@
 import { Document, model, models, Schema } from "mongoose";
-import { messageSchematype } from "../../types";
+import { messageSchematype } from "@/lib/types";
 
 export interface IChatHistory extends Document {
   userId: Schema.Types.ObjectId;
