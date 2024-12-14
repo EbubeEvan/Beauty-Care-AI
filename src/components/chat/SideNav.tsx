@@ -11,6 +11,7 @@ import { useFetchHistory } from "@/hooks/useFetchHistory";
 import useStore from "@/lib/store/useStore";
 import { usePathname } from "next/navigation";
 import { useFetchCredits } from "@/hooks/useFetchCredits";
+import { useEffect } from "react";
 
 export default function SideNav({
   id,
@@ -20,14 +21,19 @@ export default function SideNav({
   email: string
 }>) {
   const { data: history, isFetching, isLoading } = useFetchHistory(id!);
-  const { data: credits } = useFetchCredits(email);
-  const { messageCount, menuOpen, setMenuOpen, setCredits } = useStore();
+  const { data: newCredits } = useFetchCredits(email);
+  const { messageCount, menuOpen, setMenuOpen, setCredits, credits } = useStore();
   const pathname = usePathname();
   const pathID = pathname.split("/")[2];
 
-  if(credits){
-    setCredits(credits.credits)
-  }
+  console.log(credits);
+  
+  useEffect(() => {
+    console.log("New Credits from API:", newCredits?.credits); // Log fetched data
+    if (newCredits?.credits !== undefined || null) {
+      setCredits(newCredits?.credits!);
+    }
+  }, [newCredits?.credits, setCredits]);  
 
   return (
     <div className="py-6 h-full">
@@ -95,7 +101,7 @@ export default function SideNav({
             hidden: !menuOpen,
           })}>
           <CreditCard />
-          <p>{`${credits?.credits || ""} credits`}</p>
+          <p>{`${newCredits?.credits || 0 } credits`}</p>
         </div>
 
         <Link

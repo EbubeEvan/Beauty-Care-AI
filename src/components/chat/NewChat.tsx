@@ -7,7 +7,9 @@ import { Card } from "../ui/card";
 import { useRouter } from "next/navigation";
 import { generateId } from "ai";
 import useStore from "@/lib/store/useStore";
-import { FormEvent } from "react";
+import { FormEvent, useEffect } from "react";
+import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
 
 export default function NewChat({
   email,
@@ -17,18 +19,44 @@ export default function NewChat({
   username: string;
 }) {
   const newChatId = generateId(7);
-
-  const { input, handleInputChange, error } = useChat({});
-  const { setNewPrompt } = useStore();
-
+  const { input, handleInputChange, error } = useChat();
+  const { setNewPrompt, credits } = useStore();
   const router = useRouter();
+  const { toast } = useToast();
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+  
+    console.log("Credits before submitting:", credits);
+  
+    // Prevent form submission if credits are zero
+    if (!credits || credits <= 0) {
+      toast({
+        variant: "destructive",
+        description: (
+          <div>
+            <h1 className="mb-3 text-xl">Oops. You&apos;re out of credits!</h1>
+            <p>
+                Click{" "}
+                <Link
+                  href="/buy-credits"
+                  className="text-pink-500 dark:text-purple-500"
+                >
+                  here
+                </Link>
+                {" "}to get more credits.
+              </p>
+          </div>
+        ),
+      });
+      return; // Stop execution here
+    }
+  
+    // If credits are valid, proceed to navigate
+    console.log("Sufficient credits, navigating...");
     setNewPrompt(input);
-    
     router.push(`/chat/${newChatId}`);
-  };
+  };  
 
   return (
     <div className="flex flex-col h-screen pt-10">
@@ -65,7 +93,7 @@ export default function NewChat({
           </form>
         </div>
       </div>
-      {error && <p className="text-red-500 my-3">{error.message}</p>}
+      {error && <p className="text-red-500 my-3">Uh oh. Something went wrong</p>}
     </div>
   );
 }

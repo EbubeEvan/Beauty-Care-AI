@@ -11,6 +11,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { generateId, Message } from "ai";
 import Image from "next/image";
 import { chatType } from "@/lib/types";
+import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export default function ResumeChat({
   email,
@@ -36,12 +38,13 @@ export default function ResumeChat({
     body: { email, id },
   });
 
-  const { newPrompt } = useStore();
+  const { newPrompt, credits } = useStore();
   const queryClient = useQueryClient();
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const [urls, setUrls] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const initialMessageAppended = useRef(false); // Prevent appending the message multiple times
+  const { toast } = useToast();
 
   const newMessage: Message = {
     content: newPrompt!,
@@ -79,6 +82,29 @@ export default function ResumeChat({
   };
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!credits || credits <= 0) {
+      toast({
+        variant: "destructive",
+        description: (
+          <div>
+            <h1 className="mb-3 text-xl">Oops. You&apos;re out of credits!</h1>
+            <p>
+                Click{" "}
+                <Link
+                  href="/buy-credits"
+                  className="text-pink-500 dark:text-purple-500"
+                >
+                  here
+                </Link>
+                {" "}to get more credits.
+              </p>
+          </div>
+        ),
+      });
+      return; // Stop execution here
+    }
+    
     handleSubmit(event, {
       experimental_attachments: files,
     });
@@ -188,7 +214,7 @@ export default function ResumeChat({
           </form>
         </div>
       </div>
-      {error && <p className="text-red-500 my-3">{error.message}</p>}
+      {error && <p className="text-red-500 my-3">Uh oh. Something went wrong</p>}
     </div>
   );
 }
