@@ -12,6 +12,8 @@ interface UserDetailsType {
   setMenuOpen: (data: boolean) => void;
   messageCount: number;
   setMessageCount: (data : number) => void;
+  credits: number;
+  setCredits: (data : number) => void;
 }
 
 // Define the store type including persist options
@@ -33,6 +35,8 @@ const useStore = create<UserDetailsType>(
       setMessageCount: (data: number) => set({ messageCount: data }),
       menuOpen: false,
       setMenuOpen: (data: boolean) => set({ menuOpen: data }),
+      credits: 0,
+      setCredits: (data: number) => set({ credits: data }),
     }),
     {
       name: "user-storage",

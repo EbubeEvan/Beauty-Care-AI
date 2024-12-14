@@ -18,7 +18,7 @@ export default async function layout({
 
   return (
     <div>
-      <LayoutContent id={user?._id!}>{children}</LayoutContent>
+      <LayoutContent id={user?._id} email={session?.user?.email!}>{children}</LayoutContent>
     </div>
   );
 }

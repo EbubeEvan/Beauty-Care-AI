@@ -2,11 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { CreditsResponse } from "@/lib/types";
 
-export const useFetchCredits = () => {
+export const useFetchCredits = (email : string) => {
 
   const fetchCredits = async (): Promise<CreditsResponse> => {
     try {
-      const response = await axios.get<CreditsResponse>("/api/credits", {
+      const response = await axios.get<CreditsResponse>(`/api/credits/`, {
+        params: {
+          email,
+        },
         headers: {
           "Content-Type": "application/json",
         },

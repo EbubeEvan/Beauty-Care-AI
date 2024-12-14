@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, Plus, MessageCircle } from "lucide-react";
+import { Menu, Plus, MessageCircle, CreditCard, Wallet } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import clsx from "clsx";
@@ -9,25 +9,29 @@ import { Skeleton } from "../ui/skeleton";
 import { Spinner } from "../ui/spinner";
 import { useFetchHistory } from "@/hooks/useFetchHistory";
 import useStore from "@/lib/store/useStore";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
+import { useFetchCredits } from "@/hooks/useFetchCredits";
 
 export default function SideNav({
   id,
+  email
 }: Readonly<{
   id?: string;
+  email: string
 }>) {
   const { data: history, isFetching, isLoading } = useFetchHistory(id!);
-  const { messageCount, menuOpen, setMenuOpen } = useStore();
-  const pathname = usePathname()
+  const { data: credits } = useFetchCredits(email);
+  const { messageCount, menuOpen, setMenuOpen, setCredits } = useStore();
+  const pathname = usePathname();
+  const pathID = pathname.split("/")[2];
 
-  console.log({pathname});
-  const pathID = pathname.split('/')[2]
-
-  console.log({pathID});
+  if(credits){
+    setCredits(credits.credits)
+  }
 
   return (
     <div className="py-6 h-full">
-      <div className="flex flex-col gap-10 px-3 h-full">
+      <div className="flex flex-col gap-5 px-3 h-full">
         <div
           className={clsx("flex transition-all duration-300", {
             "justify-center": !menuOpen,
@@ -61,7 +65,7 @@ export default function SideNav({
             "flex flex-col gap-3 overflow-y-auto", // Enables vertical scrolling
             { hidden: !menuOpen }
           )}
-          style={{ maxHeight: 'calc(100vh - 200px)' }} // Adjust the height as needed
+          style={{ maxHeight: "calc(100vh - 200px)" }} // Adjust the height as needed
         >
           {isFetching && messageCount === 2 && (
             <Skeleton className="h-10 w-full rounded-full" />
@@ -72,9 +76,12 @@ export default function SideNav({
             history?.map((chat) => (
               <Link
                 href={`/chat/${chat.chatId}`}
-                className={clsx("flex gap-2 text-white px-5 py-2 mr-3 hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full", {
-                  "bg-pink-300 dark:bg-purple-400" : chat.chatId === pathID
-                })}
+                className={clsx(
+                  "flex gap-2 text-white px-5 py-2 mr-3 hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full",
+                  {
+                    "bg-pink-300 dark:bg-purple-400": chat.chatId === pathID,
+                  }
+                )}
                 key={chat.chatId}
               >
                 <MessageCircle className="min-w-4 max-w-4" />
@@ -84,9 +91,22 @@ export default function SideNav({
           )}
         </div>
 
-        <Link href="/buy-credits" className={clsx("text-white",{
-          "hidden" : !menuOpen
-        })}>Buy credits</Link>
+        <div className={clsx("text-white flex gap-3 px-5 py-2 hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full", {
+            hidden: !menuOpen,
+          })}>
+          <CreditCard />
+          <p>{`${credits?.credits || ""} credits`}</p>
+        </div>
+
+        <Link
+          href="/buy-credits"
+          className={clsx("text-white flex gap-3 px-5 py-2 hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full", {
+            hidden: !menuOpen,
+          })}
+        >
+          <Wallet />
+          <p>Buy credits</p>
+        </Link>
 
         <div
           className={clsx("flex transition-all duration-300 px-3", {
