@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { addCredits } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import { useFetchPrices } from "@/hooks/useFetchPrices";
+import PriceSkeleton from "./PriceSkeleton";
 
 const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_KEY || "";
 
@@ -61,7 +62,7 @@ export default function Pricing({
         Purchase the amount of credits you need
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {isLoading && (<p>Loading...</p>)}
+      {isLoading && (<PriceSkeleton/>)}
         {prices?.map((price) => (
           <Card key={price.id} className="flex flex-col">
             <CardHeader className="text-center">

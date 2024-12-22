@@ -16,6 +16,7 @@ import bcrypt from "bcrypt";
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function createUser(user: SignUpType): Promise<userReturn> {
   const validatedFields = signUpSchema.safeParse(user);
@@ -138,6 +139,7 @@ export async function addCredits(
       console.log(
         `Updated credit balance for user ${userId}: ${credits}`
       );
+      revalidatePath("/chat")
       return `${credits} credits added successfully!`;
     } else {
       console.log(`User with ID ${userId} not found.`);

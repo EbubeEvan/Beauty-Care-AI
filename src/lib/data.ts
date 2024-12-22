@@ -109,3 +109,5 @@ export const DEFAULT_PRICES = [
     discount: 0,
   },
 ];
+
+export const PRICE_SKELETON_ARRAY = [1, 2, 3, 4]

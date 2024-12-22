@@ -77,7 +77,7 @@ export default function SideNav({
             <Skeleton className="h-10 w-full rounded-full" />
           )}
           {isLoading ? (
-            <Spinner size="medium" />
+            <Spinner size="medium" className="text-gray-200 dark:text-gray-700"/>
           ) : (
             history?.map((chat) => (
               <Link
