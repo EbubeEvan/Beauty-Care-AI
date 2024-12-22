@@ -61,8 +61,8 @@ export default function Pricing({
       <p className="text-center text-muted-foreground mb-6">
         Purchase the amount of credits you need
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {isLoading && (<PriceSkeleton/>)}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {prices?.map((price) => (
           <Card key={price.id} className="flex flex-col">
             <CardHeader className="text-center">

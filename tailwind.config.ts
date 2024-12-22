@@ -19,7 +19,7 @@ const config = {
     },
     extend: {
       backgroundImage: {
-        'hero-img': "url('/images/pic1.jpg')",
+        'hero-img': "url('/images/hero-img.jpg')",
       },
       keyframes: {
         "accordion-down": {

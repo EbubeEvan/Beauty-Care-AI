@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer className="flex flex-col gap-4 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6">
+    <footer className="flex flex-col gap-4 sm:flex-row py-6 w-full shrink-0 items-center md:px-10 px-4">
         <p className="text-sm text-gray-500 dark:text-gray-400">
           &copy; 2024 Beautycare AI. All rights reserved.
         </p>

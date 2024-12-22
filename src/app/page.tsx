@@ -8,7 +8,7 @@ import Testimonials from "@/components/landing/Testimonials";
 export default function Home() {
   return (
     <main className="flex flex-col min-h-[100dvh] bg-gradient-to-br from-[#f5d0fe] to-[#e879f9] dark:from-[#1e293b] dark:to-[#4c1d95]">
-      <Heading />
+      
       <section className="flex-1">
         <Hero />
         <About />
