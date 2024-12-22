@@ -20,9 +20,9 @@ export default function SideNav({
   id?: string;
   email: string
 }>) {
-  const { data: history, isFetching, isLoading } = useFetchHistory(id!);
+  const { data: history, isLoading } = useFetchHistory(id!);
   const { data: newCredits } = useFetchCredits(email);
-  const { messageCount, menuOpen, setMenuOpen, setCredits, credits } = useStore();
+  const { menuOpen, setMenuOpen, setCredits, credits } = useStore();
   const pathname = usePathname();
   const pathID = pathname.split("/")[2];
 
@@ -73,9 +73,6 @@ export default function SideNav({
           )}
           style={{ maxHeight: "calc(100vh - 200px)" }} // Adjust the height as needed
         >
-          {isFetching && messageCount === 2 && (
-            <Skeleton className="h-10 w-full rounded-full" />
-          )}
           {isLoading ? (
             <Spinner size="medium" className="text-gray-200 dark:text-gray-700"/>
           ) : (
