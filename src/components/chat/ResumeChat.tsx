@@ -124,14 +124,14 @@ export default function ResumeChat({
   return (
     <div className="flex flex-col h-screen pt-10">
       {/* New container */}
-      <div className="flex-1 h-full overflow-y-auto flex flex-col gap-10">
+      <div className="flex-1 h-full overflow-y-auto flex flex-col gap-10 mb-5">
         {/* Message container */}
         <div className="flex flex-1 h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">
           {messages.map((message) => (
             <>
               <div
                 key={message.id}
-                className={`mb-4 flex items-start ${
+                className={`mb-4 flex items-start  ${
                   message.role === "assistant" ? "justify-start" : "justify-end"
                 }`}
               >
@@ -176,7 +176,7 @@ export default function ResumeChat({
       </div>
 
       {/* Form positioned at the bottom */}
-      <div className="flex justify-center pt-5">
+      <div className="flex justify-center ">
         <div className="flex flex-col w-[90%] items-center py-2 mb-[5rem] px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
           {/* Selected Images */}
           <div className="flex gap-3 -mb-1">

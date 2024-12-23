@@ -43,7 +43,7 @@ export default function LoginForm() {
   };
 
   return (
-    <Card className="w-full max-w-lg mt-10 min-[1200px]:mt-16 mb-10">
+    <Card className="w-full max-w-lg -mt-10 min-[1200px]:mt-16 mb-10">
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardHeader>
           <CardTitle className="text-2xl mb-3">Login</CardTitle>
