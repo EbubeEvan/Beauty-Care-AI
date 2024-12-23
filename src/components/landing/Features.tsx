@@ -16,7 +16,7 @@ export default function Features() {
   };
 
   return (
-    <section className="w-full py-12 md:py-24 px-4 md:px-10 lg:py-32 bg-gradient-to-br from-[#f5d0fe] to-[#e879f9] dark:from-[#1e293b] dark:to-[#4c1d95]">
+    <section className="w-full py-12 md:py-24 md:px-10 lg:py-32 bg-gradient-to-br from-[#f5d0fe] to-[#e879f9] dark:from-[#1e293b] dark:to-[#4c1d95]">
       <div className="container px-4 md:px-6 lg:px-4 text-center">
         <div className="max-w-2xl mx-auto space-y-4">
           <motion.div

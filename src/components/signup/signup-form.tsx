@@ -16,23 +16,25 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions";
 import { useState } from "react";
-import {FormInput} from "../design-system/FormInput";
+import { FormInput } from "../design-system/FormInput";
 import { signUpFormSchema, userErrors } from "@/lib/types";
 import { z } from "zod";
 import useStore from "@/lib/store/useStore";
+import { Spinner } from "../ui/spinner";
 
 export default function SignupForm() {
   const router = useRouter();
 
-  const {setId} = useStore()
+  const { setId } = useStore();
 
-  const [errmMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("");
   const [serverErrors, setServerErrors] = useState<userErrors | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isLoading },
+    formState: { errors },
   } = useForm<SignUpType>({
     resolver: zodResolver(signUpFormSchema),
   });
@@ -40,13 +42,16 @@ export default function SignupForm() {
   const onSubmit: SubmitHandler<z.infer<typeof signUpFormSchema>> = async (
     data
   ) => {
+    setLoading(true);
     const user = await createUser(data);
     if (user?.errors) {
       setErrMsg(user?.message!);
       setServerErrors(user?.errors);
+      setLoading(false);
     } else {
-      setId(user?.id!)
-      router.push('/signup/onboarding')
+      setId(user?.id!);
+      router.push("/signup/onboarding");
+      setLoading(false);
     }
   };
 
@@ -111,7 +116,8 @@ export default function SignupForm() {
             errorText={errors.password?.message!}
             id="password"
             label="password"
-            placeholder="Doe"
+            placeholder=""
+            type="password"
           />
           {serverErrors?.password &&
             serverErrors.password.map((error: string) => (
@@ -123,10 +129,17 @@ export default function SignupForm() {
         <CardFooter className="flex flex-col">
           <Button
             type="submit"
-            className="w-full bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500 dark:focus:ring-purple-400"
-            disabled={isLoading}
+            className="w-full bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500"
+            disabled={loading}
           >
-            Sign up
+            {loading ? (
+              <Spinner
+                size="small"
+                className="text-gray-200 dark:text-gray-700"
+              />
+            ) : (
+              "Sign Up"
+            )}
           </Button>
           <p className="mt-5 text-sm">
             Already have an account?
@@ -139,8 +152,8 @@ export default function SignupForm() {
             </Link>
           </p>
         </CardFooter>
-        {errmMsg && (
-          <p className="mt-2 text-sm text-red-500 text-center">{errmMsg}</p>
+        {errMsg && (
+          <p className="mt-2 text-sm text-red-500 text-center">{errMsg}</p>
         )}
       </form>
     </Card>

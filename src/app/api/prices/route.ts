@@ -7,6 +7,7 @@ import axios from "axios";
 import { priceConvert } from "@/lib/utils";
 
 const exchangeKey = process.env.EXCHANGE_RATE_KEY;
+const ipKey = process.env.IPAPI_KEY
 
 export async function GET(req: Request) {
   try {
@@ -25,7 +26,7 @@ export async function GET(req: Request) {
 
     // Get user's currency based on their IP address
     const { data: locationData } = await axios.get(
-      `https://ipapi.co/${clientIp}/json/`
+      `https://ipapi.co/${clientIp}/json/?key=${ipKey}`
     );
     const userCurrency : string = locationData.currency || "NGN";
 

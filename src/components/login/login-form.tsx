@@ -17,23 +17,29 @@ import { useState } from "react";
 import { authenticate } from "@/lib/actions";
 import Link from "next/link";
 import { z } from "zod";
-import { useRouter } from "next/navigation";
+
 import { Spinner } from "../ui/spinner";
 
 export default function LoginForm() {
-  const router = useRouter();
+  const [loading, setLoading] = useState(false)
 
-  const [errmMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("");
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isLoading },
+    formState: { errors },
   } = useForm<LoginType>({ resolver: zodResolver(loginSchema) });
 
   const onSubmit: SubmitHandler<z.infer<typeof loginSchema>> = async (data) => {
-    const user = await authenticate(data);
-    user && setErrMsg(user)
+    try {
+      setLoading(true)
+      const user = await authenticate(data);
+      return user
+    } catch (error : any) {
+      setErrMsg(error.message)
+      setLoading(false)
+    }
   };
 
   return (
@@ -62,15 +68,16 @@ export default function LoginForm() {
             id="password"
             label="password"
             placeholder="Doe"
+            type="password"
           />
         </CardContent>
         <CardFooter className="flex flex-col">
           <Button
             type="submit"
-            className="w-full bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500 dark:focus:ring-purple-400 disabled:opacity-5"
-            disabled={isLoading}
+            className="w-full bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500"
+            disabled={loading}
           >
-            { isLoading ? <Spinner size="small"/> : "Login"}
+            { loading ? <Spinner size="small" className="text-gray-200 dark:text-gray-700"/> : "Login"}
           </Button>
           <p className="mt-5 text-sm">
             Don&apos;t have an account?{" "}
@@ -83,8 +90,8 @@ export default function LoginForm() {
             </Link>
           </p>
         </CardFooter>
-        {errmMsg && (
-          <p className="mt-2 text-sm text-red-500 text-center">{errmMsg}</p>
+        {errMsg && (
+          <p className="mt-2 text-sm text-red-500 text-center">{errMsg}</p>
         )}
       </form>
     </Card>

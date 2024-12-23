@@ -9,7 +9,7 @@ import Heading from "../ui/Heading";
 export default function Hero() {
   return (
     <section
-      className="relative w-full py-12 md:py-24 px-4 md:px-10 lg:py-32 bg-gradient-to-br from-[#f5d0fe] to-[#e879f9] dark:from-[#1e293b] dark:to-[#4c1d95]"
+      className="relative w-full py-12 md:py-24 md:px-10 lg:py-32 bg-gradient-to-br from-[#f5d0fe] to-[#e879f9] dark:from-[#1e293b] dark:to-[#4c1d95]"
       style={{
         backgroundImage: `url('/images/hero-img.jpg')`,
         backgroundSize: "cover",
@@ -23,7 +23,7 @@ export default function Hero() {
         <Heading />
       </div>
 
-      <div className="relative container px-4 md:px-6 text-center">
+      <div className="relative container px-4 md:px-6 text-center mt-24 md:mt-0">
         <div className="max-w-2xl mx-auto space-y-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
@@ -57,7 +57,7 @@ export default function Hero() {
           >
             <Link
               href="/signup"
-              className="inline-flex items-center gap-2 rounded-md bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500 dark:focus:ring-purple-400"
+              className="inline-flex items-center gap-2 rounded-md bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500 "
             >
               <WebcamIcon className="h-5 w-5" />
               Start Consultation

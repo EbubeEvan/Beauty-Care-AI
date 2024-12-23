@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 export default function About() {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 px-4 md:px-10 bg-white dark:bg-gray-900">
+    <section className="w-full py-12 md:py-24 lg:py-32 md:px-10 bg-white dark:bg-gray-900">
       <div className="container px-4 md:px-16 lg:px-24">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <motion.div
@@ -32,7 +32,7 @@ export default function About() {
             </p>
             <Link
               href="/signup"
-              className="inline-flex items-center gap-2 rounded-md bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500 dark:focus:ring-purple-400"
+              className="inline-flex items-center gap-2 rounded-md bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500 "
             >
               <WebcamIcon className="h-5 w-5" />
               Start Consultation

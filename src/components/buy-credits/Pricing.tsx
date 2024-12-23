@@ -8,6 +8,7 @@ import { addCredits } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import { useFetchPrices } from "@/hooks/useFetchPrices";
 import PriceSkeleton from "./PriceSkeleton";
+import { cn } from "@/lib/utils";
 
 const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_KEY || "";
 
@@ -20,13 +21,12 @@ export default function Pricing({
 }>) {
   const [message, setMessage] = useState("");
   const { toast } = useToast();
-  const { data , isLoading} = useFetchPrices();
+  const { data, isLoading } = useFetchPrices();
 
   console.log(data);
-  
 
-  const currency = data?.currency
-  const prices = data?.prices
+  const currency = data?.currency;
+  const prices = data?.prices;
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -46,9 +46,7 @@ export default function Pricing({
     }
   }, [message, toast]);
 
-  useEffect(() => {
-
-  }, [data])
+  useEffect(() => {}, [data]);
 
   const handleSuccess = async (credits: number) => {
     const response = await addCredits(credits, id); // Using price.credits directly
@@ -61,7 +59,7 @@ export default function Pricing({
       <p className="text-center text-muted-foreground mb-6">
         Purchase the amount of credits you need
       </p>
-      {isLoading && (<PriceSkeleton/>)}
+      {isLoading && <PriceSkeleton />}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {prices?.map((price) => (
           <Card key={price.id} className="flex flex-col">
@@ -71,10 +69,12 @@ export default function Pricing({
                 {price.credits} Credits
               </CardTitle>
               <p className="text-3xl font-bold">{formatPrice(price.price)}</p>
-              {!!price.discount && (
+              {price.discount ? (
                 <p className="text-sm text-green-500 font-semibold">
                   Save {price.discount}%
                 </p>
+              ) : (
+                <div className="h-5" />
               )}
             </CardHeader>
             <CardFooter className="w-full flex justify-center">

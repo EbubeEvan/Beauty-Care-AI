@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {FormInput} from "../design-system/FormInput";
+import { FormInput } from "../design-system/FormInput";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
@@ -28,19 +28,21 @@ import {
 import { beautyProfileType, beautyErrors } from "@/lib/types";
 import { addBeautyProfile } from "@/lib/actions";
 import useStore from "@/lib/store/useStore";
+import { Spinner } from "../ui/spinner";
 
 export default function OnboardingForm() {
-  const {id} = useStore()
+  const { id } = useStore();
 
-  const [errmMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("");
   const [serverErrors, setServerErrors] = useState<beautyErrors | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const {
     handleSubmit,
     register,
     setValue,
     watch,
-    formState: { errors, isLoading },
+    formState: { errors },
   } = useForm<beautyProfileType>({
     resolver: zodResolver(beautyProfileSchema),
   });
@@ -48,11 +50,14 @@ export default function OnboardingForm() {
   const onSubmit: SubmitHandler<z.infer<typeof beautyProfileSchema>> = async (
     data
   ) => {
+    setLoading(true);
     const profile = await addBeautyProfile(data, id);
     if (profile?.errors) {
       setErrMsg(profile?.message!);
       setServerErrors(profile?.errors);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (
@@ -244,14 +249,21 @@ export default function OnboardingForm() {
         <CardFooter className="flex flex-col">
           <Button
             type="submit"
-            className="w-full bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500 dark:focus:ring-purple-400"
-            disabled={isLoading}
+            className="w-full bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500"
+            disabled={loading}
           >
-            Submit
+            {loading ? (
+              <Spinner
+                size="small"
+                className="text-gray-200 dark:text-gray-700"
+              />
+            ) : (
+              "Submit"
+            )}
           </Button>
         </CardFooter>
-        {errmMsg && (
-          <p className="mt-2 text-sm text-red-500 text-center">{errmMsg}</p>
+        {errMsg && (
+          <p className="mt-2 text-sm text-red-500 text-center">{errMsg}</p>
         )}
       </form>
     </Card>

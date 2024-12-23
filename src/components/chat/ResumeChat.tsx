@@ -68,7 +68,11 @@ export default function ResumeChat({
     if (messages.length === 2) {
       queryClient.invalidateQueries({ queryKey: ["history", userId] });
     }
-  }, [messages]);
+    if (messages.length % 2 === 0) {
+      queryClient.invalidateQueries({ queryKey: ["credits"] });
+    }
+  }, [messages, queryClient, userId]);
+  
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
