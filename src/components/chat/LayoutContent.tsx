@@ -24,7 +24,7 @@ export default function LayoutContent({
         <div className="flex h-full w-full">
             <aside
                 className={clsx(
-                    "bg-pink-500 transition-all fixed inset-y-0 left-0 dark:bg-purple-500 overflow-y-auto overflow-x-hidden",
+                    "bg-pink-500 transition-all fixed inset-y-0 left-0 dark:bg-purple-500 overflow-y-auto overflow-x-hidden z-40",
                     {
                         "max-md:translate-x-[-100%] md:w-[5%]": !menuOpen,
                         "md:w-[32%] lg:w-[20%] max-md:w-[80%] min-[1280px]:w-[21%]": menuOpen,
