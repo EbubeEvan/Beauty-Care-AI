@@ -62,7 +62,7 @@ export default function NewChat({
     <div className="flex flex-col h-screen pt-10">
       {/* New container */}
 
-      <div className="flex-1 h-full overflow-y-auto flex flex-col gap-10">
+      <div className="flex-1 overflow-y-auto flex flex-col gap-10 h-[calc(100vh - 200px)]">
         {/* Message container */}
         <div className="flex flex-1 h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">
           <div className="mb-4 flex items-start gap-2">

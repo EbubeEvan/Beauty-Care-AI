@@ -131,7 +131,8 @@ export default function ResumeChat({
             <>
               <div
                 key={message.id}
-                className={`mb-4 flex items-start  ${
+                className={`mb-4 flex items-start  $
+                  {
                   message.role === "assistant" ? "justify-start" : "justify-end"
                 }`}
               >
