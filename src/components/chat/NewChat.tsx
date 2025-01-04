@@ -7,17 +7,15 @@ import { Card } from "../ui/card";
 import { useRouter } from "next/navigation";
 import { generateId } from "ai";
 import useStore from "@/lib/store/useStore";
-import { FormEvent, useEffect } from "react";
+import { FormEvent } from "react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 
 export default function NewChat({
-  email,
   username,
-}: {
-  email: string;
+}: Readonly<{
   username: string;
-}) {
+}>) {
   const newChatId = generateId(7);
   const { input, handleInputChange, error } = useChat();
   const { setNewPrompt, credits } = useStore();
@@ -59,10 +57,10 @@ export default function NewChat({
   };  
 
   return (
-    <div className="flex flex-col h-screen pt-10">
+    <div className="flex flex-col h-full pt-10 w-full">
       {/* New container */}
 
-      <div className="flex-1 overflow-y-auto flex flex-col gap-10 h-[calc(100vh - 200px)]">
+      <div className="flex-1 h-full overflow-y-auto flex flex-col gap-10">
         {/* Message container */}
         <div className="flex flex-1 h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">
           <div className="mb-4 flex items-start gap-2">
@@ -75,8 +73,8 @@ export default function NewChat({
       </div>
 
       {/* Form positioned at the bottom */}
-      <div className="flex justify-center">
-        <div className="flex flex-col w-[90%] items-center py-2 mb-[5rem] px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
+      <div className="flex justify-center absolute bottom-0 w-[85%] mb-10 md:mb-5 md:ml-5">
+        <div className="flex flex-col w-full items-center py-2 px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
           {/* Form */}
           <form className="flex w-full items-center gap-4" onSubmit={submit}>
             <Input
