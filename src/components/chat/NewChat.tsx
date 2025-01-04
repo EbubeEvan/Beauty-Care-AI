@@ -73,7 +73,7 @@ export default function NewChat({
       </div>
 
       {/* Form positioned at the bottom */}
-      <div className="flex justify-center absolute bottom-0 w-[85%] mb-10 md:mb-5 md:ml-5">
+      <div className="flex justify-center absolute bottom-0 w-[85%] mb-5 md:mb-5 md:ml-5">
         <div className="flex flex-col w-full items-center py-2 px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
           {/* Form */}
           <form className="flex w-full items-center gap-4" onSubmit={submit}>
