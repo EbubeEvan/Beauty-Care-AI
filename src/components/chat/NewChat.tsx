@@ -57,7 +57,7 @@ export default function NewChat({
   };  
 
   return (
-    <div className="flex flex-col h-full pt-10 w-full overflow-y-hidden pb-0">
+    <div className="flex flex-col h-screen pt-10">
       {/* New container */}
 
       <div className="flex-1 h-full overflow-y-auto flex flex-col gap-10">
@@ -73,13 +73,13 @@ export default function NewChat({
       </div>
 
       {/* Form positioned at the bottom */}
-      <div className="flex justify-center absolute bottom-5 w-[85%] md:ml-5 mb-0">
-        <div className="flex flex-col w-full items-center py-2 px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700">
+      <div className="flex justify-center">
+        <div className="flex flex-col w-[90%] items-center py-2 mb-[5rem] px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
           {/* Form */}
           <form className="flex w-full items-center gap-4" onSubmit={submit}>
             <Input
               placeholder="Type your message..."
-              className="flex-1 rounded-lg px-4 bg-gray-200 dark:bg-gray-700 w-full focus-visible:ring-transparent dark:focus-visible:ring-transparent text-[1.11rem]"
+              className="flex-1 rounded-lg px-4 bg-gray-200 dark:bg-gray-700 max-md:w-[80%] focus-visible:ring-transparent dark:focus-visible:ring-transparent text-[1.11rem]"
               value={input}
               onChange={handleInputChange}
             />
