@@ -60,9 +60,9 @@ export default function NewChat({
     <div className="flex flex-col h-screen pt-10 pb-[5rem]">
       {/* New container */}
 
-      <div className="flex-1 h-full overflow-y-auto flex flex-col gap-10">
+      <div className="h-full overflow-y-auto flex flex-col gap-10">
         {/* Message container */}
-        <div className="flex flex-1 h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">
+        <div className="flex h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">
           <div className="mb-4 flex items-start gap-2">
             <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400" />
             <Card className="bg-gray-200 dark:bg-gray-700  px-6 py-3 text-[1.11rem] font-medium shadow-sm transition-colors focus:outline-none">
