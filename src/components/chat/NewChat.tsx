@@ -57,7 +57,7 @@ export default function NewChat({
   };  
 
   return (
-    <div className="flex flex-col h-screen pt-10">
+    <div className="flex flex-col h-screen pt-10 pb-[5rem]">
       {/* New container */}
 
       <div className="flex-1 h-full overflow-y-auto flex flex-col gap-10">
@@ -74,7 +74,7 @@ export default function NewChat({
 
       {/* Form positioned at the bottom */}
       <div className="flex justify-center">
-        <div className="flex flex-col w-[90%] items-center py-2 mb-[5rem] px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
+        <div className="flex flex-col w-[90%] items-center py-2 px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
           {/* Form */}
           <form className="flex w-full items-center gap-4" onSubmit={submit}>
             <Input
