@@ -7,7 +7,7 @@ export default async function page() {
   const user = await getUser(session?.user?.email!); 
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-screen">
       <NewChat
         username={user?.firstName!}
       />

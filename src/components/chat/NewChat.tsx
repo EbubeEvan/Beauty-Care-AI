@@ -57,7 +57,7 @@ export default function NewChat({
   };  
 
   return (
-    <div className="flex flex-col h-screen pt-10 pb-[5rem]">
+    <div className="flex flex-col h-full pt-10 pb-[5rem]">
       {/* New container */}
 
       <div className="h-full overflow-y-auto flex flex-col gap-10">
@@ -85,7 +85,7 @@ export default function NewChat({
             />
             {input && (
               <button type="submit">
-                <Send className=" text-pink-500 hover:text-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:text-purple-500 dark:hover:text-purple-500 dark:focus:ring-purple-500" />
+                <Send className="text-pink-500 hover:text-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:text-purple-500 dark:hover:text-purple-500 dark:focus:ring-purple-500" />
               </button>
             )}
           </form>

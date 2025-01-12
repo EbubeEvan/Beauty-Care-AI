@@ -122,7 +122,7 @@ export default function ResumeChat({
   };
 
   return (
-    <div className="flex flex-col h-screen pt-10">
+    <div className="flex flex-col h-full pt-10">
       {/* New container */}
       <div className="h-full overflow-y-auto flex flex-col gap-10 mb-5">
         {/* Message container */}

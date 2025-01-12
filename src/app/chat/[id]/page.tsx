@@ -12,7 +12,7 @@ export default async function page({ params }: { params: { id: string } }) {
   const user = await getUser(session?.user?.email!);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-screen">
       <ResumeChat email={session?.user?.email!} id={id} chat={chat} userId={user?._id}/>
     </div>
   );
