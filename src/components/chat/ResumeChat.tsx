@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useChat } from "ai/react";
 import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
@@ -19,12 +19,12 @@ export default function ResumeChat({
   id,
   chat,
   userId,
-}: {
+}: Readonly<{
   email: string;
   id: string;
   chat: chatType;
   userId?: string;
-}) {
+}>) {
   const {
     messages,
     setMessages,
@@ -72,7 +72,6 @@ export default function ResumeChat({
       queryClient.invalidateQueries({ queryKey: ["credits"] });
     }
   }, [messages, queryClient, userId]);
-  
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -94,21 +93,21 @@ export default function ResumeChat({
           <div>
             <h1 className="mb-3 text-xl">Oops. You&apos;re out of credits!</h1>
             <p>
-                Click{" "}
-                <Link
-                  href="/buy-credits"
-                  className="text-pink-500 dark:text-purple-500"
-                >
-                  here
-                </Link>
-                {" "}to get more credits.
-              </p>
+              Click{" "}
+              <Link
+                href="/buy-credits"
+                className="text-pink-500 dark:text-purple-500"
+              >
+                here
+              </Link>{" "}
+              to get more credits.
+            </p>
           </div>
         ),
       });
       return; // Stop execution here
     }
-    
+
     handleSubmit(event, {
       experimental_attachments: files,
     });
@@ -218,7 +217,9 @@ export default function ResumeChat({
           </form>
         </div>
       </div>
-      {error && <p className="text-red-500 my-3">Uh oh. Something went wrong</p>}
+      {error && (
+        <p className="text-red-500 my-3">Uh oh. Something went wrong</p>
+      )}
     </div>
   );
 }
