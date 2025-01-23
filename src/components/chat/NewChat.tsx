@@ -26,8 +26,6 @@ export default function NewChat({
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    console.log("Credits before submitting:", credits);
-
     // Prevent form submission if credits are zero
     if (!credits || credits <= 0) {
       toast({
@@ -50,9 +48,7 @@ export default function NewChat({
       });
       return; // Stop execution here
     }
-
-    // If credits are valid, proceed to navigate
-    console.log("Sufficient credits, navigating...");
+    
     setNewPrompt(input);
     router.push(`/chat/${newChatId}`);
   };
