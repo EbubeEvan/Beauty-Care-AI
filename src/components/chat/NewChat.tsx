@@ -77,7 +77,7 @@ export default function NewChat({
       <div
         className={cn(
           "flex justify-center fixed bottom-0 md:ml-5 pb-8 transition-all duration-300",
-          menuOpen ? "md:w-[70%]" : "md:w-[85%]"
+          menuOpen ? "w-[85%] md:w-[70%]" : "w-[85%] md:w-[85%]"
         )}
       >
         <div className="flex flex-col w-full items-center py-2 px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">

@@ -178,7 +178,7 @@ export default function ResumeChat({
       <div
         className={cn(
           "flex justify-center fixed bottom-0 -mb-20 md:ml-5 pb-8 transition-all duration-300",
-          menuOpen ? "md:w-[70%]" : "md:w-[85%]"
+          menuOpen ? "w-[85%] md:w-[70%]" : "w-[85%] md:w-[85%]"
         )}
       >
         <div className="flex flex-col w-full items-center py-2 mb-[5rem] px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700">
