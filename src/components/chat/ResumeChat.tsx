@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { Input } from "../ui/input";
 import { FlowerIcon, ImageIcon, CircleUser, Send } from "lucide-react";
 import { Card } from "../ui/card";
-import { sanitizeMessage } from "@/lib/utils";
+import { cn, sanitizeMessage } from "@/lib/utils";
 import useStore from "@/lib/store/useStore";
 import { useQueryClient } from "@tanstack/react-query";
 import { generateId, Message } from "ai";
@@ -38,7 +38,7 @@ export default function ResumeChat({
     body: { email, id },
   });
 
-  const { newPrompt, credits } = useStore();
+  const { newPrompt, credits, menuOpen } = useStore();
   const queryClient = useQueryClient();
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const [urls, setUrls] = useState<string[]>([]);
@@ -123,7 +123,7 @@ export default function ResumeChat({
   return (
     <div className="flex flex-col h-full pt-10">
       {/* New container */}
-      <div className="h-full overflow-y-auto flex flex-col gap-10 mb-5">
+      <div className="h-full overflow-y-auto flex flex-col gap-10 mb-[10rem]">
         {/* Message container */}
         <div className="flex h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">
           {messages.map((message) => (
@@ -173,10 +173,15 @@ export default function ResumeChat({
           ))}
         </div>
       </div>
-
+ 
       {/* Form positioned at the bottom */}
-      <div className="flex justify-center ">
-        <div className="flex flex-col w-[90%] items-center py-2 mb-[5rem] px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
+      <div
+        className={cn(
+          "flex justify-center fixed bottom-0 -mb-20 md:ml-5 pb-8 transition-all duration-300",
+          menuOpen ? "md:w-[70%]" : "md:w-[85%]"
+        )}
+      >
+        <div className="flex flex-col w-full items-center py-2 mb-[5rem] px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700">
           {/* Selected Images */}
           <div className="flex gap-3 -mb-1">
             {urls.map((url, index) => (

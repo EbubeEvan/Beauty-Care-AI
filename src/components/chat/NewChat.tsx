@@ -10,6 +10,7 @@ import useStore from "@/lib/store/useStore";
 import { FormEvent } from "react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 export default function NewChat({
   username,
@@ -18,15 +19,15 @@ export default function NewChat({
 }>) {
   const newChatId = generateId(7);
   const { input, handleInputChange, error } = useChat();
-  const { setNewPrompt, credits } = useStore();
+  const { setNewPrompt, credits, menuOpen } = useStore();
   const router = useRouter();
   const { toast } = useToast();
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
     console.log("Credits before submitting:", credits);
-  
+
     // Prevent form submission if credits are zero
     if (!credits || credits <= 0) {
       toast({
@@ -35,32 +36,32 @@ export default function NewChat({
           <div>
             <h1 className="mb-3 text-xl">Oops. You&apos;re out of credits!</h1>
             <p>
-                Click{" "}
-                <Link
-                  href="/buy-credits"
-                  className="text-pink-500 dark:text-purple-500"
-                >
-                  here
-                </Link>
-                {" "}to get more credits.
-              </p>
+              Click{" "}
+              <Link
+                href="/buy-credits"
+                className="text-pink-500 dark:text-purple-500"
+              >
+                here
+              </Link>{" "}
+              to get more credits.
+            </p>
           </div>
         ),
       });
       return; // Stop execution here
     }
-  
+
     // If credits are valid, proceed to navigate
     console.log("Sufficient credits, navigating...");
     setNewPrompt(input);
     router.push(`/chat/${newChatId}`);
-  };  
+  };
 
   return (
     <div className="flex flex-col h-full pt-10">
       {/* New container */}
 
-      <div className="h-full overflow-y-auto flex flex-col gap-10">
+      <div className="h-full flex flex-col gap-10">
         {/* Message container */}
         <div className="flex h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">
           <div className="mb-4 flex items-start gap-2">
@@ -73,7 +74,12 @@ export default function NewChat({
       </div>
 
       {/* Form positioned at the bottom */}
-      <div className="flex justify-center fixed bottom-0 w-[85%] md:ml-5 pb-8">
+      <div
+        className={cn(
+          "flex justify-center fixed bottom-0 md:ml-5 pb-8 transition-all duration-300",
+          menuOpen ? "md:w-[70%]" : "md:w-[85%]"
+        )}
+      >
         <div className="flex flex-col w-full items-center py-2 px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
           {/* Form */}
           <form className="flex w-full items-center gap-4" onSubmit={submit}>
@@ -91,7 +97,9 @@ export default function NewChat({
           </form>
         </div>
       </div>
-      {error && <p className="text-red-500 my-3">Uh oh. Something went wrong</p>}
+      {error && (
+        <p className="text-red-500 my-3">Uh oh. Something went wrong</p>
+      )}
     </div>
   );
 }
