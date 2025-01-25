@@ -1,4 +1,10 @@
-import { ChevronsUpDownIcon, CircleUser, Wallet, User} from "lucide-react";
+import {
+  ChevronsUpDownIcon,
+  CircleUser,
+  Wallet,
+  User,
+  CreditCard,
+} from "lucide-react";
 
 import {
   DropdownMenu,
@@ -23,7 +29,7 @@ export function AccountMenu({
       <DropdownMenuTrigger asChild>
         <div
           className={clsx(
-            "flex p-3 relative hover:bg-pink-300 dark:hover:bg-purple-400 rounded-md text-white",
+            "flex p-3 relative hover:bg-pink-300 dark:hover:bg-purple-400 rounded-md text-white cursor-pointer",
             {
               hidden: !menuOpen,
             }
@@ -32,7 +38,10 @@ export function AccountMenu({
           <CircleUser size={35} />
           <div className="ml-3">
             <p>{userName}</p>
-            <p>{`${credits} credits`}</p>
+            <div className="flex gap-2">
+              <CreditCard />
+              <p>{`${credits} credits`}</p>
+            </div>
           </div>
           <ChevronsUpDownIcon className="cursor-pointer absolute right-0 top-5" />
         </div>
@@ -45,12 +54,12 @@ export function AccountMenu({
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/buy-credits" className="flex gap-3 px-5 py-2">
+          <Link href="#" className="flex gap-3 px-5 py-2">
             <User />
             <p>Profile</p>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator className="bg-gray-400 dark:bg-gray-800"/>
+        <DropdownMenuSeparator className="bg-gray-400 dark:bg-gray-800" />
         <Logout />
       </DropdownMenuContent>
     </DropdownMenu>

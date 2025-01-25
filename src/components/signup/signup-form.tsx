@@ -11,13 +11,12 @@ import {
 } from "@/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { SignUpType } from "@/lib/types";
+import { SignUpType, signUpFormSchema, userErrors } from "@/lib/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions";
 import { useState } from "react";
 import { FormInput } from "../design-system/FormInput";
-import { signUpFormSchema, userErrors } from "@/lib/types";
 import { z } from "zod";
 import useStore from "@/lib/store/useStore";
 import { Spinner } from "../ui/spinner";
@@ -28,12 +27,12 @@ export default function SignupForm() {
   const { setId } = useStore();
 
   const [errMsg, setErrMsg] = useState("");
-  const [serverErrors, setServerErrors] = useState<userErrors | null>(null);
   const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<SignUpType>({
     resolver: zodResolver(signUpFormSchema),
@@ -45,8 +44,11 @@ export default function SignupForm() {
     setLoading(true);
     const user = await createUser(data);
     if (user?.errors) {
+      Object.entries(user?.errors || {}).forEach(([key, value]: [string, any]) => {
+        setError(key as keyof SignUpType, { message: value[0] });
+      });    
+
       setErrMsg(user?.message!);
-      setServerErrors(user?.errors);
       setLoading(false);
     } else {
       setId(user?.id!);
@@ -73,12 +75,6 @@ export default function SignupForm() {
             label="firstName"
             placeholder="Jane"
           />
-          {serverErrors?.firstName &&
-            serverErrors.firstName.map((error: string) => (
-              <p className="mt-2 text-sm text-red-500" key={error}>
-                {error}
-              </p>
-            ))}
 
           {/* lastname */}
           <FormInput
@@ -88,12 +84,6 @@ export default function SignupForm() {
             label="lastName"
             placeholder="Doe"
           />
-          {serverErrors?.lastName &&
-            serverErrors.lastName.map((error: string) => (
-              <p className="mt-2 text-sm text-red-500" key={error}>
-                {error}
-              </p>
-            ))}
 
           {/* email */}
           <FormInput
@@ -103,12 +93,6 @@ export default function SignupForm() {
             label="email"
             placeholder="m@example.com"
           />
-          {serverErrors?.email &&
-            serverErrors.email.map((error: string) => (
-              <p className="mt-2 text-sm text-red-500" key={error}>
-                {error}
-              </p>
-            ))}
 
           {/* password */}
           <FormInput
@@ -119,12 +103,7 @@ export default function SignupForm() {
             placeholder=""
             type="password"
           />
-          {serverErrors?.password &&
-            serverErrors.password.map((error: string) => (
-              <p className="mt-2 text-sm text-red-500" key={error}>
-                {error}
-              </p>
-            ))}
+
         </CardContent>
         <CardFooter className="flex flex-col">
           <Button
@@ -141,6 +120,7 @@ export default function SignupForm() {
               "Sign Up"
             )}
           </Button>
+          
           <p className="mt-5 text-sm">
             Already have an account?
             <Link

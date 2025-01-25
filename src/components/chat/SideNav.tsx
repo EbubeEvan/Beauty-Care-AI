@@ -4,15 +4,10 @@ import {
   Menu,
   Plus,
   MessageCircle,
-  CreditCard,
-  Wallet,
-  CircleUser,
-  ChevronsUpDownIcon,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import clsx from "clsx";
-import Logout from "./Logout";
 import { Spinner } from "../ui/spinner";
 import { useFetchHistory } from "@/hooks/useFetchHistory";
 import useStore from "@/lib/store/useStore";
