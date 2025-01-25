@@ -33,7 +33,6 @@ export default function ResumeChat({
     append,
     handleSubmit,
     error,
-    isLoading,
   } = useChat({
     body: { email, id },
   });

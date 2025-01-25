@@ -1,6 +1,14 @@
 "use client";
 
-import { Menu, Plus, MessageCircle, CreditCard, Wallet } from "lucide-react";
+import {
+  Menu,
+  Plus,
+  MessageCircle,
+  CreditCard,
+  Wallet,
+  CircleUser,
+  ChevronsUpDownIcon,
+} from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import clsx from "clsx";
@@ -11,13 +19,16 @@ import useStore from "@/lib/store/useStore";
 import { usePathname } from "next/navigation";
 import { useFetchCredits } from "@/hooks/useFetchCredits";
 import { useEffect } from "react";
+import { AccountMenu } from "./AccountMenu";
 
 export default function SideNav({
   id,
-  email
+  email,
+  userName,
 }: Readonly<{
   id?: string;
-  email: string
+  email: string;
+  userName: string;
 }>) {
   const { data: history, isLoading } = useFetchHistory(id!);
   const { data: newCredits } = useFetchCredits(email);
@@ -26,17 +37,18 @@ export default function SideNav({
   const pathID = pathname.split("/")[2];
 
   console.log(credits);
-  
+
   useEffect(() => {
     console.log("New Credits from API:", newCredits?.credits); // Log fetched data
     if (newCredits?.credits !== undefined || null) {
       setCredits(newCredits?.credits!);
     }
-  }, [newCredits?.credits, setCredits]);  
+  }, [newCredits?.credits, setCredits]);
 
   return (
-    <div className="py-6 h-full">
-      <div className="flex flex-col gap-5 px-3 h-full">
+    <div className="py-6 h-full flex flex-col">
+      {/* Main content area */}
+      <div className="flex flex-col gap-5 px-3 flex-grow">
         <div
           className={clsx("flex transition-all duration-300", {
             "justify-center": !menuOpen,
@@ -73,7 +85,10 @@ export default function SideNav({
           style={{ maxHeight: "calc(100vh - 200px)" }} // Adjust the height as needed
         >
           {isLoading ? (
-            <Spinner size="medium" className="text-gray-200 dark:text-gray-700"/>
+            <Spinner
+              size="medium"
+              className="text-gray-200 dark:text-gray-700"
+            />
           ) : (
             history?.map((chat) => (
               <Link
@@ -92,32 +107,11 @@ export default function SideNav({
             ))
           )}
         </div>
+      </div>
 
-        <div className={clsx("text-white flex gap-3 px-5 py-2 hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full", {
-            hidden: !menuOpen,
-          })}>
-          <CreditCard />
-          <p>{`${newCredits?.credits || 0 } credits`}</p>
-        </div>
-
-        <Link
-          href="/buy-credits"
-          className={clsx("text-white flex gap-3 px-5 py-2 hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full", {
-            hidden: !menuOpen,
-          })}
-        >
-          <Wallet />
-          <p>Buy credits</p>
-        </Link>
-
-        <div
-          className={clsx("flex transition-all duration-300 px-3", {
-            "justify-center": !menuOpen,
-            "justify-start": menuOpen,
-          })}
-        >
-          <Logout />
-        </div>
+      {/* AccountMenu at the bottom */}
+      <div className="px-3">
+        <AccountMenu credits={newCredits?.credits || 0} userName={userName} />
       </div>
     </div>
   );

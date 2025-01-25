@@ -4,9 +4,10 @@ import { logout } from '@/lib/actions';
 
 const Logout = () => {
   return (
-    <form  action={logout}>
-      <button className="hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full text-white p-3">
+    <form action={logout}>
+      <button className="text-red-500 p-3 pl-6 flex gap-3">
         <LogOut size={20} className="w-6" />
+        <p>Log out</p>
       </button>
     </form>
   )

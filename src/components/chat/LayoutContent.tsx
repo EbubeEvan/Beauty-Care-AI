@@ -9,13 +9,15 @@ import useStore from "@/lib/store/useStore";
 export default function LayoutContent({
     children,
     id,
-    email
+    email,
+    username
 }: Readonly<{
     children: React.ReactNode;
     id?: string;
     email?: string;
+    username: string;
 }>) {
-    const {data : history, isLoading} = useFetchHistory(id!)
+    const {data : history} = useFetchHistory(id!)
     const {menuOpen} = useStore()
 
     console.log(history);
@@ -31,7 +33,7 @@ export default function LayoutContent({
                     }
                 )}
             >
-                <SideNav id={id} email={email!}/>
+                <SideNav id={id} email={email!} userName={username}/>
             </aside>
             <div
                 className={clsx("flex-1 h-screen transition-all bg-gradient-to-br from-[#f5d0fe] to-[#e879f9] dark:from-[#1e293b] dark:to-[#4c1d95] overflow-hidden", {
@@ -48,9 +50,6 @@ export default function LayoutContent({
                 >
                     {children}
                 </main>
-                <footer>
-                    {/* <Footer /> */}
-                </footer>
             </div>
         </div>
     )
