@@ -29,10 +29,11 @@ import { addBeautyProfile } from "@/lib/actions";
 import useStore from "@/lib/store/useStore";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/router";
+import { useToast } from "@/hooks/use-toast";
 
 export default function OnboardingForm() {
   const { id } = useStore();
-  const [errMsg, setErrMsg] = useState("");
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -54,15 +55,18 @@ export default function OnboardingForm() {
     const profile = await addBeautyProfile(data, id);
     
     if (profile?.errors) {
-      if (profile?.errors) {
-        Object.entries(profile?.errors || {}).forEach(
-          ([key, value]: [string, any]) => {
-            setError(key as keyof beautyProfileType, { message: value[0] });
-          }
-        );
-      }
+      Object.entries(profile?.errors || {}).forEach(
+        ([key, value]: [string, any]) => {
+          setError(key as keyof beautyProfileType, { message: value[0] });
+        }
+      );
+      setLoading(false);
 
-      setErrMsg(profile?.message!);
+    } else if(profile.message?.includes("error")){
+      toast({
+        variant: "destructive",
+        description: "Uh Oh. Something went wrong",
+      });
       setLoading(false);
     }
 
@@ -219,9 +223,6 @@ export default function OnboardingForm() {
             )}
           </Button>
         </CardFooter>
-        {errMsg && (
-          <p className="mt-2 text-sm text-red-500 text-center">{errMsg}</p>
-        )}
       </form>
     </Card>
   );

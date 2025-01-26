@@ -59,7 +59,7 @@ export async function createUser(user: SignUpType): Promise<userReturn> {
   }
 }
 
-export async function addBeautyProfile(
+export async function  addBeautyProfile(
   profile: beautyProfileType,
   userId: string
 ): Promise<beautyReturn> {

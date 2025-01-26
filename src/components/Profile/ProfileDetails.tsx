@@ -37,7 +37,6 @@ type ProfileDetailsProps = {
 export default function ProfileDetails({
   user,
 }: Readonly<ProfileDetailsProps>) {
-  const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -67,25 +66,29 @@ export default function ProfileDetails({
     data
   ) => {
     setLoading(true);
-    const profile = await addBeautyProfile(data, user?.id || "");
+    const profile = await addBeautyProfile(data, user?._id || "");
     if (profile?.errors) {
-      if (profile?.errors) {
-        Object.entries(profile?.errors || {}).forEach(
-          ([key, value]: [string, any]) => {
-            setError(key as keyof beautyProfileType, { message: value[0] });
-          }
-        );
-      }
-
-      setErrMsg(profile?.message!);
+      Object.entries(profile?.errors || {}).forEach(
+        ([key, value]: [string, any]) => {
+          setError(key as keyof beautyProfileType, { message: value[0] });
+        }
+      );
       setLoading(false);
+
+    } else if (profile.message?.includes("error")) {
+      toast({
+        variant: "destructive",
+        description: "Uh Oh. Something went wrong",
+      });
+      setLoading(false);
+
     } else {
-        toast({
-            variant: "primary",
-            description: "Your new beauty profile has been saved!",
-          });
+      toast({
+        variant: "primary",
+        description: "Your new beauty profile has been saved!",
+      });
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -97,12 +100,17 @@ export default function ProfileDetails({
               className="text-pink-500 dark:text-purple-400 min-w-24"
               size={80}
             />
-            <p className="text-lg">{user?.firstName} {user?.lastName}</p>
+            <p className="text-lg">
+              {user?.firstName} {user?.lastName}
+            </p>
             <i>{user?.email}</i>
           </div>
-          <CardTitle className="text-2xl mb-3 text-center">Beauty Profile</CardTitle>
+          <CardTitle className="text-2xl mb-3 text-center">
+            Beauty Profile
+          </CardTitle>
           <CardDescription className="text-center">
-            Feel free to change your details to suit your current beauty profile.
+            Feel free to change your details to suit your current beauty
+            profile.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
@@ -243,9 +251,6 @@ export default function ProfileDetails({
             )}
           </Button>
         </CardFooter>
-        {errMsg && (
-          <p className="mt-2 text-sm text-red-500 text-center">{errMsg}</p>
-        )}
       </form>
     </Card>
   );
