@@ -14,8 +14,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { beautyProfileSchema, beautyProfileType } from "@/lib/types";
-import { SelectItems } from "./select-items";
+import { beautyProfileSchema, beautyProfileType, userType } from "@/lib/types";
+import { SelectItems } from "../onboarding/select-items";
 import {
   HAIRTYPE,
   HAIRVOLUME,
@@ -26,15 +26,20 @@ import {
   CHEMICALTREATMENTS,
 } from "@/lib/data";
 import { addBeautyProfile } from "@/lib/actions";
-import useStore from "@/lib/store/useStore";
 import { Spinner } from "../ui/spinner";
-import { useRouter } from "next/router";
+import { CircleUser } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-export default function OnboardingForm() {
-  const { id } = useStore();
+type ProfileDetailsProps = {
+  user: userType | null;
+};
+
+export default function ProfileDetails({
+  user,
+}: Readonly<ProfileDetailsProps>) {
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const { toast } = useToast();
 
   const {
     handleSubmit,
@@ -45,14 +50,24 @@ export default function OnboardingForm() {
     formState: { errors },
   } = useForm<beautyProfileType>({
     resolver: zodResolver(beautyProfileSchema),
+    defaultValues: {
+      albino: user?.beautyProfile?.albino || "",
+      chemicalTreatment: user?.beautyProfile?.chemicalTreatment || "",
+      hairColor: user?.beautyProfile?.hairColor || "",
+      hairType: user?.beautyProfile?.hairType || "",
+      hairVolume: user?.beautyProfile?.hairVolume || "",
+      sensitivity: user?.beautyProfile?.sensitivity || "",
+      skinColor: user?.beautyProfile?.skinColor || "",
+      skinType: user?.beautyProfile?.skinType || "",
+      strandThickness: user?.beautyProfile?.strandThickness || "",
+    },
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof beautyProfileSchema>> = async (
     data
   ) => {
     setLoading(true);
-    const profile = await addBeautyProfile(data, id);
-    
+    const profile = await addBeautyProfile(data, user?.id || "");
     if (profile?.errors) {
       if (profile?.errors) {
         Object.entries(profile?.errors || {}).forEach(
@@ -64,25 +79,34 @@ export default function OnboardingForm() {
 
       setErrMsg(profile?.message!);
       setLoading(false);
+    } else {
+        toast({
+            variant: "primary",
+            description: "Your new beauty profile has been saved!",
+          });
     }
-
     setLoading(false);
-    router.push("/login");
   };
 
   return (
-    <Card className="w-full max-w-lg mt-10 min-[1200px]:mt-16 mb-10">
+    <Card className="w-full max-w-2xl mt-10 min-[1200px]:mt-16 mb-10">
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardHeader>
-          <CardTitle className="text-2xl mb-3">Beauty Profile</CardTitle>
-          <CardDescription>
-            Please fill in the following information to the best of your
-            knowledge. Feel free to click or type &quot;No idea&quot; if you
-            don&apos;t know the answer.
+          <div className="flex justify-center items-center flex-col gap-2 mb-10">
+            <CircleUser
+              className="text-pink-500 dark:text-purple-400 min-w-24"
+              size={80}
+            />
+            <p className="text-lg">{user?.firstName} {user?.lastName}</p>
+            <i>{user?.email}</i>
+          </div>
+          <CardTitle className="text-2xl mb-3 text-center">Beauty Profile</CardTitle>
+          <CardDescription className="text-center">
+            Feel free to change your details to suit your current beauty profile.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <h4 className="text-center">Hair Profile</h4>
+          <h4 className="text-center font-bold mt-5">Hair Profile</h4>
           {/* Hair Color */}
           <FormInput
             {...register("hairColor")}
@@ -149,7 +173,7 @@ export default function OnboardingForm() {
           />
 
           {/* Skin section */}
-          <h4 className="text-center">Skin Profile</h4>
+          <h4 className="text-center font-bold mt-5">Skin Profile</h4>
 
           {/* Skin Color */}
           <FormInput
@@ -215,7 +239,7 @@ export default function OnboardingForm() {
                 className="text-gray-200 dark:text-gray-700"
               />
             ) : (
-              "Submit"
+              "Save Changes"
             )}
           </Button>
         </CardFooter>

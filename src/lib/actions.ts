@@ -15,7 +15,6 @@ import User, { IUser } from "@/database/models/user.model";
 import bcrypt from "bcrypt";
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
 export async function createUser(user: SignUpType): Promise<userReturn> {
@@ -89,14 +88,17 @@ export async function addBeautyProfile(
     } else {
       console.log("Beauty profile added successfully!");
     }
+
+    return {
+      message: "Beauty profile added successfully",
+    };
+    
   } catch (error: any) {
     console.log(`Database error : ${error.message}`);
     return {
       message: `Database error : ${error.message}`,
     };
   }
-
-  redirect("/login");
 }
 
 export async function authenticate(

@@ -26,7 +26,7 @@ export async function GET(req: Request) {
 
     // Get user's currency based on their IP address
     const { data: locationData } = await axios.get(
-      `https://ipapi.co/${clientIp}/json/?key=${ipKey}`
+      `https://ipapi.co/${clientIp}/json/`
     );
     const userCurrency : string = locationData.currency || "NGN";
 

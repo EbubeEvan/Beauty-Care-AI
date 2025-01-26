@@ -8,7 +8,6 @@ import { addCredits } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import { useFetchPrices } from "@/hooks/useFetchPrices";
 import PriceSkeleton from "./PriceSkeleton";
-import { cn } from "@/lib/utils";
 
 const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_KEY || "";
 

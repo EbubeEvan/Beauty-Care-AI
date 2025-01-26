@@ -54,9 +54,9 @@ export function AccountMenu({
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="#" className="flex gap-3 px-5 py-2">
+          <Link href="/profile" className="flex gap-3 px-5 py-2">
             <User />
-            <p>Profile</p>
+            <p>profile</p>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-gray-400 dark:bg-gray-800" />
