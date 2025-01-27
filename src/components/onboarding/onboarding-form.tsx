@@ -28,7 +28,7 @@ import {
 import { addBeautyProfile } from "@/lib/actions";
 import useStore from "@/lib/store/useStore";
 import { Spinner } from "../ui/spinner";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
 export default function OnboardingForm() {
@@ -75,7 +75,7 @@ export default function OnboardingForm() {
   };
 
   return (
-    <Card className="w-full max-w-lg mt-10 min-[1200px]:mt-16 mb-10">
+    <Card className="w-full max-w-2xl mt-10 min-[1200px]:mt-16 mb-10">
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardHeader>
           <CardTitle className="text-2xl mb-3">Beauty Profile</CardTitle>
@@ -86,13 +86,13 @@ export default function OnboardingForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <h4 className="text-center">Hair Profile</h4>
+          <h4 className="text-center font-bold mt-5">Hair Profile</h4>
           {/* Hair Color */}
           <FormInput
             {...register("hairColor")}
             errorText={errors.hairColor?.message!}
-            id="hair-color"
-            label="hair-color"
+            id="Hair-color"
+            label="Hair-color"
             placeholder="Black/Brown etc..."
           />
 
@@ -153,7 +153,7 @@ export default function OnboardingForm() {
           />
 
           {/* Skin section */}
-          <h4 className="text-center">Skin Profile</h4>
+          <h4 className="text-center font-bold mt-5">Skin Profile</h4>
 
           {/* Skin Color */}
           <FormInput

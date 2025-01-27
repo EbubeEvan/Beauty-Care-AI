@@ -119,8 +119,8 @@ export default function ProfileDetails({
           <FormInput
             {...register("hairColor")}
             errorText={errors.hairColor?.message!}
-            id="hair-color"
-            label="hair-color"
+            id="Hair-color"
+            label="Hair-color"
             placeholder="Black/Brown etc..."
           />
 
