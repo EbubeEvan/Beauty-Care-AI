@@ -27,7 +27,7 @@ const userSchema = new Schema<IUser>({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  creditBalance: { type: Number, default: 20 },
+  creditBalance: { type: Number, default: 10 },
   beautyProfile: BeautyProfileSchema,
 });
 
