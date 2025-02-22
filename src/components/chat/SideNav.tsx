@@ -43,7 +43,7 @@ export default function SideNav({
   return (
     <div className="py-6 h-full flex flex-col">
       {/* Main content area */}
-      <div className="flex flex-col gap-5 px-3 flex-grow">
+      <div className="flex flex-col gap-5 px-3 flex-grow" style={{ maxHeight: "calc(100vh - 100px)" }}>
         <div
           className={clsx("flex transition-all duration-300", {
             "justify-center": !menuOpen,
