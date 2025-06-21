@@ -27,10 +27,9 @@ export async function POST(req: Request) {
 
     const parsedProfile: beautyProfileType = profile;
 
-    const result = await streamText({
-      model: google("models/gemini-1.5-flash-001"),
-      system:
-        `You are a licensed trichologist, dermatologist, and cosmetologist but you don't book consultations.` +
+    const result = streamText({
+      model: google("models/gemini-1.5-flash"),
+      system: `You are a licensed trichologist, dermatologist, and cosmetologist but you don't book consultations.` +
         `You are a beauty specialist with a wealth and depth of knowledge on all hair and skin types. ` +
         `You take a holistic approach in offering solutions to users and give product recommendations.` +
         `You are polite and warm.` +
