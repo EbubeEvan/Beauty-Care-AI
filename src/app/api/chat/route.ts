@@ -6,6 +6,7 @@ import ChatHistory, { IChatHistory } from "@/database/models/chatHistory.model";
 import { beautyProfileType } from "@/lib/types";
 import { Schema } from "mongoose";
 import { creditsUpdate } from "@/lib/utils";
+import { Types } from "mongoose";
 
 export const maxDuration = 60;
 
@@ -57,7 +58,7 @@ export async function POST(req: Request) {
         if (!existingChat) {
           // No existing chat, create a new one
           const newChat: IChatHistory = new ChatHistory({
-            userId: user._id as Schema.Types.ObjectId,
+            userId: user._id as Types.ObjectId,
             createdAt: new Date(),
             chatId: id,
             title: messages[0].content,

@@ -48,7 +48,7 @@ export async function createUser(user: SignUpType): Promise<userReturn> {
     savedUser && console.log("User created successfully!");
 
     return {
-      id: savedUser._id as string,
+      id: savedUser._id.toString(),
       message: "User created successfully!",
     };
   } catch (error: any) {
