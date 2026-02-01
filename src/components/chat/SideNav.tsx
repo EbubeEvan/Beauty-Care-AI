@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Menu,
-  Plus,
-  MessageCircle,
-} from "lucide-react";
+import { Menu, Plus, MessageCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import clsx from "clsx";
@@ -43,7 +39,10 @@ export default function SideNav({
   return (
     <div className="py-6 h-full flex flex-col">
       {/* Main content area */}
-      <div className="flex flex-col gap-5 px-3 flex-grow" style={{ maxHeight: "calc(100vh - 100px)" }}>
+      <div
+        className="flex flex-col gap-5 px-3 flex-grow"
+        style={{ maxHeight: "calc(100vh - 100px)" }}
+      >
         <div
           className={clsx("flex transition-all duration-300", {
             "justify-center": !menuOpen,
@@ -75,7 +74,7 @@ export default function SideNav({
         <div
           className={clsx(
             "flex flex-col gap-3 overflow-y-auto", // Enables vertical scrolling
-            { hidden: !menuOpen }
+            { hidden: !menuOpen },
           )}
           style={{ maxHeight: "calc(100vh - 200px)" }} // Adjust the height as needed
         >
@@ -92,12 +91,16 @@ export default function SideNav({
                   "flex gap-2 text-white px-5 py-2 mr-3 hover:bg-pink-300 dark:hover:bg-purple-400 rounded-full",
                   {
                     "bg-pink-300 dark:bg-purple-400": chat.chatId === pathID,
-                  }
+                  },
                 )}
                 key={chat.chatId}
               >
                 <MessageCircle className="min-w-4 max-w-4" />
-                <p className="truncate">{chat.messages[0].content}</p>
+                <p className="truncate">
+                  {chat.messages[0].parts[0]?.type === "text"
+                    ? chat.messages[0].parts[0]?.text
+                    : "Untitled Chat"}
+                </p>
               </Link>
             ))
           )}

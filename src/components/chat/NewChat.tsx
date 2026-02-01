@@ -1,13 +1,13 @@
 "use client";
 
-import { useChat } from "ai/react";
+import { useChat, type UIMessage } from "@ai-sdk/react";
 import { Input } from "../ui/input";
 import { FlowerIcon, Send } from "lucide-react";
 import { Card } from "../ui/card";
 import { useRouter } from "next/navigation";
 import { generateId } from "ai";
 import useStore from "@/lib/store/useStore";
-import { FormEvent } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -17,16 +17,21 @@ export default function NewChat({
 }: Readonly<{
   username: string;
 }>) {
-  const newChatId = generateId(7);
-  const { input, handleInputChange, error } = useChat();
+  const newChatId = generateId();
+
+  // v6: local input state (same pattern as ResumeChat)
+  const [input, setInput] = useState("");
+
   const { setNewPrompt, credits, menuOpen } = useStore();
   const router = useRouter();
   const { toast } = useToast();
 
+  // v6 useChat
+  const { sendMessage, error } = useChat<UIMessage>();
+
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Prevent form submission if credits are zero
     if (!credits || credits <= 0) {
       toast({
         variant: "destructive",
@@ -46,53 +51,58 @@ export default function NewChat({
           </div>
         ),
       });
-      return; // Stop execution here
+      return;
     }
-    
+
+    // Save prompt globally (same behavior you had)
     setNewPrompt(input);
+
+    // v6 message shape
+    sendMessage({
+      role: "user",
+      parts: [{ type: "text", text: input }],
+    });
+
+    // Navigate to the new chat
     router.push(`/chat/${newChatId}`);
   };
 
   return (
     <div className="flex flex-col h-full pt-10">
-      {/* New container */}
-
       <div className="h-full flex flex-col gap-10">
-        {/* Message container */}
         <div className="flex h-full flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden">
           <div className="mb-4 flex items-start gap-2">
             <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400" />
-            <Card className="bg-gray-200 dark:bg-gray-700  px-6 py-3 text-[1.11rem] font-medium shadow-sm transition-colors focus:outline-none">
+            <Card className="bg-gray-200 dark:bg-gray-700 px-6 py-3 text-[1.11rem] font-medium">
               {`Hello ${username}, how may I assist you?`}
             </Card>
           </div>
         </div>
       </div>
 
-      {/* Form positioned at the bottom */}
       <div
         className={cn(
           "flex justify-center fixed bottom-0 md:ml-5 pb-8 transition-all duration-300",
           menuOpen ? "w-[85%] md:w-[70%]" : "w-[85%] md:w-[85%]"
         )}
       >
-        <div className="flex flex-col w-full items-center py-2 px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700 max-md:w-full">
-          {/* Form */}
+        <div className="flex flex-col w-full items-center py-2 px-8 md:px-10 rounded-full bg-gray-200 dark:bg-gray-700">
           <form className="flex w-full items-center gap-4" onSubmit={submit}>
             <Input
               placeholder="Type your message..."
-              className="flex-1 rounded-lg px-4 bg-gray-200 dark:bg-gray-700 max-md:w-[80%] focus-visible:ring-transparent dark:focus-visible:ring-transparent text-[1.11rem]"
               value={input}
-              onChange={handleInputChange}
+              onChange={(e) => setInput(e.target.value)}
+              className="flex-1 rounded-lg px-4 bg-gray-200 dark:bg-gray-700 text-[1.11rem]"
             />
             {input && (
               <button type="submit">
-                <Send className="text-pink-500 hover:text-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:text-purple-500 dark:hover:text-purple-500 dark:focus:ring-purple-500" />
+                <Send className="text-pink-500 dark:text-purple-500" />
               </button>
             )}
           </form>
         </div>
       </div>
+
       {error && (
         <p className="text-red-500 my-3">Uh oh. Something went wrong</p>
       )}

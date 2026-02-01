@@ -1,62 +1,81 @@
 import dbConnect from "@/database/dbConnect";
-import ChatHistory, {
-  IChatHistory,
-} from "@/database/models/chatHistory.model";
-import { HistoryType } from "@/lib/types";
+import ChatHistory from "@/database/models/chatHistory.model";
+import { HistoryType, toUIMessage, type StoredMessage } from "@/lib/types";
 import mongoose from "mongoose";
 
 export async function GET(req: Request) {
-  // Get the query parameters from the URL
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 
   if (!id) {
-    return new Response(JSON.stringify({ error: "User ID is required" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: "User ID is required" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
   try {
     await dbConnect();
 
-    const newId = new mongoose.Types.ObjectId(id); // Create a new ObjectId instance
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid user ID" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
 
-    const history = await ChatHistory.find<IChatHistory>({
-      userId: newId,
-    }).sort({ createdAt: -1 });
+    const userObjectId = new mongoose.Types.ObjectId(id);
 
-    if (!history || history.length === 0) {
+    const historyDocs = await ChatHistory.find({
+      userId: userObjectId,
+    })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    if (!historyDocs?.length) {
       return new Response(JSON.stringify([]), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    const parsedHistory: HistoryType[] = JSON.parse(JSON.stringify(history));
+    console.log({historyDocs});
+    
+
+    // Convert ObjectId fields to strings and normalize messages
+    const parsedHistory: HistoryType[] = historyDocs.map((doc) => ({
+      userId: String(doc.userId),
+      chatId: String(doc.chatId),
+      title: doc.title,
+      // Ensure messages array exists and normalize each message to UIMessage format
+      messages: (doc.messages || []).map((msg: any) => {
+        // Cast to StoredMessage and normalize to UIMessage
+        const storedMsg = msg as StoredMessage;
+        return toUIMessage(storedMsg);
+      }),
+    }));
+
+    console.log({parsedHistory});
+    
 
     return new Response(JSON.stringify(parsedHistory), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error: any) {
-    if (error.message.includes("timed out")) {
-      console.error("Database operation timed out:", error);
-
-      return new Response(
-        JSON.stringify({ error: "Database operation timed out" }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-    } else {
-      console.error("Database error:", error);
-
-      return new Response(JSON.stringify({ error: "Internal server error" }), {
+    console.error("Database error:", error);
+    return new Response(
+      JSON.stringify({ error: "Internal server error" }),
+      {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      });
-    }
+      }
+    );
   }
 }

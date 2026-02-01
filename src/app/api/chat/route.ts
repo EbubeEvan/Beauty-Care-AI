@@ -1,12 +1,11 @@
-import { streamText, generateId, Message } from "ai";
+import { streamText, generateId } from "ai";
 import { google } from "@ai-sdk/google";
 import dbConnect from "@/database/dbConnect";
 import User, { IUser } from "@/database/models/user.model";
-import ChatHistory, { IChatHistory } from "@/database/models/chatHistory.model";
+import ChatHistory from "@/database/models/chatHistory.model";
+import type { UIMessage } from "@ai-sdk/react";
 import { beautyProfileType } from "@/lib/types";
-import { Schema } from "mongoose";
 import { creditsUpdate } from "@/lib/utils";
-import { Types } from "mongoose";
 
 export const maxDuration = 60;
 
@@ -29,7 +28,7 @@ export async function POST(req: Request) {
     const parsedProfile: beautyProfileType = profile;
 
     const result = streamText({
-      model: google("models/gemini-1.5-flash"),
+      model: google("gemini-2.5-flash"),
       system: `You are a licensed trichologist, dermatologist, and cosmetologist but you don't book consultations.` +
         `You are a beauty specialist with a wealth and depth of knowledge on all hair and skin types. ` +
         `You take a holistic approach in offering solutions to users and give product recommendations.` +
@@ -43,34 +42,32 @@ export async function POST(req: Request) {
       onFinish: async ({ usage, text }) => {
         console.log({ usage, text });
 
-        const newResponse: Message = {
-          content: text,
-          createdAt: new Date(),
-          id: generateId(7),
+        // Create new assistant response in UIMessage format
+        const newResponse: UIMessage = {
+          id: generateId(),
           role: "assistant",
+          parts: [{ type: "text", text }],
         };
 
-        // Check if there's an existing chat document for this ID
-        const existingChat = await ChatHistory.findOne<IChatHistory>({
-          chatId: id,
-        });
+        // Extract title from first message
+        const firstMessage = messages[0] as UIMessage | undefined;
+        const firstTextPart = firstMessage?.parts.find(p => p.type === "text");
+        const title = firstTextPart?.type === "text" ? firstTextPart.text : "New chat";
+
+        const existingChat = await ChatHistory.findByChatId(id);
 
         if (!existingChat) {
-          // No existing chat, create a new one
-          const newChat: IChatHistory = new ChatHistory({
-            userId: user._id as Types.ObjectId,
+          // Create new chat
+          const initialMessages = firstMessage
+            ? [firstMessage, newResponse]
+            : [newResponse];
+
+          const newChat = new ChatHistory({
+            userId: user._id,
             createdAt: new Date(),
             chatId: id,
-            title: messages[0].content,
-            messages: [
-              {
-                ...messages[0],
-                id: generateId(7),
-                createdAt: new Date(),
-                content: messages[0].content,
-              },
-              { ...newResponse },
-            ],
+            title,
+            messages: initialMessages,
           });
 
           try {
@@ -81,11 +78,13 @@ export async function POST(req: Request) {
             console.error("Error saving new chat:", err);
           }
         } else {
-          // Existing chat found, update it
+          // Update existing chat
           try {
+            const messagesToSave = [...messages, newResponse];
+            
             const updatedChat = await ChatHistory.findOneAndUpdate(
               { chatId: id },
-              { messages: [...messages, newResponse] },
+              { messages: messagesToSave },
               { new: true }
             );
 
@@ -102,7 +101,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return result.toDataStreamResponse();
+    return result.toTextStreamResponse();
   } catch (error) {
     console.log(error);
     return new Response("Internal Server Error", { status: 500 });

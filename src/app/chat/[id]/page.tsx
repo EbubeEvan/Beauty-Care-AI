@@ -1,19 +1,35 @@
 import { auth } from "@/auth";
 import ResumeChat from "@/components/chat/ResumeChat";
 import { getUser, getChat } from "@/lib/fetchData";
+import { notFound } from "next/navigation";
 
-export default async function page({ params }: { params: { id: string } }) {
-  const {id} = params
+type PageProps = {
+  params: Promise<{ id: string }>;
+};
 
-  const chat = await getChat(id)
-  console.log({chat});
+export default async function Page({ params }: PageProps) {
+  const { id } = await params;
 
   const session = await auth();
-  const user = await getUser(session?.user?.email!);
+  if (!session?.user?.email) {
+    notFound();
+  }
+
+  const chat = await getChat(id);
+  if (!chat) {
+    notFound();
+  }
+
+  const user = await getUser(session.user.email);
 
   return (
     <div className="w-full h-screen">
-      <ResumeChat email={session?.user?.email!} id={id} chat={chat} userId={user?._id}/>
+      <ResumeChat
+        email={session.user.email}
+        id={id}
+        chat={chat}
+        userId={user?._id}
+      />
     </div>
   );
 }
