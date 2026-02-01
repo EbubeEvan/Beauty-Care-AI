@@ -37,6 +37,9 @@ export default function ResumeChat({
   // useChat hook returns UIMessage[] and helpers
   const { messages, sendMessage, setMessages, error } = useChat<UIMessage>();
 
+  console.log({messages});
+  
+
   // On mount: populate initial messages (if any)
   useEffect(() => {
     if (chat?.messages?.length) {
@@ -111,6 +114,9 @@ export default function ResumeChat({
     setFiles(undefined);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  console.log({messages});
+  
 
   return (
     <div className="flex flex-col h-full pt-10">

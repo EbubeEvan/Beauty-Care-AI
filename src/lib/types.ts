@@ -86,6 +86,7 @@ export interface Attachment {
  * Legacy message before v6
  */
 export interface LegacyMessage {
+  _id?: string;
   id: string;
   role: "assistant" | "user";
   experimental_attachments?: Attachment[];
@@ -102,7 +103,7 @@ export type StoredMessage = UIMessage | LegacyMessage;
  * Type guard for legacy messages
  */
 export function isLegacyMessage(msg: StoredMessage): msg is LegacyMessage {
-  return "content" in msg && !("parts" in msg);
+  return "content" in msg && typeof msg.content === 'string';
 }
 
 /**
@@ -133,8 +134,8 @@ export function transformLegacyMessageToUIMessage(
   }
 
   return {
-    id: msg.id,
-    role: msg.role,
+    id: msg._id || msg.id,
+    role: msg.role, 
     parts,
     // UIMessage does not natively include createdAt in the type,
     // but you can attach it to metadata if you need timestamp:

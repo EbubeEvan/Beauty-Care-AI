@@ -20,6 +20,9 @@ export default async function Page({ params }: PageProps) {
     notFound();
   }
 
+  console.log({chats : chat.messages});
+  
+
   const user = await getUser(session.user.email);
 
   return (
