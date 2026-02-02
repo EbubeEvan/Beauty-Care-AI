@@ -14,8 +14,8 @@ export type ChatMessagesProps = {
 export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
   return (
     <div className="flex flex-1 flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden overflow-y-auto mb-[10rem]">
-      {messages.map((message, index) => (
-        <div key={message.id ?? `message-${index}`}>
+      {messages.map((message) => (
+        <div key={message.id}>
           <div
             className={`mb-4 flex items-start ${
               message.role === "assistant" ? "justify-start" : "justify-end"

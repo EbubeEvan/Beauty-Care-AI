@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { ChatMessages } from "./ChatMessages";
 import { PromptInput } from "./PromptInput";
+import { useParams } from "next/navigation";
 
 type ResumeChatProps = {
   email: string;
@@ -27,26 +28,39 @@ export default function ResumeChat({
   const [urls, setUrls] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { newPrompt, credits, menuOpen } = useStore();
+  const { newPrompt, credits, menuOpen , setNewPrompt} = useStore();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const params = useParams<{ id: string }>();
 
   const { messages, sendMessage, setMessages, error } = useChat<UIMessage>();
 
-  /* ---------------- initial messages ---------------- */
-  useEffect(() => {
-    if (chat?.messages?.length) {
-      setMessages(chat.messages);
-    } else if (messages.length === 0 && newPrompt) {
-      sendMessage(
-        {
-          role: "user",
-          parts: [{ type: "text", text: newPrompt }],
-        },
-        { body: { email, id } }
-      );
-    }
-  }, []);
+/* ---------------- initial messages ---------------- */
+const didInitRef = useRef(false);
+
+useEffect(() => {
+  if (didInitRef.current) return;
+  didInitRef.current = true;
+
+  if (chat?.messages?.length) {
+    setMessages(chat.messages);
+    return;
+  }
+
+  if (newPrompt) {
+    const promptToSend = newPrompt;
+    setNewPrompt("");
+
+    sendMessage(
+      {
+        role: "user",
+        parts: [{ type: "text", text: promptToSend }],
+      },
+      { body: { id: params.id, email } }
+    );
+  }
+}, []);
+
 
   /* ---------------- cache invalidation ---------------- */
   useEffect(() => {
@@ -66,7 +80,7 @@ export default function ResumeChat({
     setUrls(Array.from(e.target.files).map((f) => URL.createObjectURL(f)));
   };
 
-  const submit = (e: FormEvent<HTMLFormElement>) => {
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!credits || credits <= 0) {
@@ -91,12 +105,40 @@ export default function ResumeChat({
       return;
     }
 
+    // Build message parts
+    const parts: Array<{ type: "text"; text: string } | { type: "file"; mediaType: string; filename?: string; url: string }> = [
+      { type: "text", text: input }
+    ];
+
+    // Convert files to file parts using Data URLs
+    if (files && files.length > 0) {
+      const fileParts = await Promise.all(
+        Array.from(files).map(async (file) => {
+          // Convert file to Data URL
+          const dataUrl = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.readAsDataURL(file);
+          });
+
+          return {
+            type: "file" as const,
+            mediaType: file.type,
+            filename: file.name,
+            url: dataUrl,
+          };
+        })
+      );
+
+      parts.push(...fileParts);
+    }
+
     sendMessage(
       {
         role: "user",
-        parts: [{ type: "text", text: input }],
+        parts,
       },
-      { body: { email, id, files } }
+      { body: { id , email} }
     );
 
     setInput("");

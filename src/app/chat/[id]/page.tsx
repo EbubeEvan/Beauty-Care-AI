@@ -8,27 +8,20 @@ type PageProps = {
 };
 
 export default async function Page({ params }: PageProps) {
-  const { id } = await params;
+ const {id} = await params
+
+  const chat = await getChat(id)
+  console.log({chat});
 
   const session = await auth();
-  if (!session?.user?.email) {
-    notFound();
-  }
+  const user = await getUser(session?.user?.email!);
 
-  const chat = await getChat(id);
-  if (!chat) {
-    notFound();
-  }
-
-  console.log({chats : chat.messages});
-  
-
-  const user = await getUser(session.user.email);
+  console.log({chats : chat?.messages});
 
   return (
     <div className="w-full h-screen">
       <ResumeChat
-        email={session.user.email}
+        email={session?.user?.email || ''}
         id={id}
         chat={chat}
         userId={user?._id}

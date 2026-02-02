@@ -1,8 +1,7 @@
 "use client";
 
 import { useChat, type UIMessage } from "@ai-sdk/react";
-import { Input } from "../ui/input";
-import { FlowerIcon, Send } from "lucide-react";
+import { FlowerIcon } from "lucide-react";
 import { Card } from "../ui/card";
 import { useRouter } from "next/navigation";
 import { generateId } from "ai";
@@ -19,7 +18,7 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
   const { setNewPrompt, credits, menuOpen } = useStore();
   const router = useRouter();
   const { toast } = useToast();
-  const { sendMessage, error } = useChat<UIMessage>();
+  const { error } = useChat<UIMessage>();
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +31,10 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
             <h1 className="mb-3 text-xl">Oops. You&apos;re out of credits!</h1>
             <p>
               Click{" "}
-              <Link href="/buy-credits" className="text-pink-500 dark:text-purple-500">
+              <Link
+                href="/buy-credits"
+                className="text-pink-500 dark:text-purple-500"
+              >
                 here
               </Link>{" "}
               to get more credits.
@@ -44,11 +46,6 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
     }
 
     setNewPrompt(input);
-
-    sendMessage({
-      role: "user",
-      parts: [{ type: "text", text: input }],
-    });
 
     router.push(`/chat/${newChatId}`);
   };
@@ -70,8 +67,9 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
         menuOpen={menuOpen}
       />
 
-      {error && <p className="text-red-500 my-3">Uh oh. Something went wrong</p>}
+      {error && (
+        <p className="text-red-500 my-3">Uh oh. Something went wrong</p>
+      )}
     </div>
   );
 }
-

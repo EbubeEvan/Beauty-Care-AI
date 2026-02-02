@@ -1,4 +1,4 @@
-import { streamText, generateId } from "ai";
+import { streamText, generateId, convertToModelMessages } from "ai";
 import { google } from "@ai-sdk/google";
 import dbConnect from "@/database/dbConnect";
 import User, { IUser } from "@/database/models/user.model";
@@ -6,18 +6,31 @@ import ChatHistory from "@/database/models/chatHistory.model";
 import type { UIMessage } from "@ai-sdk/react";
 import { beautyProfileType } from "@/lib/types";
 import { creditsUpdate } from "@/lib/utils";
+import { auth } from "@/auth";
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  const { messages, email, id } = await req.json();
+  const body = await req.json();
+  const { messages: uiMessages, id }: { messages: UIMessage[]; id: string } =
+    body;
+
+  const session = await auth();
+  const email = session?.user?.email;
+
+  console.log({ email, id });
 
   try {
     await dbConnect();
 
+    // Convert UIMessages to model messages for the AI
+    const messages = await convertToModelMessages(uiMessages);
+
     console.log({ messages });
 
     const user = await User.findOne<IUser>({ email: email });
+
+    console.log({ user });
 
     const profile = user?.beautyProfile;
 
@@ -29,7 +42,8 @@ export async function POST(req: Request) {
 
     const result = streamText({
       model: google("gemini-2.5-flash"),
-      system: `You are a licensed trichologist, dermatologist, and cosmetologist but you don't book consultations.` +
+      system:
+        `You are a licensed trichologist, dermatologist, and cosmetologist but you don't book consultations.` +
         `You are a beauty specialist with a wealth and depth of knowledge on all hair and skin types. ` +
         `You take a holistic approach in offering solutions to users and give product recommendations.` +
         `You are polite and warm.` +
@@ -44,20 +58,23 @@ export async function POST(req: Request) {
 
         // Create new assistant response in UIMessage format
         const newResponse: UIMessage = {
-          id: generateId(),
+          id,
           role: "assistant",
           parts: [{ type: "text", text }],
         };
 
-        // Extract title from first message
-        const firstMessage = messages[0] as UIMessage | undefined;
-        const firstTextPart = firstMessage?.parts.find(p => p.type === "text");
-        const title = firstTextPart?.type === "text" ? firstTextPart.text : "New chat";
+        // Extract title from first UI message (not the converted one)
+        const firstMessage = uiMessages[0];
+        const firstTextPart = firstMessage?.parts.find(
+          (p) => p.type === "text",
+        );
+        const title =
+          firstTextPart?.type === "text" ? firstTextPart.text : "New chat";
 
         const existingChat = await ChatHistory.findByChatId(id);
 
         if (!existingChat) {
-          // Create new chat
+          // Create new chat - use UIMessages, not converted messages
           const initialMessages = firstMessage
             ? [firstMessage, newResponse]
             : [newResponse];
@@ -73,26 +90,26 @@ export async function POST(req: Request) {
           try {
             await newChat.save();
             console.log("Chat saved!");
-            creditsUpdate(email);
+            creditsUpdate(email as string);
           } catch (err) {
             console.error("Error saving new chat:", err);
           }
         } else {
-          // Update existing chat
+          // Update existing chat - use UIMessages, not converted messages
           try {
-            const messagesToSave = [...messages, newResponse];
-            
+            const messagesToSave = [...uiMessages, newResponse];
+
             const updatedChat = await ChatHistory.findOneAndUpdate(
               { chatId: id },
               { messages: messagesToSave },
-              { new: true }
+              { new: true },
             );
 
             if (!updatedChat) {
               console.error("Chat not found for update.");
             } else {
               console.log("Chat updated!");
-              creditsUpdate(email);
+              creditsUpdate(email as string);
             }
           } catch (err) {
             console.error("Error updating chat:", err);
@@ -101,7 +118,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return result.toTextStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (error) {
     console.log(error);
     return new Response("Internal Server Error", { status: 500 });
