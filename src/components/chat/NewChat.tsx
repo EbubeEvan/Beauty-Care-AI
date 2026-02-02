@@ -46,6 +46,8 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
 
     setNewPrompt(input);
     const newChatId = generateId();
+    console.log({newChatId});
+    
     router.push(`/chat/${newChatId}`);
   };
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { UIMessage } from "@ai-sdk/react";
-import { FlowerIcon, CircleUser } from "lucide-react";
+import { FlowerIcon, CircleUser, Loader2 } from "lucide-react"; // Added Loader2
 import { Card } from "../ui/card";
 import Image from "next/image";
 import { sanitizeMessage } from "@/lib/utils";
@@ -12,6 +12,8 @@ export type ChatMessagesProps = {
 };
 
 export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
+  const isPending = messages.length % 2 !== 0;
+
   return (
     <div className="flex flex-1 flex-col md:pr-20 md:pl-10 gap-y-5 w-full max-md:overflow-x-hidden overflow-y-auto mb-[10rem]">
       {messages.map((message) => (
@@ -29,12 +31,13 @@ export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
               {message.parts.map((part, i) =>
                 part.type === "text" ? (
                   <div
+                    className="prose dark:prose-invert"
                     key={i}
                     dangerouslySetInnerHTML={{
                       __html: sanitizeMessage(part.text),
                     }}
                   />
-                ) : null
+                ) : null,
               )}
             </Card>
 
@@ -58,6 +61,19 @@ export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
           </div>
         </div>
       ))}
+
+      {/* --- Loader Section --- */}
+      {isPending && (
+        <div className="flex items-start justify-start mb-4">
+          <FlowerIcon className="max-h-6 max-w-6 min-h-6 min-w-6 ml-[-2.1rem] text-pink-500 dark:text-purple-400" />
+          <Card className="bg-gray-200 dark:bg-gray-700 px-6 py-3 flex items-center gap-2">
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            <span className="text-sm italic text-muted-foreground">
+              Thinking...
+            </span>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

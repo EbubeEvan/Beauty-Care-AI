@@ -45,9 +45,6 @@ export async function GET(req: Request) {
       });
     }
 
-    console.log({historyDocs});
-    
-
     // Convert ObjectId fields to strings and normalize messages
     const parsedHistory: HistoryType[] = historyDocs.map((doc) => ({
       userId: String(doc.userId),

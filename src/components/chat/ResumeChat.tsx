@@ -51,6 +51,9 @@ useEffect(() => {
     const promptToSend = newPrompt;
     setNewPrompt("");
 
+    console.log({chatId : id});
+    
+
     sendMessage(
       {
         role: "user",
@@ -148,7 +151,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="flex flex-col h-full pt-10">
+    <div className="flex flex-col justify-center h-full pt-10">
       {/* Messages */}
       <ChatMessages messages={messages} />
 
