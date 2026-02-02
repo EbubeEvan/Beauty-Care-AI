@@ -1,6 +1,6 @@
-import { Label } from '@/components/ui/label';
 import { SelectProps } from '@radix-ui/react-select';
 
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -39,45 +39,27 @@ export function SelectItems({
   ...otherProps
 }: Readonly<ExtendedSelectProps>) {
   return (
-    <section
-      className={cn(
-        'relative flex w-full flex-1 flex-col gap-[6px] space-y-0',
-        className,
-      )}
-    >
-      {label && (
-        <Label>
-          {label}
-        </Label>
-      )}
+    <section className={cn('relative flex w-full flex-1 flex-col gap-[6px] space-y-0', className)}>
+      {label && <Label>{label}</Label>}
       <Select {...otherProps} value={value?.toString()}>
         <SelectTrigger
           className={cn('w-full', {
             '[&>span]:text-input': !value,
             '[&>span]:text-label': !!value,
-            'border-2 border-destructive': error,
+            'border-destructive border-2': error,
           })}
         >
-          <SelectValue className="text-input" placeholder={placeholder ?? ''} />
+          <SelectValue className='text-input' placeholder={placeholder ?? ''} />
         </SelectTrigger>
         <SelectContent>
           {options?.map((option, index: number) => (
-            <SelectItem
-              value={option?.[optionValue]?.toString()}
-              key={index}
-            >
+            <SelectItem value={option?.[optionValue]?.toString()} key={index}>
               {option?.[optionTitle]}
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
-      {helperText && (
-        <p
-          className='text-red-700 text-sm text-left'
-        >
-          {helperText}
-        </p>
-      )}
+      {helperText && <p className='text-left text-sm text-red-700'>{helperText}</p>}
     </section>
   );
 }

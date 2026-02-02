@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -30,6 +31,10 @@ export default function SignupForm() {
 
   const [errMsg, setErrMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
+  if (errMsg.length > 0) {
+    toast.error(errMsg);
+  }
 
   const {
     register,
@@ -123,7 +128,6 @@ export default function SignupForm() {
             </Link>
           </p>
         </CardFooter>
-        {errMsg && <p className='mt-2 text-center text-sm text-red-500'>{errMsg}</p>}
       </form>
     </Card>
   );
