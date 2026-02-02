@@ -1,7 +1,7 @@
-import dbConnect from "@/database/dbConnect";
-import User, { IUser } from "@/database/models/user.model";
-import ChatHistory, { IChatHistory } from "@/database/models/chatHistory.model";
-import { chatType, toUIMessage, userType } from "@/lib/types";
+import dbConnect from '@/database/dbConnect';
+import ChatHistory, { IChatHistory } from '@/database/models/chatHistory.model';
+import User, { IUser } from '@/database/models/user.model';
+import { chatType, toUIMessage, userType } from '@/lib/types';
 
 /**
  * Fetch a chat by ID and convert stored messages
@@ -15,7 +15,7 @@ export const getChat = async (id: string): Promise<chatType | null> => {
     if (!chat) return null;
 
     // Convert Mongoose doc → plain object
-    const raw = JSON.parse(JSON.stringify(chat)) as Omit<chatType, "messages"> & {
+    const raw = JSON.parse(JSON.stringify(chat)) as Omit<chatType, 'messages'> & {
       messages: any[];
     };
 
@@ -26,8 +26,8 @@ export const getChat = async (id: string): Promise<chatType | null> => {
 
     return parsedChat;
   } catch (error) {
-    console.error("Failed to fetch chat:", error);
-    throw new Error("Failed to fetch chat.");
+    console.error('Failed to fetch chat:', error);
+    throw new Error('Failed to fetch chat.');
   }
 };
 
@@ -37,22 +37,22 @@ export const getChat = async (id: string): Promise<chatType | null> => {
  */
 export const getUser = async (userEmail: string): Promise<userType | null> => {
   try {
-    console.log("Attempting to fetch user:", userEmail);
-    
+    console.log('Attempting to fetch user:', userEmail);
+
     await dbConnect();
 
     const user = await User.findOne<IUser>({ email: userEmail });
-    
+
     if (!user) {
-      console.log("User not found");
+      console.log('User not found');
       return null;
     }
 
-    console.log("User found successfully");
-    
+    console.log('User found successfully');
+
     // Convert to plain object
     const plainUser = JSON.parse(JSON.stringify(user));
-    
+
     // Add the id field (which is the same as _id)
     const parsedUser: userType = {
       ...plainUser,
@@ -61,10 +61,10 @@ export const getUser = async (userEmail: string): Promise<userType | null> => {
 
     return parsedUser;
   } catch (error) {
-    console.error("Failed to fetch user:", error);
+    console.error('Failed to fetch user:', error);
     if (error instanceof Error) {
-      console.error("Error message:", error.message);
-      console.error("Error stack:", error.stack);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
     }
     throw error;
   }

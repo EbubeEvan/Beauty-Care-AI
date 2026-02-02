@@ -1,11 +1,12 @@
 'use client';
 
-import { useToast } from '@/hooks/use-toast';
-import useStore from '@/lib/store/useStore';
-import { useChat, type UIMessage } from '@ai-sdk/react';
+import { type UIMessage, useChat } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
-import Link from 'next/link';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+
+import useStore from '@/lib/store/useStore';
+
 import { ChatMessages } from './ChatMessages';
 import { PromptInput } from './PromptInput';
 
@@ -24,7 +25,6 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
 
   const { newPrompt, credits, menuOpen, setNewPrompt } = useStore();
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   const { messages, sendMessage, setMessages, error } = useChat<UIMessage>({
     id,
@@ -56,7 +56,7 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
         { body: { email } },
       );
     }
-  }, []);
+  }, [chat?.messages, email, id, newPrompt, sendMessage, setMessages, setNewPrompt]);
 
   /* ---------------- cache invalidation ---------------- */
   useEffect(() => {
@@ -80,21 +80,7 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
     e.preventDefault();
 
     if (!credits || credits <= 0) {
-      toast({
-        variant: 'destructive',
-        description: (
-          <div>
-            <h1 className='mb-3 text-xl'>Oops. You&apos;re out of credits!</h1>
-            <p>
-              Click{' '}
-              <Link href='/buy-credits' className='text-pink-500 dark:text-purple-500'>
-                here
-              </Link>{' '}
-              to get more credits.
-            </p>
-          </div>
-        ),
-      });
+      toast.error("Oops. You're out of credits!");
       return;
     }
 
@@ -142,21 +128,24 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
   };
 
   return (
-    <div className='flex h-full flex-col justify-center pt-10'>
+    <div className='flex h-full flex-col pt-10'>
       {/* Messages */}
       <ChatMessages messages={messages} />
 
+      <section className='flex justify-center'>
+        <PromptInput
+          input={input}
+          setInput={setInput}
+          onSubmit={submit}
+          menuOpen={menuOpen}
+          showImageUpload
+          onImageChange={handleImageChange}
+          fileInputRef={fileInputRef}
+          previewUrls={urls}
+        />
+      </section>
+
       {/* Input */}
-      <PromptInput
-        input={input}
-        setInput={setInput}
-        onSubmit={submit}
-        menuOpen={menuOpen}
-        showImageUpload
-        onImageChange={handleImageChange}
-        fileInputRef={fileInputRef}
-        previewUrls={urls}
-      />
 
       {error && <p className='my-3 text-red-500'>Uh oh. Something went wrong</p>}
     </div>

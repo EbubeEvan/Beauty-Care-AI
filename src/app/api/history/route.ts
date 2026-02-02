@@ -1,33 +1,28 @@
-import dbConnect from "@/database/dbConnect";
-import ChatHistory from "@/database/models/chatHistory.model";
-import { HistoryType, toUIMessage, type StoredMessage } from "@/lib/types";
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+
+import dbConnect from '@/database/dbConnect';
+import ChatHistory from '@/database/models/chatHistory.model';
+import { HistoryType, type StoredMessage, toUIMessage } from '@/lib/types';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
+  const id = searchParams.get('id');
 
   if (!id) {
-    return new Response(
-      JSON.stringify({ error: "User ID is required" }),
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return new Response(JSON.stringify({ error: 'User ID is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   try {
     await dbConnect();
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid user ID" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return new Response(JSON.stringify({ error: 'Invalid user ID' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
     const userObjectId = new mongoose.Types.ObjectId(id);
@@ -41,7 +36,7 @@ export async function GET(req: Request) {
     if (!historyDocs?.length) {
       return new Response(JSON.stringify([]), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -57,20 +52,16 @@ export async function GET(req: Request) {
         return toUIMessage(storedMsg);
       }),
     }));
-    
 
     return new Response(JSON.stringify(parsedHistory), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (error: any) {
-    console.error("Database error:", error);
-    return new Response(
-      JSON.stringify({ error: "Internal server error" }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    console.error('Database error:', error);
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

@@ -1,11 +1,12 @@
+import { google } from '@ai-sdk/google';
+import type { UIMessage } from '@ai-sdk/react';
+import { convertToModelMessages, generateId, streamText } from 'ai';
+
 import dbConnect from '@/database/dbConnect';
 import ChatHistory from '@/database/models/chatHistory.model';
 import User, { IUser } from '@/database/models/user.model';
 import { beautyProfileType } from '@/lib/types';
 import { creditsUpdate } from '@/lib/utils';
-import { google } from '@ai-sdk/google';
-import type { UIMessage } from '@ai-sdk/react';
-import { convertToModelMessages, generateId, streamText } from 'ai';
 
 export const maxDuration = 60;
 
@@ -88,7 +89,7 @@ export async function POST(req: Request) {
           try {
             await newChat.save();
             console.log('Chat saved!');
-            creditsUpdate(email as string);
+            creditsUpdate(email);
           } catch (err) {
             console.error('Error saving new chat:', err);
           }
@@ -107,7 +108,7 @@ export async function POST(req: Request) {
               console.error('Chat not found for update.');
             } else {
               console.log('Chat updated!');
-              creditsUpdate(email as string);
+              creditsUpdate(email);
             }
           } catch (err) {
             console.error('Error updating chat:', err);

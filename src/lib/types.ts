@@ -1,6 +1,6 @@
-import { z } from "zod";
-import type { UIMessage } from "@ai-sdk/react";
-import type { UIDataTypes, UITools, UIMessagePart } from "ai";
+import type { UIMessage } from '@ai-sdk/react';
+import type { UIDataTypes, UIMessagePart, UITools } from 'ai';
+import { z } from 'zod';
 
 /* ───────────── AUTH & FORMS ───────────── */
 
@@ -29,10 +29,7 @@ export const signUpFormSchema = z.object({
   email: z
     .string()
     .min(1)
-    .regex(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      "Invalid email address",
-    ),
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email address'),
   password: z.string().min(6),
 });
 
@@ -40,10 +37,7 @@ export const loginSchema = z.object({
   email: z
     .string()
     .min(1)
-    .regex(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      "Invalid email address",
-    ),
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email address'),
   password: z.string().min(6),
 });
 
@@ -88,7 +82,7 @@ export interface Attachment {
 export interface LegacyMessage {
   _id?: string;
   id: string;
-  role: "assistant" | "user";
+  role: 'assistant' | 'user';
   experimental_attachments?: Attachment[];
   content: string;
   createdAt: Date;
@@ -103,21 +97,19 @@ export type StoredMessage = UIMessage | LegacyMessage;
  * Type guard for legacy messages
  */
 export function isLegacyMessage(msg: StoredMessage): msg is LegacyMessage {
-  return "content" in msg && typeof msg.content === 'string';
+  return 'content' in msg && typeof msg.content === 'string';
 }
 
 /**
  * Convert a legacy message to UIMessage (v6),
  * including attachments → file parts
  */
-export function transformLegacyMessageToUIMessage(
-  msg: LegacyMessage,
-): UIMessage {
+export function transformLegacyMessageToUIMessage(msg: LegacyMessage): UIMessage {
   const parts: Array<UIMessagePart<UIDataTypes, UITools>> = [];
 
   // first the text
   parts.push({
-    type: "text",
+    type: 'text',
     text: msg.content,
   });
 
@@ -125,17 +117,17 @@ export function transformLegacyMessageToUIMessage(
   if (msg.experimental_attachments) {
     for (const att of msg.experimental_attachments) {
       parts.push({
-        type: "file",
+        type: 'file',
         url: att.url,
         filename: att.name,
-        mediaType: att.contentType || "",
+        mediaType: att.contentType || '',
       });
     }
   }
 
   return {
     id: msg._id || msg.id,
-    role: msg.role, 
+    role: msg.role,
     parts,
     // UIMessage does not natively include createdAt in the type,
     // but you can attach it to metadata if you need timestamp:
@@ -158,10 +150,9 @@ export function getMessageDisplayText(msg: StoredMessage): string {
   if (isLegacyMessage(msg)) return msg.content;
 
   const textPart = msg.parts.find(
-    (p): p is UIMessagePart<UIDataTypes, UITools> & { type: "text" } =>
-      p.type === "text",
+    (p): p is UIMessagePart<UIDataTypes, UITools> & { type: 'text' } => p.type === 'text',
   );
-  return textPart?.text ?? "";
+  return textPart?.text ?? '';
 }
 
 /**
@@ -169,10 +160,9 @@ export function getMessageDisplayText(msg: StoredMessage): string {
  */
 export function getMessageFileParts(
   msg: UIMessage,
-): Array<Extract<UIMessagePart<UIDataTypes, UITools>, { type: "file" }>> {
+): Array<Extract<UIMessagePart<UIDataTypes, UITools>, { type: 'file' }>> {
   return msg.parts.filter(
-    (p): p is Extract<UIMessagePart<UIDataTypes, UITools>, { type: "file" }> =>
-      p.type === "file",
+    (p): p is Extract<UIMessagePart<UIDataTypes, UITools>, { type: 'file' }> => p.type === 'file',
   );
 }
 

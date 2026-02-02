@@ -21,7 +21,7 @@ export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
       {messages.map((message) => (
         <div key={message.id}>
           <div
-            className={`mb-4 flex items-start ${
+            className={`mb-4 flex items-start gap-2 ${
               message.role === 'assistant' ? 'justify-start' : 'justify-end'
             }`}
           >
