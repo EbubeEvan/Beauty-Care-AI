@@ -31,9 +31,6 @@ export default tseslint.config(
   {
     ignores: [
       'node_modules',
-      'src/**/*.gen.*',
-      'src/lib/frotcom',
-      'src/lib/mapbox',
       '.next',
       'out',
     ],
