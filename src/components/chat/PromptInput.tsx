@@ -1,6 +1,6 @@
 'use client';
 
-import { ImageIcon, Send } from 'lucide-react';
+import { ImageIcon, Send, X } from 'lucide-react';
 import Image from 'next/image';
 import { ChangeEvent, FormEvent, RefObject } from 'react';
 
@@ -20,6 +20,7 @@ type PromptInputProps = {
   showImageUpload?: boolean;
 
   className?: string;
+  onRemoveFile?: (index: number) => void;
 };
 
 export function PromptInput({
@@ -31,6 +32,7 @@ export function PromptInput({
   fileInputRef,
   previewUrls = [],
   showImageUpload = false,
+  onRemoveFile,
   className,
 }: Readonly<PromptInputProps>) {
   return (
@@ -41,19 +43,27 @@ export function PromptInput({
         className,
       )}
     >
-      <div className='flex w-full flex-col items-center rounded-full bg-gray-200 px-8 py-2 md:px-10 dark:bg-gray-700'>
+      <div className='flex w-full flex-col items-center rounded-full bg-gray-200 px-8 py-2 pt-5 md:px-10 dark:bg-gray-700'>
         {/* Image previews */}
         {previewUrls.length > 0 && (
           <div className='mb-2 flex gap-3'>
             {previewUrls.map((url, index) => (
-              <Image
-                key={index}
-                src={url}
-                alt='uploaded image'
-                width={50}
-                height={50}
-                className='rounded-md'
-              />
+              <div className='flex gap-3' key={index}>
+                <button
+                  onClick={() => onRemoveFile?.(index)}
+                  className='absolute top-2 z-10 cursor-pointer rounded-full bg-black/70 p-1 transition hover:bg-black/90'
+                >
+                  <X className='h-4 w-4 text-white' />
+                </button>
+                <Image
+                  key={index}
+                  src={url}
+                  alt='uploaded image'
+                  width={60}
+                  height={60}
+                  className='relative rounded-md'
+                />
+              </div>
             ))}
           </div>
         )}

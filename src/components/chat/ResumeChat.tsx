@@ -19,7 +19,7 @@ type ResumeChatProps = {
 
 export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeChatProps>) {
   const [input, setInput] = useState('');
-  const [files, setFiles] = useState<FileList | undefined>();
+  const [files, setFiles] = useState<File[]>([]); // Changed to File[]
   const [urls, setUrls] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -72,8 +72,9 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
 
-    setFiles(e.target.files);
-    setUrls(Array.from(e.target.files).map((f) => URL.createObjectURL(f)));
+    const filesArray = Array.from(e.target.files);
+    setFiles(filesArray);
+    setUrls(filesArray.map((f) => URL.createObjectURL(f)));
   };
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
@@ -91,9 +92,9 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
     > = [{ type: 'text', text: input }];
 
     // Convert files to file parts using Data URLs
-    if (files && files.length > 0) {
+    if (files.length > 0) {
       const fileParts = await Promise.all(
-        Array.from(files).map(async (file) => {
+        files.map(async (file) => {
           // Convert file to Data URL
           const dataUrl = await new Promise<string>((resolve) => {
             const reader = new FileReader();
@@ -122,9 +123,14 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
     );
 
     setInput('');
-    setFiles(undefined);
+    setFiles([]);
     setUrls([]);
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setFiles(files.filter((_, i) => i !== index));
+    setUrls(urls.filter((_, i) => i !== index));
   };
 
   return (
@@ -142,10 +148,9 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
           onImageChange={handleImageChange}
           fileInputRef={fileInputRef}
           previewUrls={urls}
+          onRemoveFile={handleRemoveFile}
         />
       </section>
-
-      {/* Input */}
 
       {error && <p className='my-3 text-red-500'>Uh oh. Something went wrong</p>}
     </div>
