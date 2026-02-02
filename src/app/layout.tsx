@@ -1,35 +1,30 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "@/styles/globals.css";
-import { ThemeProvider } from "@/components/design-system/theme-provider";
-import dynamic from "next/dynamic";
+/* eslint-disable react-refresh/only-export-components */
+import '@/styles/globals.css';
 
-const ClientProviders = dynamic(() => import("@/Providers/ClientProviders"), {
-  ssr: false,
-});
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 
-const inter = Inter({ subsets: ["latin"] });
+import { ThemeProvider } from '@/components/design-system/theme-provider';
+import ClientProviders from '@/Providers/ClientProviders';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Beautycare AI",
-    default: "Beautycare AI",
+    template: '%s | Beautycare AI',
+    default: 'Beautycare AI',
   },
-  description: "An AI Beauty Specialist",
-  metadataBase: new URL("https://beauty-care-ai.vercel.app/"),
+  description: 'An AI Beauty Specialist',
+  metadataBase: new URL('https://beauty-care-ai.vercel.app/'),
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang='en' suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
+          attribute='class'
+          defaultTheme='system'
           enableSystem
           disableTransitionOnChange
         >

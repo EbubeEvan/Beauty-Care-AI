@@ -1,35 +1,53 @@
-import { streamText, generateId, Message } from "ai";
-import { google } from "@ai-sdk/google";
-import dbConnect from "@/database/dbConnect";
-import User, { IUser } from "@/database/models/user.model";
-import ChatHistory, { IChatHistory } from "@/database/models/chatHistory.model";
-import { beautyProfileType } from "@/lib/types";
-import { Schema } from "mongoose";
-import { creditsUpdate } from "@/lib/utils";
+import { google } from '@ai-sdk/google';
+import type { UIMessage } from '@ai-sdk/react';
+import { convertToModelMessages, generateId, streamText } from 'ai';
+
+import dbConnect from '@/database/dbConnect';
+import ChatHistory from '@/database/models/chatHistory.model';
+import User, { IUser } from '@/database/models/user.model';
+import { beautyProfileType } from '@/lib/types';
+import { creditsUpdate } from '@/lib/utils';
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  const { messages, email, id } = await req.json();
+  const body = await req.json();
+  const {
+    messages: uiMessages,
+    id,
+    email,
+  }: { messages: UIMessage[]; id: string; email: string } = body;
+
+  console.log({ email, id });
+  console.log('=== API Received ===');
+  console.log('Chat ID:', id);
+  console.log('Email:', email);
+  console.log('Message count:', uiMessages.length);
 
   try {
     await dbConnect();
+
+    // Convert UIMessages to model messages for the AI
+    const messages = await convertToModelMessages(uiMessages);
 
     console.log({ messages });
 
     const user = await User.findOne<IUser>({ email: email });
 
+    console.log({ user });
+
     const profile = user?.beautyProfile;
 
     if (!profile) {
-      return new Response("User profile not found", { status: 404 });
+      return new Response('User profile not found', { status: 404 });
     }
 
     const parsedProfile: beautyProfileType = profile;
 
     const result = streamText({
-      model: google("models/gemini-1.5-flash"),
-      system: `You are a licensed trichologist, dermatologist, and cosmetologist but you don't book consultations.` +
+      model: google('gemini-2.5-flash'),
+      system:
+        `You are a licensed trichologist, dermatologist, and cosmetologist but you don't book consultations.` +
         `You are a beauty specialist with a wealth and depth of knowledge on all hair and skin types. ` +
         `You take a holistic approach in offering solutions to users and give product recommendations.` +
         `You are polite and warm.` +
@@ -42,68 +60,66 @@ export async function POST(req: Request) {
       onFinish: async ({ usage, text }) => {
         console.log({ usage, text });
 
-        const newResponse: Message = {
-          content: text,
-          createdAt: new Date(),
-          id: generateId(7),
-          role: "assistant",
+        // Create new assistant response in UIMessage format
+        const newResponse: UIMessage = {
+          id: generateId(),
+          role: 'assistant',
+          parts: [{ type: 'text', text }],
         };
 
-        // Check if there's an existing chat document for this ID
-        const existingChat = await ChatHistory.findOne<IChatHistory>({
-          chatId: id,
-        });
+        // Extract title from first UI message
+        const firstMessage = uiMessages[0];
+        const firstTextPart = firstMessage?.parts.find((p) => p.type === 'text');
+        const title = firstTextPart?.type === 'text' ? firstTextPart.text : 'New chat';
+
+        const existingChat = await ChatHistory.findByChatId(id);
 
         if (!existingChat) {
-          // No existing chat, create a new one
-          const newChat: IChatHistory = new ChatHistory({
-            userId: user._id as Schema.Types.ObjectId,
+          // Create new chat
+          const initialMessages = firstMessage ? [firstMessage, newResponse] : [newResponse];
+
+          const newChat = new ChatHistory({
+            userId: user._id,
             createdAt: new Date(),
             chatId: id,
-            title: messages[0].content,
-            messages: [
-              {
-                ...messages[0],
-                id: generateId(7),
-                createdAt: new Date(),
-                content: messages[0].content,
-              },
-              { ...newResponse },
-            ],
+            title,
+            messages: initialMessages,
           });
 
           try {
             await newChat.save();
-            console.log("Chat saved!");
+            console.log('Chat saved!');
             creditsUpdate(email);
           } catch (err) {
-            console.error("Error saving new chat:", err);
+            console.error('Error saving new chat:', err);
           }
         } else {
-          // Existing chat found, update it
+          // Update existing chat
           try {
+            const messagesToSave = [...uiMessages, newResponse];
+
             const updatedChat = await ChatHistory.findOneAndUpdate(
               { chatId: id },
-              { messages: [...messages, newResponse] },
-              { new: true }
+              { messages: messagesToSave },
+              { new: true },
             );
 
             if (!updatedChat) {
-              console.error("Chat not found for update.");
+              console.error('Chat not found for update.');
             } else {
-              console.log("Chat updated!");
+              console.log('Chat updated!');
               creditsUpdate(email);
             }
           } catch (err) {
-            console.error("Error updating chat:", err);
+            console.error('Error updating chat:', err);
           }
         }
       },
     });
 
-    return result.toDataStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (error) {
     console.log(error);
-    return new Response("Internal Server Error", { status: 500 });
+    return new Response('Internal Server Error', { status: 500 });
   }
 }

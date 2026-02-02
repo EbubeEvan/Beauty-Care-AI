@@ -5,7 +5,7 @@ import {
   SignUpType,
   LoginType,
   beautyProfileType,
-  signUpSchema,
+  signUpFormSchema,
   beautyProfileSchema,
   userReturn,
   beautyReturn,
@@ -18,7 +18,7 @@ import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
 
 export async function createUser(user: SignUpType): Promise<userReturn> {
-  const validatedFields = signUpSchema.safeParse(user);
+  const validatedFields = signUpFormSchema.safeParse(user);
 
   if (!validatedFields.success) {
     return {
@@ -48,7 +48,7 @@ export async function createUser(user: SignUpType): Promise<userReturn> {
     savedUser && console.log("User created successfully!");
 
     return {
-      id: savedUser._id as string,
+      id: savedUser._id.toString(),
       message: "User created successfully!",
     };
   } catch (error: any) {

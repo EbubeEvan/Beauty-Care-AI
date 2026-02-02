@@ -1,15 +1,17 @@
-"use client";
+'use client';
 
-import { PaystackButton } from "react-paystack";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { CreditCard } from "lucide-react";
-import { useState, useEffect } from "react";
-import { addCredits } from "@/lib/actions";
-import { useToast } from "@/hooks/use-toast";
-import { useFetchPrices } from "@/hooks/useFetchPrices";
-import PriceSkeleton from "./PriceSkeleton";
+import { CreditCard } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { PaystackButton } from 'react-paystack';
+import { toast } from 'react-toastify';
 
-const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_KEY || "";
+import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useFetchPrices } from '@/hooks/useFetchPrices';
+import { addCredits } from '@/lib/actions';
+
+import PriceSkeleton from './PriceSkeleton';
+
+const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_KEY || '';
 
 export default function Pricing({
   email,
@@ -18,8 +20,7 @@ export default function Pricing({
   email: string;
   id: string;
 }>) {
-  const [message, setMessage] = useState("");
-  const { toast } = useToast();
+  const [message, setMessage] = useState('');
   const { data, isLoading } = useFetchPrices();
 
   console.log(data);
@@ -28,8 +29,8 @@ export default function Pricing({
   const prices = data?.prices;
 
   const formatPrice = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
       currency: currency,
     }).format(amount);
   };
@@ -37,13 +38,15 @@ export default function Pricing({
   // Trigger toast when `message` is updated
   useEffect(() => {
     if (message) {
-      toast({
-        variant: message.includes("successfully") ? "primary" : "destructive",
-        description: message,
-      });
-      setMessage(""); // Reset message to avoid repeated toasts
+      toast.error(message);
+      // Use a timeout to clear the message after toast is displayed
+      const timer = setTimeout(() => {
+        setMessage('');
+      }, 0);
+
+      return () => clearTimeout(timer);
     }
-  }, [message, toast]);
+  }, [message]);
 
   useEffect(() => {}, [data]);
 
@@ -53,39 +56,37 @@ export default function Pricing({
   };
 
   return (
-    <div className="container mx-auto py-12 px-5 md:px-20 lg:px-48 h-full">
-      <h1 className="text-4xl font-bold text-center mb-4">Get Your Credits</h1>
-      <p className="text-center text-muted-foreground mb-6">
+    <div className='container mx-auto h-full px-5 py-12 md:px-20 lg:px-48'>
+      <h1 className='mb-4 text-center text-4xl font-bold'>Get Your Credits</h1>
+      <p className='text-muted-foreground mb-6 text-center'>
         Purchase the amount of credits you need
       </p>
       {isLoading && <PriceSkeleton />}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         {prices?.map((price) => (
-          <Card key={price.id} className="flex flex-col">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                <CreditCard className="h-6 w-6" />
+          <Card key={price.id} className='flex flex-col'>
+            <CardHeader className='text-center'>
+              <CardTitle className='flex items-center justify-center gap-2 text-2xl'>
+                <CreditCard className='h-6 w-6' />
                 {price.credits} Credits
               </CardTitle>
-              <p className="text-3xl font-bold">{formatPrice(price.price)}</p>
+              <p className='text-3xl font-bold'>{formatPrice(price.price)}</p>
               {price.discount ? (
-                <p className="text-sm text-green-500 font-semibold">
-                  Save {price.discount}%
-                </p>
+                <p className='text-sm font-semibold text-green-500'>Save {price.discount}%</p>
               ) : (
-                <div className="h-5" />
+                <div className='h-5' />
               )}
             </CardHeader>
-            <CardFooter className="w-full flex justify-center">
+            <CardFooter className='flex w-full justify-center'>
               <PaystackButton
-                className="w-full rounded-md py-2 mx-5 border border-slate-200 bg-white hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+                className='mx-5 w-full rounded-md border border-slate-200 bg-white py-2 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50'
                 email={email}
                 amount={price.price * 100} // Paystack expects amount in kobo (for NGN), so multiply by 100
                 publicKey={publicKey}
                 currency={currency}
-                text="Buy"
+                text='Buy'
                 onSuccess={() => handleSuccess(price.credits)}
-                onClose={() => console.log("Transaction closed")}
+                onClose={() => console.log('Transaction closed')}
               />
             </CardFooter>
           </Card>

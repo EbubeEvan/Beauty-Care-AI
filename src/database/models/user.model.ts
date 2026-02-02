@@ -1,4 +1,5 @@
 import { Document, model, models, Schema } from 'mongoose';
+
 import { beautyProfileType } from '@/lib/types';
 
 export interface IUser extends Document {
@@ -9,7 +10,7 @@ export interface IUser extends Document {
   creditBalance: number;
   beautyProfile: beautyProfileType;
 }
- 
+
 const BeautyProfileSchema = new Schema({
   hairColor: { type: String, required: true },
   hairType: { type: String, required: true },
