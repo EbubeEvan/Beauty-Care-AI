@@ -12,7 +12,6 @@ import { useToast } from "@/hooks/use-toast";
 import { PromptInput } from "./PromptInput";
 
 export default function NewChat({ username }: Readonly<{ username: string }>) {
-  const newChatId = generateId();
   const [input, setInput] = useState("");
 
   const { setNewPrompt, credits, menuOpen } = useStore();
@@ -46,7 +45,7 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
     }
 
     setNewPrompt(input);
-
+    const newChatId = generateId();
     router.push(`/chat/${newChatId}`);
   };
 

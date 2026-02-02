@@ -56,7 +56,7 @@ useEffect(() => {
         role: "user",
         parts: [{ type: "text", text: promptToSend }],
       },
-      { body: { id: params.id, email } }
+      { body: { id, email } }
     );
   }
 }, []);

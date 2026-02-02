@@ -6,19 +6,22 @@ import ChatHistory from "@/database/models/chatHistory.model";
 import type { UIMessage } from "@ai-sdk/react";
 import { beautyProfileType } from "@/lib/types";
 import { creditsUpdate } from "@/lib/utils";
-import { auth } from "@/auth";
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { messages: uiMessages, id }: { messages: UIMessage[]; id: string } =
-    body;
-
-  const session = await auth();
-  const email = session?.user?.email;
+  const {
+    messages: uiMessages,
+    id,
+    email,
+  }: { messages: UIMessage[]; id: string; email: string } = body;
 
   console.log({ email, id });
+  console.log("=== API Received ===");
+  console.log("Chat ID:", id);
+  console.log("Email:", email);
+  console.log("Message count:", uiMessages.length);
 
   try {
     await dbConnect();
@@ -58,7 +61,7 @@ export async function POST(req: Request) {
 
         // Create new assistant response in UIMessage format
         const newResponse: UIMessage = {
-          id,
+          id: generateId(),
           role: "assistant",
           parts: [{ type: "text", text }],
         };

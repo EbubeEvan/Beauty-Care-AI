@@ -60,8 +60,6 @@ export async function GET(req: Request) {
         return toUIMessage(storedMsg);
       }),
     }));
-
-    console.log({parsedHistory});
     
 
     return new Response(JSON.stringify(parsedHistory), {
