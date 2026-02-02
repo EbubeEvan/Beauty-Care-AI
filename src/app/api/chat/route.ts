@@ -67,7 +67,7 @@ export async function POST(req: Request) {
           parts: [{ type: 'text', text }],
         };
 
-        // Extract title from first UI message (not the converted one)
+        // Extract title from first UI message
         const firstMessage = uiMessages[0];
         const firstTextPart = firstMessage?.parts.find((p) => p.type === 'text');
         const title = firstTextPart?.type === 'text' ? firstTextPart.text : 'New chat';
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
         const existingChat = await ChatHistory.findByChatId(id);
 
         if (!existingChat) {
-          // Create new chat - use UIMessages, not converted messages
+          // Create new chat
           const initialMessages = firstMessage ? [firstMessage, newResponse] : [newResponse];
 
           const newChat = new ChatHistory({
@@ -94,7 +94,7 @@ export async function POST(req: Request) {
             console.error('Error saving new chat:', err);
           }
         } else {
-          // Update existing chat - use UIMessages, not converted messages
+          // Update existing chat
           try {
             const messagesToSave = [...uiMessages, newResponse];
 
