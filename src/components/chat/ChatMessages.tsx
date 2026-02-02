@@ -66,7 +66,7 @@ export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
 
       {/* --- Loader Section --- */}
       {isPending && (
-        <div className='mb-4 flex items-start justify-start'>
+        <div className='mb-4 flex items-start justify-start gap-2'>
           <FlowerIcon className='ml-[-2.1rem] max-h-6 min-h-6 max-w-6 min-w-6 text-pink-500 dark:text-purple-400' />
           <Card className='flex items-center gap-2 bg-gray-200 px-6 py-3 dark:bg-gray-700'>
             <Loader2 className='text-muted-foreground h-5 w-5 animate-spin' />

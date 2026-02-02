@@ -32,7 +32,7 @@ export default function SignupForm() {
   const [errMsg, setErrMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (errMsg.length > 0) {
+  if (errMsg.length > 0 && !errMsg.includes('NEXT')) {
     toast.error(errMsg);
   }
 

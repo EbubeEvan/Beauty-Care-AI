@@ -74,7 +74,7 @@ export default function ProfileDetails({ user }: Readonly<ProfileDetailsProps>) 
       toast.error('Uh Oh. Something went wrong');
       setLoading(false);
     } else {
-      toast.error('Your new beauty profile has been saved!');
+      toast.success('Your new beauty profile has been saved!');
       setLoading(false);
     }
   };

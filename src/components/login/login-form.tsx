@@ -27,7 +27,7 @@ export default function LoginForm() {
 
   const [errMsg, setErrMsg] = useState('');
 
-  if (errMsg.length > 0) {
+  if (errMsg.length > 0 && !errMsg.includes('NEXT')) {
     toast.error(errMsg);
   }
 
