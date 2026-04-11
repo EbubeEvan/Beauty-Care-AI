@@ -1,20 +1,45 @@
 @import "tailwindcss";
 
-/* ----------------------------------------
-   Plugins
----------------------------------------- */
-@plugin "tailwindcss-animate";
-@plugin "@tailwindcss/typography";
-
-/* ----------------------------------------
-   Dark mode (class-based)
----------------------------------------- */
-@variant dark (&:where(.dark, .dark *));
-
-/* ----------------------------------------
-   Theme tokens (v4 replacement for theme.extend)
----------------------------------------- */
 @theme {
+  /* Fonts */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+
+  /* Semantic Design System Tokens */
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-muted: var(--brand-muted);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-border-main: var(--border-main);
+
+  /* Original Palettes for Reference/Compatibility */
+  --color-pink-50: #fff1f2;
+  --color-pink-100: #ffe4e6;
+  --color-pink-200: #fecdd3;
+  --color-pink-300: #fda4af;
+  --color-pink-400: #fb7185;
+  --color-pink-500: #f43f5e;
+  --color-pink-600: #e11d48;
+  --color-pink-700: #be123c;
+  --color-pink-800: #9f1239;
+  --color-pink-900: #881337;
+  --color-pink-950: #4c0519;
+
+  --color-magenta-50: #fdf2f8;
+  --color-magenta-100: #fce7f3;
+  --color-magenta-200: #fbcfe8;
+  --color-magenta-300: #f9a8d4;
+  --color-magenta-400: #f472b6;
+  --color-magenta-500: #ec4899;
+  --color-magenta-600: #db2777;
+  --color-magenta-700: #be185d;
+  --color-magenta-800: #9d174d;
+  --color-magenta-900: #831843;
+  --color-magenta-950: #500724;
+
   /* Container */
   --container-padding: 2rem;
   --container-max-width-2xl: 1400px;
@@ -25,6 +50,44 @@
   /* Animations */
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+:root {
+  --brand: #f43f5e; /* pink-500 */
+  --brand-hover: #e11d48; /* pink-600 */
+  --brand-muted: #fecdd3; /* pink-200 */
+  --surface: #ffffff;
+  --surface-muted: #fff1f2; /* pink-50 */
+  --text-main: #0f172a; /* slate-900 */
+  --text-muted: #475569; /* slate-600 */
+  --border-main: #fecdd3; /* pink-200 */
+}
+
+.dark {
+  --brand: #ec4899; /* magenta-500 */
+  --brand-hover: #db2777; /* magenta-600 */
+  --brand-muted: #500724; /* magenta-950 */
+  --surface: #000000;
+  --surface-muted: #151619; /* dark matte */
+  --text-main: #ffffff;
+  --text-muted: #f9a8d4; /* magenta-300 */
+  --border-main: #831843; /* magenta-900 */
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased font-sans text-text-main bg-surface transition-colors duration-300;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
 }
 
 /* ----------------------------------------
@@ -49,7 +112,7 @@
 }
 
 /* ----------------------------------------
-   Typography EXTENSIONS (not overrides)
+   Typography Extensions
 ---------------------------------------- */
 @layer prose {
   .prose strong {
@@ -122,7 +185,7 @@
 }
 
 /* ----------------------------------------
-   Scrollbar (unchanged)
+   Scrollbar
 ---------------------------------------- */
 ::-webkit-scrollbar {
   width: 6px;

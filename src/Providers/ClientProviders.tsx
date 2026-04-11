@@ -1,7 +1,5 @@
 'use client';
 
-import 'react-toastify/dist/ReactToastify.css';
-
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useTheme } from 'next-themes';
 import React from 'react';

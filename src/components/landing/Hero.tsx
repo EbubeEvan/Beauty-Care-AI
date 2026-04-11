@@ -1,7 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { WebcamIcon } from 'lucide-react';
+import { motion } from 'motion/react';
 import Link from 'next/link';
 import { TypeAnimation } from 'react-type-animation';
 
