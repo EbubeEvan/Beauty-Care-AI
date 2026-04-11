@@ -1,19 +1,27 @@
-import About from '@/components/landing/About';
-import Features from '@/components/landing/Features';
-import Footer from '@/components/landing/Footer';
-import Hero from '@/components/landing/Hero';
-import Testimonials from '@/components/landing/Testimonials';
+import { Cta } from '@/components/landing-new/CTA';
+import { Faq } from '@/components/landing-new/FAQ';
+import { Features } from '@/components/landing-new/Features';
+import { Footer } from '@/components/landing-new/Footer';
+import { Hero } from '@/components/landing-new/Hero';
+import { HowItWorks } from '@/components/landing-new/HowItWorks';
+import { Navbar } from '@/components/landing-new/Navbar';
+import { Pricing } from '@/components/landing-new/Pricing';
+import { Testimonials } from '@/components/landing-new/Testimonials';
 
 export default function Home() {
   return (
-    <main className='flex min-h-dvh flex-col bg-linear-to-br from-[#f5d0fe] to-[#e879f9] dark:from-[#1e293b] dark:to-[#4c1d95]'>
-      <section className='flex-1'>
+    <div className='min-h-screen bg-white transition-colors duration-300 dark:bg-black'>
+      <Navbar />
+      <main>
         <Hero />
-        <About />
         <Features />
+        <HowItWorks />
+        <Pricing />
         <Testimonials />
-      </section>
+        <Faq />
+        <Cta />
+      </main>
       <Footer />
-    </main>
+    </div>
   );
 }

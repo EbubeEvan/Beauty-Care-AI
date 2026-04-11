@@ -18,7 +18,7 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
   text,
   avatar,
   delay = 0,
-}) => (
+}: TestimonialCardProps) => (
   <FadeIn delay={delay}>
     <div className='bg-surface-muted border-border-main h-full rounded-2xl border p-6'>
       <div className='mb-4 flex gap-1'>
@@ -33,6 +33,8 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
             <Image
               src={avatar}
               alt={name}
+              width={40}
+              height={40}
               className='h-full w-full object-cover'
               referrerPolicy='no-referrer'
             />

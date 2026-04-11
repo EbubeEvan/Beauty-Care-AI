@@ -1,3 +1,5 @@
+'use client';
+
 import { Coins, Droplets, MessageCircle, ScanFace } from 'lucide-react';
 
 import { FadeIn } from './ui/FadeIn';

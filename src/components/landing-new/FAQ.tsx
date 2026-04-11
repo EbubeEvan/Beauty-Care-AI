@@ -1,3 +1,5 @@
+'use client';
+
 import { MessageCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useState } from 'react';
@@ -5,7 +7,7 @@ import { useState } from 'react';
 import { AccordionItem } from './ui/AccordionItem';
 import { FadeIn } from './ui/FadeIn';
 
-export const FAQ = () => {
+export const Faq = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const faqs = [

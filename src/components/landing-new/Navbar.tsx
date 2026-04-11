@@ -1,3 +1,5 @@
+'use client';
+
 import { Menu, Moon, Sparkles, Sun, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTheme } from 'next-themes';

@@ -1,8 +1,10 @@
+'use client';
+
 import { motion } from 'motion/react';
 
 import { FadeIn } from './ui/FadeIn';
 
-export const CTA = () => {
+export const Cta = () => {
   return (
     <section className='from-brand to-brand-hover relative overflow-hidden bg-gradient-to-br py-24 transition-colors duration-300'>
       <div className='relative z-10 mx-auto max-w-4xl px-6 text-center'>

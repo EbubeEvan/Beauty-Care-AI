@@ -1,3 +1,5 @@
+'use client';
+
 import { ArrowRight, Heart, Play, Shield, Sparkles, Star } from 'lucide-react';
 import { motion } from 'motion/react';
 import Image from 'next/image';
@@ -10,7 +12,8 @@ export const Hero = () => {
         <Image
           src='https://res.cloudinary.com/dig1aye1l/image/upload/v1775768667/hero-img_i0mwe8.jpg'
           alt='Beauty Community'
-          className='h-full w-full object-cover'
+          fill={true}
+          className='object-cover'
           referrerPolicy='no-referrer'
         />
         <div className='absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70 transition-colors duration-300 dark:from-black/80 dark:via-black/60 dark:to-black/80' />
