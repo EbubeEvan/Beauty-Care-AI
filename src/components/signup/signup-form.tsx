@@ -77,7 +77,7 @@ export default function SignupForm() {
             {...register('firstName')}
             errorText={errors.firstName?.message || ''}
             id='firstName'
-            label='firstName'
+            label='FirstName'
             placeholder='Jane'
           />
 
@@ -86,7 +86,7 @@ export default function SignupForm() {
             {...register('lastName')}
             errorText={errors.lastName?.message || ''}
             id='lastName'
-            label='lastName'
+            label='LastName'
             placeholder='Doe'
           />
 
@@ -95,7 +95,7 @@ export default function SignupForm() {
             {...register('email')}
             errorText={errors.email?.message || ''}
             id='email'
-            label='email'
+            label='Email'
             placeholder='m@example.com'
           />
 
@@ -104,7 +104,7 @@ export default function SignupForm() {
             {...register('password')}
             errorText={errors.password?.message || ''}
             id='password'
-            label='password'
+            label='Password'
             placeholder=''
             type='password'
           />

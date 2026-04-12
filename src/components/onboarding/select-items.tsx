@@ -38,9 +38,11 @@ export function SelectItems({
   error,
   ...otherProps
 }: Readonly<ExtendedSelectProps>) {
+  const formattedLabel = label ? `${label.charAt(0).toUpperCase()}${label.slice(1)}` : '';
+
   return (
     <section className={cn('relative flex w-full flex-1 flex-col gap-[6px] space-y-0', className)}>
-      {label && <Label>{label}</Label>}
+      {formattedLabel && <Label>{formattedLabel}</Label>}
       <Select {...otherProps} value={value?.toString()}>
         <SelectTrigger
           className={cn('w-full', {

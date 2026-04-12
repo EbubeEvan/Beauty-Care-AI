@@ -37,8 +37,7 @@ export const Hero = () => {
           </motion.div>
 
           <h1 className='mb-8 text-5xl leading-tight font-bold text-white lg:text-7xl'>
-            Get personalized <span className='text-brand-muted'>skincare & haircare</span>{' '}
-            recommendations
+            Get personalized <span className='text-brand'>skincare & haircare</span> recommendations
           </h1>
 
           <p className='mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-white/80'>

@@ -153,7 +153,7 @@ export default function OnboardingForm() {
             {...register('skinColor')}
             errorText={errors.skinColor?.message || ''}
             id='skin-color'
-            label='skin-color'
+            label='Skin-color'
             placeholder='Dark Brown/Light Brown/ Pale etc...'
           />
 

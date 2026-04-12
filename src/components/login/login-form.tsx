@@ -63,7 +63,7 @@ export default function LoginForm() {
             {...register('email')}
             errorText={errors.email?.message || ''}
             id='email'
-            label='email'
+            label='Email'
             placeholder='m@example.com'
           />
 
@@ -72,7 +72,7 @@ export default function LoginForm() {
             {...register('password')}
             errorText={errors.password?.message || ''}
             id='password'
-            label='password'
+            label='Password'
             placeholder='Doe'
             type='password'
           />
