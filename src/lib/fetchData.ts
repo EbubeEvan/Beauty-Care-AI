@@ -1,7 +1,36 @@
+import axios from 'axios';
+
 import dbConnect from '@/database/dbConnect';
 import ChatHistory, { IChatHistory } from '@/database/models/chatHistory.model';
+import Price, { IPrice } from '@/database/models/price.model';
 import User, { IUser } from '@/database/models/user.model';
-import { chatType, toUIMessage, userType } from '@/lib/types';
+import {
+  chatType,
+  PriceResponse,
+  priceType,
+  serializeUIMessageForClient,
+  type StoredMessage,
+  toUIMessage,
+  userType,
+} from '@/lib/types';
+import { priceConvert } from '@/lib/utils';
+
+type LeanChatRecord = {
+  userId: { toString(): string } | string;
+  chatId: string;
+  title: string;
+  createdAt: Date | string;
+  updatedAt?: Date | string;
+  messages: StoredMessage[];
+};
+
+const toIsoString = (value?: Date | string): string | undefined => {
+  if (!value) {
+    return undefined;
+  }
+
+  return typeof value === 'string' ? value : value.toISOString();
+};
 
 /**
  * Fetch a chat by ID and convert stored messages
@@ -11,17 +40,18 @@ export const getChat = async (id: string): Promise<chatType | null> => {
   try {
     await dbConnect();
 
-    const chat = await ChatHistory.findOne<IChatHistory>({ chatId: id });
+    const chat = await ChatHistory.findOne<IChatHistory>({ chatId: id }).lean();
     if (!chat) return null;
 
-    // Convert Mongoose doc → plain object
-    const raw = JSON.parse(JSON.stringify(chat)) as Omit<chatType, 'messages'> & {
-      messages: any[];
-    };
+    const raw = chat as unknown as LeanChatRecord;
 
     const parsedChat: chatType = {
-      ...raw,
-      messages: raw.messages.map((msg) => toUIMessage(msg)),
+      userId: String(raw.userId),
+      chatId: String(raw.chatId),
+      title: raw.title,
+      createdAt: toIsoString(raw.createdAt) || '',
+      updatedAt: toIsoString(raw.updatedAt),
+      messages: raw.messages.map((msg) => serializeUIMessageForClient(toUIMessage(msg))),
     };
 
     return parsedChat;
@@ -41,7 +71,7 @@ export const getUser = async (userEmail: string): Promise<userType | null> => {
 
     await dbConnect();
 
-    const user = await User.findOne<IUser>({ email: userEmail });
+    const user = await User.findOne<IUser>({ email: userEmail }).lean();
 
     if (!user) {
       console.log('User not found');
@@ -50,13 +80,25 @@ export const getUser = async (userEmail: string): Promise<userType | null> => {
 
     console.log('User found successfully');
 
-    // Convert to plain object
-    const plainUser = JSON.parse(JSON.stringify(user));
-
-    // Add the id field (which is the same as _id)
     const parsedUser: userType = {
-      ...plainUser,
-      id: plainUser._id,
+      _id: String(user._id),
+      id: String(user._id),
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      password: user.password,
+      creditBalance: user.creditBalance,
+      beautyProfile: {
+        hairColor: user.beautyProfile?.hairColor || '',
+        hairType: user.beautyProfile?.hairType || '',
+        strandThickness: user.beautyProfile?.strandThickness || '',
+        chemicalTreatment: user.beautyProfile?.chemicalTreatment || '',
+        hairVolume: user.beautyProfile?.hairVolume || '',
+        skinColor: user.beautyProfile?.skinColor || '',
+        skinType: user.beautyProfile?.skinType || '',
+        sensitivity: user.beautyProfile?.sensitivity || '',
+        albino: user.beautyProfile?.albino || '',
+      },
     };
 
     return parsedUser;
@@ -67,5 +109,43 @@ export const getUser = async (userEmail: string): Promise<userType | null> => {
       console.error('Error stack:', error.stack);
     }
     throw error;
+  }
+};
+
+export const getPrices = async (clientIp: string): Promise<PriceResponse> => {
+  const exchangeKey = process.env.EXCHANGE_RATE_KEY;
+
+  if (!exchangeKey) {
+    throw new Error('Missing EXCHANGE_RATE_KEY');
+  }
+
+  try {
+    await dbConnect();
+
+    const prices = await Price.find<IPrice>();
+    const parsedPrices: priceType[] = prices.map((price) => ({
+      _id: price._id.toString(),
+      credits: price.credits,
+      p1: price.p1,
+      p2: price.p2,
+      p3: price.p3,
+      discount: price.discount,
+    }));
+
+    const { data: locationData } = await axios.get(`https://ipapi.co/${clientIp}/json/`);
+    const currency = locationData.currency || 'NGN';
+
+    const { data: exchangeData } = await axios.get(
+      `https://v6.exchangerate-api.com/v6/${exchangeKey}/latest/NGN`,
+    );
+    const conversionRate = exchangeData.conversion_rates[currency] || 1;
+
+    return {
+      prices: priceConvert(parsedPrices, conversionRate),
+      currency,
+    };
+  } catch (error) {
+    console.error('Failed to fetch prices:', error);
+    throw new Error('Failed to fetch pricing information');
   }
 };

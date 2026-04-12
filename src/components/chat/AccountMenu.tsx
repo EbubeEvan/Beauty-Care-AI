@@ -1,10 +1,6 @@
-import {
-  ChevronsUpDownIcon,
-  CircleUser,
-  Wallet,
-  User,
-  CreditCard,
-} from "lucide-react";
+import clsx from 'clsx';
+import { ChevronsUpDownIcon, CircleUser, CreditCard, User, Wallet } from 'lucide-react';
+import Link from 'next/link';
 
 import {
   DropdownMenu,
@@ -12,11 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import clsx from "clsx";
-import useStore from "@/lib/store/useStore";
-import Link from "next/link";
-import Logout from "./Logout";
+} from '@/components/ui/dropdown-menu';
+import useStore from '@/lib/store/useStore';
+
+import Logout from './Logout';
 
 export function AccountMenu({
   credits,
@@ -29,37 +24,43 @@ export function AccountMenu({
       <DropdownMenuTrigger asChild>
         <div
           className={clsx(
-            "flex p-3 relative hover:bg-pink-300 dark:hover:bg-purple-400 rounded-md text-white cursor-pointer",
+            'text-text-main hover:bg-brand/15 relative flex cursor-pointer rounded-2xl p-3 transition-colors',
             {
               hidden: !menuOpen,
-            }
+            },
           )}
         >
           <CircleUser size={35} />
-          <div className="ml-3">
+          <div className='ml-3'>
             <p>{userName}</p>
-            <div className="flex gap-2">
+            <div className='flex gap-2'>
               <CreditCard />
               <p>{`${credits} credits`}</p>
             </div>
           </div>
-          <ChevronsUpDownIcon className="cursor-pointer absolute right-0 top-5" />
+          <ChevronsUpDownIcon className='absolute top-5 right-0 cursor-pointer' />
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 bg-gray-200 dark:bg-gray-700">
+      <DropdownMenuContent className='border-border-main bg-surface text-text-main w-56 border'>
         <DropdownMenuItem>
-          <Link href="/buy-credits" className="flex gap-3 px-5 py-2">
+          <Link
+            href='/buy-credits'
+            className='hover:bg-brand-muted flex w-full gap-3 rounded-md px-5 py-2 transition-colors'
+          >
             <Wallet />
             <p>Buy credits</p>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/profile" className="flex gap-3 px-5 py-2">
+          <Link
+            href='/profile'
+            className='hover:bg-brand-muted flex w-full gap-3 rounded-md px-5 py-2 transition-colors'
+          >
             <User />
             <p>profile</p>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator className="bg-gray-400 dark:bg-gray-800" />
+        <DropdownMenuSeparator className='bg-border-main' />
         <Logout />
       </DropdownMenuContent>
     </DropdownMenu>

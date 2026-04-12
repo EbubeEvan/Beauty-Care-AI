@@ -24,10 +24,10 @@ export default function LayoutContent({
   console.log(history);
 
   return (
-    <div className='flex h-full w-full'>
+    <div className='bg-surface text-text-main flex h-screen w-full overflow-hidden'>
       <aside
         className={clsx(
-          'fixed inset-y-0 left-0 z-40 overflow-x-hidden overflow-y-auto bg-pink-500 transition-all dark:bg-purple-500',
+          'bg-brand-muted text-text-main fixed inset-y-0 left-0 z-40 overflow-x-hidden overflow-y-auto transition-all',
           {
             'max-md:translate-x-[-100%] md:w-[5%]': !menuOpen,
             'max-md:w-[80%] min-[1280px]:w-[21%] md:w-[32%] lg:w-[20%]': menuOpen,
@@ -37,19 +37,16 @@ export default function LayoutContent({
         <SideNav id={id} email={email!} userName={username} />
       </aside>
       <div
-        className={clsx(
-          'h-screen flex-1 overflow-hidden bg-gradient-to-br from-[#f5d0fe] to-[#e879f9] transition-all dark:from-[#1e293b] dark:to-[#4c1d95]',
-          {
-            'w-full md:w-[95%] md:pl-10 lg:pl-14': !menuOpen,
-            'md:ml-[32%] md:w-[68%] lg:ml-[20%] lg:w-[80%]': menuOpen,
-          },
-        )}
+        className={clsx('bg-surface flex h-screen flex-1 flex-col overflow-hidden transition-all', {
+          'w-full md:w-[95%] md:pl-10 lg:pl-14': !menuOpen,
+          'md:ml-[32%] md:w-[68%] lg:ml-[20%] lg:w-[80%]': menuOpen,
+        })}
       >
         <header className='w-full'>
           <ChatHeader />
         </header>
         <main
-          className='flex-1 px-[2rem]'
+          className='flex flex-1 overflow-hidden px-[2rem]'
           // onClick={() => setMenuOpen(false)}
         >
           {children}

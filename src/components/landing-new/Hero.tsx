@@ -3,6 +3,7 @@
 import { ArrowRight, Heart, Play, Shield, Sparkles, Star } from 'lucide-react';
 import { motion } from 'motion/react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const Hero = () => {
   return (
@@ -46,14 +47,19 @@ export const Hero = () => {
           </p>
 
           <div className='mb-16 flex flex-wrap justify-center gap-6'>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className='bg-brand shadow-brand/40 hover:bg-brand-hover flex items-center gap-3 rounded-full px-10 py-4 text-lg font-bold text-white shadow-2xl transition-all'
+            <Link
+              href='/signup'
+              className='bg-brand shadow-brand/40 hover:bg-brand-hover inline-flex rounded-full transition-all'
             >
-              Start Consultation
-              <ArrowRight className='h-5 w-5' />
-            </motion.button>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className='flex items-center gap-3 rounded-full px-10 py-4 text-lg font-bold text-white shadow-2xl'
+              >
+                Start Consultation
+                <ArrowRight className='h-5 w-5' />
+              </motion.div>
+            </Link>
 
             <motion.button
               whileHover={{ scale: 1.05 }}

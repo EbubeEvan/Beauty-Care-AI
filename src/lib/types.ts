@@ -142,6 +142,53 @@ export function toUIMessage(msg: StoredMessage): UIMessage {
   return isLegacyMessage(msg) ? transformLegacyMessageToUIMessage(msg) : msg;
 }
 
+function serializeClientValue(value: unknown): unknown {
+  if (
+    value == null ||
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+  ) {
+    return value;
+  }
+
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => serializeClientValue(item));
+  }
+
+  if (typeof value === 'object') {
+    if (
+      '_bsontype' in value &&
+      value._bsontype === 'ObjectId' &&
+      'toHexString' in value &&
+      typeof value.toHexString === 'function'
+    ) {
+      return value.toHexString();
+    }
+
+    const entries = Object.entries(value as Record<string, unknown>).map(([key, nestedValue]) => [
+      key,
+      serializeClientValue(nestedValue),
+    ]);
+
+    return Object.fromEntries(entries);
+  }
+
+  if (typeof value === 'bigint') {
+    return value.toString();
+  }
+
+  return undefined;
+}
+
+export function serializeUIMessageForClient(message: UIMessage): UIMessage {
+  return serializeClientValue(message) as UIMessage;
+}
+
 /**
  * Extract the display text (first text part)
  */
@@ -172,7 +219,8 @@ export interface chatType {
   userId: string;
   chatId: string;
   title: string;
-  createdAt: Date;
+  createdAt: string;
+  updatedAt?: string;
   messages: UIMessage[];
 }
 

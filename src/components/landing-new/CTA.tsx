@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'motion/react';
+import Link from 'next/link';
 
 import { FadeIn } from './ui/FadeIn';
 
@@ -18,13 +19,18 @@ export const Cta = () => {
           </p>
 
           <div className='flex flex-wrap justify-center gap-4'>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className='bg-surface text-brand hover:bg-surface-muted rounded-full px-8 py-4 font-bold shadow-xl transition-colors'
+            <Link
+              href='/signup'
+              className='bg-surface hover:bg-surface-muted inline-flex rounded-full px-8 py-4 transition-colors'
             >
-              Get Started Free
-            </motion.button>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className='text-brand inline-flex w-full items-center justify-center rounded-full font-bold shadow-xl'
+              >
+                Get Started Free
+              </motion.div>
+            </Link>
 
             <motion.button
               whileHover={{ scale: 1.02 }}

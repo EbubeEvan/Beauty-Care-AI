@@ -1,14 +1,16 @@
 'use client';
 
-import { Menu, Moon, Sparkles, Sun, X } from 'lucide-react';
+import { Menu, Sparkles, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useTheme } from 'next-themes';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+import { ModeToggle } from '@/components/design-system/mode-toggle';
+
 export const Navbar = () => {
-  const { theme, setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const modeToggleTone = scrolled ? 'default' : 'overlay';
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -28,10 +30,10 @@ export const Navbar = () => {
     >
       <div className='mx-auto flex max-w-7xl items-center justify-between px-6 py-4'>
         <div className='flex items-center gap-2'>
-          <div className='from-brand to-brand-hover shadow-brand/30 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg'>
+          <div className='from-brand to-brand-hover shadow-brand/30 flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br shadow-lg'>
             <Sparkles className='h-5 w-5 text-white' />
           </div>
-          <span className='from-brand to-brand-hover bg-gradient-to-r bg-clip-text text-xl font-bold text-transparent'>
+          <span className='from-brand to-brand-hover bg-linear-to-r bg-clip-text text-xl font-bold text-transparent'>
             Beautycare AI
           </span>
         </div>
@@ -40,7 +42,7 @@ export const Navbar = () => {
           {['Features', 'How it Works', 'Pricing', 'FAQ'].map((item) => (
             <a
               key={item}
-              href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+              href={`#${item.toLowerCase().replaceAll(' ', '-')}`}
               className={`font-medium transition-colors ${
                 scrolled ? 'text-text-muted hover:text-brand' : 'text-white/90 hover:text-white'
               }`}
@@ -51,48 +53,37 @@ export const Navbar = () => {
         </div>
 
         <div className='hidden items-center gap-4 md:flex'>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-            className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
-              scrolled
-                ? 'bg-surface-muted text-text-muted hover:bg-brand-muted hover:text-brand'
-                : 'bg-white/10 text-white backdrop-blur-md hover:bg-white/20'
-            }`}
-          >
-            {theme === 'light' ? <Moon className='h-5 w-5' /> : <Sun className='h-5 w-5' />}
-          </motion.button>
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <ModeToggle tone={modeToggleTone} />
+          </motion.div>
 
-          <button
+          <Link
+            href='/login'
             className={`font-medium transition-colors ${
               scrolled ? 'text-text-muted hover:text-brand' : 'text-white/90 hover:text-white'
             }`}
           >
             Sign In
-          </button>
+          </Link>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className='bg-brand shadow-brand/30 hover:bg-brand-hover rounded-full px-6 py-2.5 font-semibold text-white shadow-lg transition-colors'
+          <Link
+            href='/signup'
+            className='bg-brand hover:bg-brand-hover inline-flex rounded-full px-6 py-2.5 transition-colors'
           >
-            Get Started
-          </motion.button>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className='shadow-brand/30 inline-flex w-full items-center justify-center rounded-full font-semibold text-white shadow-lg'
+            >
+              Get Started
+            </motion.div>
+          </Link>
         </div>
 
         <div className='flex items-center gap-2 md:hidden'>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-            className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
-              scrolled
-                ? 'bg-surface-muted text-text-muted'
-                : 'bg-white/10 text-white backdrop-blur-md'
-            }`}
-          >
-            {theme === 'light' ? <Moon className='h-5 w-5' /> : <Sun className='h-5 w-5' />}
-          </motion.button>
+          <motion.div whileTap={{ scale: 0.9 }}>
+            <ModeToggle tone={modeToggleTone} />
+          </motion.div>
 
           <button
             className={`p-2 transition-colors ${scrolled ? 'text-text-muted' : 'text-white'}`}
@@ -115,16 +106,22 @@ export const Navbar = () => {
               {['Features', 'How it Works', 'Pricing', 'FAQ'].map((item) => (
                 <a
                   key={item}
-                  href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+                  href={`#${item.toLowerCase().replaceAll(' ', '-')}`}
                   className='text-text-muted block font-medium'
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item}
                 </a>
               ))}
-              <button className='bg-brand w-full rounded-full py-3 font-semibold text-white'>
-                Get Started
-              </button>
+              <Link href='/signup' className='block'>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className='bg-brand inline-block w-full rounded-full py-3 text-center font-semibold text-white'
+                >
+                  Get Started
+                </motion.div>
+              </Link>
             </div>
           </motion.div>
         )}

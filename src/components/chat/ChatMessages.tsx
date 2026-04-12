@@ -1,7 +1,7 @@
 'use client';
 
 import { UIMessage } from '@ai-sdk/react';
-import { CircleUser, FlowerIcon, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 
 import { getMessageFileParts } from '@/lib/types';
@@ -17,7 +17,7 @@ export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
   const isPending = messages.length % 2 !== 0;
 
   return (
-    <div className='mb-[10rem] flex w-full flex-1 flex-col gap-y-5 overflow-y-auto max-md:overflow-x-hidden md:pr-20 md:pl-10'>
+    <div className='mb-30 flex w-full flex-1 flex-col gap-y-5 overflow-x-hidden overflow-y-auto pr-2 md:pr-20 md:pl-10'>
       {messages.map((message) => (
         <div key={message.id}>
           <div
@@ -25,16 +25,18 @@ export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
               message.role === 'assistant' ? 'justify-start' : 'justify-end'
             }`}
           >
-            {message.role === 'assistant' && (
-              <FlowerIcon className='ml-[-2.1rem] max-h-6 min-h-6 max-w-6 min-w-6 text-pink-500 dark:text-purple-400' />
-            )}
-
-            <Card className='bg-gray-200 px-6 py-3 text-[1.11rem] dark:bg-gray-700'>
-              {message.parts.map((part, i) =>
+            <Card
+              className={`px-6 py-3 text-[1.11rem] ${
+                message.role === 'user'
+                  ? 'bg-brand-muted text-text-main'
+                  : 'bg-surface-muted text-text-main'
+              }`}
+            >
+              {message.parts.map((part) =>
                 part.type === 'text' ? (
                   <div
-                    className='prose dark:prose-invert'
-                    key={i}
+                    className='prose text-text-main dark:prose-invert max-w-none'
+                    key={`${message.id}-${part.type}-${part.text.slice(0, 24)}`}
                     dangerouslySetInnerHTML={{
                       __html: sanitizeMessage(part.text),
                     }}
@@ -42,10 +44,6 @@ export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
                 ) : null,
               )}
             </Card>
-
-            {message.role === 'user' && (
-              <CircleUser className='max-h-6 min-h-6 max-w-6 min-w-6 text-pink-500 dark:text-purple-400' />
-            )}
           </div>
 
           {/* Attached images */}
@@ -54,8 +52,8 @@ export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
               <Image
                 key={`${message.id}-${i}`}
                 src={filePart.url}
-                width={200}
-                height={200}
+                width={400}
+                height={400}
                 alt={filePart.filename ?? filePart.mediaType ?? 'uploaded file'}
                 className='rounded-lg'
               />
@@ -67,10 +65,9 @@ export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
       {/* --- Loader Section --- */}
       {isPending && (
         <div className='mb-4 flex items-start justify-start gap-2'>
-          <FlowerIcon className='ml-[-2.1rem] max-h-6 min-h-6 max-w-6 min-w-6 text-pink-500 dark:text-purple-400' />
-          <Card className='flex items-center gap-2 bg-gray-200 px-6 py-3 dark:bg-gray-700'>
-            <Loader2 className='text-muted-foreground h-5 w-5 animate-spin' />
-            <span className='text-muted-foreground text-sm italic'>Thinking...</span>
+          <Card className='bg-surface-muted flex items-center gap-2 px-6 py-3'>
+            <Loader2 className='text-text-muted h-5 w-5 animate-spin' />
+            <span className='text-text-muted text-sm italic'>Thinking...</span>
           </Card>
         </div>
       )}

@@ -6,7 +6,7 @@ type PageProps = {
   params: Promise<{ id: string }>;
 };
 
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params }: Readonly<PageProps>) {
   const { id } = await params;
 
   console.log('=== PAGE COMPONENT ===');
@@ -21,10 +21,16 @@ export default async function Page({ params }: PageProps) {
 
   const session = await auth();
   const user = await getUser(session?.user?.email || '');
+  const initialChat = chat ? { messages: chat.messages } : null;
 
   return (
-    <div className='h-screen w-full'>
-      <ResumeChat email={session?.user?.email || ''} id={id} chat={chat} userId={user?._id} />
+    <div className='bg-surface text-text-main h-full w-full overflow-hidden transition-colors duration-300'>
+      <ResumeChat
+        email={session?.user?.email || ''}
+        id={id}
+        chat={initialChat}
+        userId={user?._id}
+      />
     </div>
   );
 }

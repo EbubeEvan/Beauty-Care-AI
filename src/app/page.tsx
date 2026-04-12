@@ -10,7 +10,7 @@ import { Testimonials } from '@/components/landing-new/Testimonials';
 
 export default function Home() {
   return (
-    <div className='min-h-screen bg-white transition-colors duration-300 dark:bg-black'>
+    <div className='bg-surface min-h-screen transition-colors duration-300'>
       <Navbar />
       <main>
         <Hero />

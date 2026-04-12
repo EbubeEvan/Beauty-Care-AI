@@ -84,7 +84,7 @@ export default function ProfileDetails({ user }: Readonly<ProfileDetailsProps>) 
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardHeader>
           <div className='mb-10 flex flex-col items-center justify-center gap-2'>
-            <CircleUser className='min-w-24 text-pink-500 dark:text-purple-400' size={80} />
+            <CircleUser className='text-brand min-w-24' size={80} />
             <p className='text-lg'>
               {user?.firstName} {user?.lastName}
             </p>
@@ -220,7 +220,7 @@ export default function ProfileDetails({ user }: Readonly<ProfileDetailsProps>) 
         <CardFooter className='flex flex-col'>
           <Button
             type='submit'
-            className='w-full bg-pink-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500'
+            className='bg-brand hover:bg-brand-hover w-full px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors focus:outline-none'
             disabled={loading}
           >
             {loading ? (

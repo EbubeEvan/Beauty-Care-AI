@@ -2,16 +2,24 @@
 
 import { ImageIcon, Send, X } from 'lucide-react';
 import Image from 'next/image';
-import { ChangeEvent, FormEvent, RefObject } from 'react';
+import {
+  ChangeEvent,
+  ComponentProps,
+  KeyboardEvent,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { cn } from '@/lib/utils';
 
-import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
 
 type PromptInputProps = {
   input: string;
   setInput: (value: string) => void;
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  onSubmit: NonNullable<ComponentProps<'form'>['onSubmit']>;
   menuOpen: boolean;
 
   onImageChange?: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -35,43 +43,75 @@ export function PromptInput({
   onRemoveFile,
   className,
 }: Readonly<PromptInputProps>) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      return;
+    }
+
+    textarea.style.height = '0px';
+    const nextHeight = Math.min(textarea.scrollHeight, 160);
+    textarea.style.height = `${nextHeight}px`;
+    setIsExpanded(nextHeight > 80);
+  }, [input]);
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.nativeEvent.isComposing) {
+      return;
+    }
+
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      event.currentTarget.form?.requestSubmit();
+    }
+  };
+
   return (
     <div
       className={cn(
-        'fixed bottom-0 flex justify-center pb-8 transition-all duration-300 md:ml-5',
-        menuOpen ? 'w-[85%] md:w-[70%]' : 'w-[85%] md:w-[85%]',
+        'fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 pb-8 transition-all duration-300 sm:px-6',
+        menuOpen && 'md:inset-x-auto md:left-[32%] md:w-[68%] md:px-6 lg:left-[20%] lg:w-[80%]',
         className,
       )}
     >
-      <div className='flex w-full flex-col items-center rounded-full bg-gray-200 px-8 py-2 pt-5 md:px-10 dark:bg-gray-700'>
+      <div
+        className={cn(
+          'bg-brand-muted text-text-main flex w-full max-w-4xl flex-col justify-center rounded-4xl px-5 py-3 shadow-sm transition-[min-height] duration-200 md:px-6',
+          isExpanded ? 'min-h-40' : 'min-h-20',
+        )}
+      >
         {/* Image previews */}
         {previewUrls.length > 0 && (
-          <div className='mb-2 flex gap-3'>
+          <div className='mb-3 flex gap-3 self-start'>
             {previewUrls.map((url, index) => (
-              <div className='flex gap-3' key={index}>
+              <div className='relative flex gap-3' key={url}>
                 <button
+                  type='button'
                   onClick={() => onRemoveFile?.(index)}
-                  className='absolute top-2 z-10 cursor-pointer rounded-full bg-black/70 p-1 transition hover:bg-black/90'
+                  className='absolute top-2 right-2 z-10 cursor-pointer rounded-full bg-black/70 p-1 transition hover:bg-black/90'
                 >
                   <X className='h-4 w-4 text-white' />
                 </button>
                 <Image
-                  key={index}
                   src={url}
                   alt='uploaded image'
-                  width={60}
-                  height={60}
-                  className='relative rounded-md'
+                  width={120}
+                  height={120}
+                  unoptimized
+                  className='rounded-xl object-cover'
                 />
               </div>
             ))}
           </div>
         )}
 
-        <form className='flex w-full items-center gap-4' onSubmit={onSubmit}>
+        <form className='flex w-full flex-nowrap items-end gap-4' onSubmit={onSubmit}>
           {showImageUpload && onImageChange && (
-            <label htmlFor='image-upload' className='cursor-pointer'>
-              <ImageIcon className='h-6 w-6 text-pink-500 dark:text-purple-500' />
+            <label htmlFor='image-upload' className='mb-2 shrink-0 cursor-pointer'>
+              <ImageIcon className='text-text-main h-6 w-6' />
               <input
                 id='image-upload'
                 type='file'
@@ -84,16 +124,19 @@ export function PromptInput({
             </label>
           )}
 
-          <Input
+          <Textarea
             placeholder='Type your message...'
+            ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className='flex-1 rounded-lg bg-gray-200 px-4 text-[1.11rem] focus-visible:ring-transparent dark:bg-gray-700 dark:focus-visible:ring-transparent'
+            onKeyDown={handleKeyDown}
+            rows={1}
+            className='text-text-main placeholder:text-text-main/70 max-h-40 min-h-11 flex-1 resize-none overflow-y-auto rounded-3xl border-none bg-transparent px-1 py-2 text-[1.05rem] focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-transparent'
           />
 
           {input && (
-            <button type='submit'>
-              <Send className='text-pink-500 dark:text-purple-500' />
+            <button type='submit' className='mb-2 shrink-0'>
+              <Send className='text-text-main' />
             </button>
           )}
         </form>

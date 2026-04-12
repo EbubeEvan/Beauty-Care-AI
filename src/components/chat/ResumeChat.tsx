@@ -2,13 +2,22 @@
 
 import { type UIMessage, useChat } from '@ai-sdk/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, ComponentProps, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import useStore from '@/lib/store/useStore';
 
 import { ChatMessages } from './ChatMessages';
 import { PromptInput } from './PromptInput';
+
+type PromptSubmitEvent = Parameters<NonNullable<ComponentProps<'form'>['onSubmit']>>[0];
+
+const fileToDataUrl = async (file: File): Promise<string> =>
+  new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.readAsDataURL(file);
+  });
 
 type ResumeChatProps = {
   email: string;
@@ -77,7 +86,7 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
     setUrls(filesArray.map((f) => URL.createObjectURL(f)));
   };
 
-  const submit = async (e: FormEvent<HTMLFormElement>) => {
+  const submit = async (e: PromptSubmitEvent) => {
     e.preventDefault();
 
     if (!credits || credits <= 0) {
@@ -95,12 +104,7 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
     if (files.length > 0) {
       const fileParts = await Promise.all(
         files.map(async (file) => {
-          // Convert file to Data URL
-          const dataUrl = await new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.readAsDataURL(file);
-          });
+          const dataUrl = await fileToDataUrl(file);
 
           return {
             type: 'file' as const,
@@ -134,7 +138,7 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
   };
 
   return (
-    <div className='flex h-full flex-col pt-10'>
+    <div className='flex h-full w-full flex-col overflow-hidden pt-6'>
       {/* Messages */}
       <ChatMessages messages={messages} />
 

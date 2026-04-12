@@ -1,26 +1,26 @@
-'use client'
+'use client';
 
-import { FlowerIcon } from 'lucide-react'
-import Link from 'next/link'
-import { Account } from './account'
-import { ModeToggle } from '../design-system/mode-toggle'
-import { usePathname } from 'next/navigation'
+import { FlowerIcon } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+import { ModeToggle } from '../design-system/mode-toggle';
+import { Account } from './account';
 
 export default function Heading() {
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const modeToggleTone = pathname === '/' ? 'overlay' : 'default';
 
   return (
-    <header className="px-4 py-10 lg:px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <FlowerIcon className="h-6 w-6 text-pink-500 dark:text-purple-400" />
-          <span className="text-lg font-semibold text-gray-900 dark:text-gray-50">
-            Beautycare AI
-          </span>
-        </Link>
-        <div className="flex items-center gap-4">
-          <ModeToggle />
-          { pathname === '/' && <Account/>}
-        </div>
-      </header>
-  )
+    <header className='flex h-14 items-center justify-between px-4 py-10 lg:px-6'>
+      <Link href='/' className='flex items-center gap-2'>
+        <FlowerIcon className='text-brand h-6 w-6' />
+        <span className='text-text-main text-lg font-semibold'>Beautycare AI</span>
+      </Link>
+      <div className='flex items-center gap-4'>
+        <ModeToggle tone={modeToggleTone} />
+        {pathname === '/' && <Account />}
+      </div>
+    </header>
+  );
 }

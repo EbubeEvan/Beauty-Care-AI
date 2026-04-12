@@ -1,17 +1,17 @@
-import OnboardingForm from "@/components/onboarding/onboarding-form"
-import { Metadata } from "next"
+import { Metadata } from 'next';
+
+import OnboardingForm from '@/components/onboarding/onboarding-form';
 
 export const metadata: Metadata = {
   title: 'Onboarding',
 };
 
-export default async function page () {
-  
+export default async function page() {
   return (
-    <section className="flex flex-col justify-center items-center max-md:px-3 min-h-[100dvh]">
-      <div className="w-full flex justify-center">
-        <OnboardingForm/>
+    <section className='bg-surface text-text-main flex min-h-[100dvh] flex-col items-center justify-center px-4 transition-colors duration-300 sm:px-6'>
+      <div className='flex w-full justify-center'>
+        <OnboardingForm />
       </div>
     </section>
-  )
+  );
 }

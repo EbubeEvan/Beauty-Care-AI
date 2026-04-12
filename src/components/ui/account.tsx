@@ -1,37 +1,31 @@
-"use client"
+'use client';
 
-import { UserIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { UserIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 
 export function Account() {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-      <Button
-            className="inline-flex items-center gap-2 rounded-md bg-pink-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-pink-600 focus:outline-none dark:bg-purple-400 dark:text-gray-900 dark:hover:bg-purple-500"
-          >
-            <UserIcon className="h-4 w-4" />
-            Account
-          </Button>
+        <Button className='bg-brand hover:bg-brand-hover inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors focus:outline-none'>
+          <UserIcon className='h-4 w-4' />
+          Account
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => router.push('/login')}>
-          Login
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push('/signup')}>
-          Sign Up
-        </DropdownMenuItem>
+      <DropdownMenuContent align='end'>
+        <DropdownMenuItem onClick={() => router.push('/login')}>Login</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push('/signup')}>Sign Up</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

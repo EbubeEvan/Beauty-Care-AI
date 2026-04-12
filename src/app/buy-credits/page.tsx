@@ -1,18 +1,31 @@
+import { headers } from 'next/headers';
+
 import { auth } from '@/auth';
 import Pricing from '@/components/buy-credits/Pricing';
 import Heading from '@/components/ui/Heading';
-import { getUser } from '@/lib/fetchData';
+import { getPrices, getUser } from '@/lib/fetchData';
 
 export const dynamic = 'force-dynamic';
 
 export default async function page() {
   const session = await auth();
   const user = await getUser(session?.user?.email || '');
+  const requestHeaders = await headers();
+  const clientIp =
+    requestHeaders.get('x-forwarded-for')?.split(',')[0] ||
+    requestHeaders.get('x-real-ip') ||
+    '127.0.0.1';
+  const pricing = await getPrices(clientIp);
 
   return (
-    <section className='min-h-screen w-full bg-gradient-to-br from-[#f5d0fe] to-[#e879f9] dark:from-[#1e293b] dark:to-[#4c1d95]'>
+    <section className='bg-surface text-text-main min-h-screen w-full px-4 py-10 transition-colors duration-300 sm:px-6'>
       <Heading />
-      <Pricing email={session?.user?.email || ''} id={user?._id || ''} />
+      <Pricing
+        email={session?.user?.email || ''}
+        id={user?._id || ''}
+        prices={pricing.prices}
+        currency={pricing.currency}
+      />
     </section>
   );
 }

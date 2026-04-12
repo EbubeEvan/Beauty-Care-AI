@@ -42,10 +42,7 @@ export default function SideNav({
   return (
     <div className='flex h-full flex-col py-6'>
       {/* Main content area */}
-      <div
-        className='flex flex-grow flex-col gap-5 px-3'
-        style={{ maxHeight: 'calc(100vh - 100px)' }}
-      >
+      <div className='flex flex-1 flex-col gap-5 px-3' style={{ maxHeight: 'calc(100vh - 100px)' }}>
         <div
           className={clsx('flex transition-all duration-300', {
             'justify-center': !menuOpen,
@@ -54,7 +51,8 @@ export default function SideNav({
         >
           <Button
             onClick={() => setMenuOpen(!menuOpen)}
-            className='rounded-full hover:bg-pink-300 dark:hover:bg-purple-400'
+            variant='ghost'
+            className='text-text-main hover:bg-brand/15 dark:hover:bg-brand/15 rounded-full bg-transparent shadow-none dark:bg-transparent'
           >
             <Menu />
           </Button>
@@ -67,7 +65,7 @@ export default function SideNav({
         >
           <Link
             href='/chat'
-            className='flex gap-1 rounded-full px-3 py-2 text-white hover:bg-pink-300 dark:hover:bg-purple-400'
+            className='text-text-main hover:bg-brand/15 flex gap-1 rounded-full px-3 py-2 transition-colors'
           >
             <Plus />
             {menuOpen && 'New Chat'}
@@ -82,15 +80,15 @@ export default function SideNav({
           style={{ maxHeight: 'calc(100vh - 200px)' }} // Adjust the height as needed
         >
           {isLoading ? (
-            <Spinner size='medium' className='text-gray-200 dark:text-gray-700' />
+            <Spinner size='medium' className='text-white/80' />
           ) : (
             history?.map((chat) => (
               <Link
                 href={`/chat/${chat.chatId}`}
                 className={clsx(
-                  'mr-3 flex gap-2 rounded-full px-5 py-2 text-white hover:bg-pink-300 dark:hover:bg-purple-400',
+                  'text-text-main hover:bg-brand/15 mr-3 flex gap-2 rounded-full px-5 py-2 transition-colors',
                   {
-                    'bg-pink-300 dark:bg-purple-400': chat.chatId === pathID,
+                    'bg-brand/15': chat.chatId === pathID,
                   },
                 )}
                 key={chat.chatId}
