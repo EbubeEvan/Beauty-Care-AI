@@ -67,7 +67,7 @@ export const Pricing = () => {
         <FadeIn delay={0.4} className='mt-12 text-center'>
           <p className='text-text-muted flex items-center justify-center gap-2'>
             <CreditCard className='h-4 w-4' />
-            Secure payment powered by Stripe • Credits never expire
+            Secure payment • Credits never expire
           </p>
         </FadeIn>
       </div>

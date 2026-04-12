@@ -23,10 +23,10 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay }}
-      whileHover={{ y: -8 }}
-      className='group bg-surface border-border-main shadow-brand/10 rounded-3xl border p-8 shadow-xl transition-all duration-300'
+      whileHover={{ y: -8, transition: { duration: 0.15, ease: 'easeOut' } }}
+      className='group bg-surface border-border-main shadow-brand/10 rounded-3xl border p-8 shadow-xl transition-all duration-150'
     >
-      <div className='bg-brand-muted mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-transform group-hover:scale-110'>
+      <div className='bg-brand-muted mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-transform duration-150 group-hover:scale-110'>
         <Icon className='text-brand h-7 w-7' />
       </div>
       <h3 className='text-text-main mb-3 text-2xl font-bold'>{title}</h3>

@@ -1,16 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 'use client';
 
-import {
-  Facebook,
-  Instagram,
-  Linkedin,
-  Mail,
-  MapPin,
-  Phone,
-  Sparkles,
-  Twitter,
-} from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Mail, Sparkles, Twitter } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export const Footer = () => {
@@ -94,14 +85,6 @@ export const Footer = () => {
             <div className='flex items-center gap-3'>
               <Mail className='text-brand h-5 w-5' />
               <span>support@beautycareai.com</span>
-            </div>
-            <div className='flex items-center gap-3'>
-              <Phone className='text-brand h-5 w-5' />
-              <span>+1 (555) 123-4567</span>
-            </div>
-            <div className='flex items-center gap-3'>
-              <MapPin className='text-brand h-5 w-5' />
-              <span>San Francisco, CA</span>
             </div>
           </div>
         </div>

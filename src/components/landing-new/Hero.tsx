@@ -61,14 +61,15 @@ export const Hero = () => {
               </motion.div>
             </Link>
 
-            <motion.button
+            <motion.a
+              href='#how-it-works'
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className='flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-10 py-4 text-lg font-semibold text-white backdrop-blur-md transition-all hover:bg-white/20'
             >
               <Play className='h-5 w-5 fill-white' />
               Watch How It Works
-            </motion.button>
+            </motion.a>
           </div>
 
           <div className='flex flex-wrap justify-center gap-8 text-white/60'>

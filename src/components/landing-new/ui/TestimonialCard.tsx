@@ -20,13 +20,13 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
   delay = 0,
 }: TestimonialCardProps) => (
   <FadeIn delay={delay}>
-    <div className='bg-surface-muted border-border-main h-full rounded-2xl border p-6'>
+    <div className='bg-surface-muted border-border-main flex h-full flex-col rounded-2xl border p-6'>
       <div className='mb-4 flex gap-1'>
         {[...Array(5)].map((_, i) => (
           <Star key={i} className='h-5 w-5 fill-amber-400 text-amber-400' />
         ))}
       </div>
-      <p className='text-text-main mb-6 leading-relaxed'>{text}</p>
+      <p className='text-text-main mb-6 flex-1 leading-relaxed'>{text}</p>
       <div className='flex items-center gap-3'>
         <div className='from-brand to-brand-hover flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br font-semibold text-white'>
           {avatar ? (

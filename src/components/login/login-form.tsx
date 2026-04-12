@@ -89,7 +89,7 @@ export default function LoginForm() {
           </Button>
           <p className='mt-5 text-sm'>
             Don&apos;t have an account?{' '}
-            <Link href='/signup' className='text-pink-500 hover:underline dark:text-purple-600'>
+            <Link href='/signup' className='text-brand hover:underline'>
               {' '}
               Sign up here
             </Link>

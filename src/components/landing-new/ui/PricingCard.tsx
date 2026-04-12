@@ -26,7 +26,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.6, delay }}
-    className={`relative rounded-3xl p-8 transition-all duration-300 ${
+    className={`relative flex h-full flex-col rounded-3xl p-8 transition-all duration-300 ${
       popular
         ? 'from-brand to-brand-hover shadow-brand/30 scale-105 bg-gradient-to-br text-white shadow-2xl'
         : 'bg-surface border-border-main text-text-main border-2'
@@ -51,7 +51,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
       </div>
     </div>
 
-    <ul className='mb-8 space-y-4'>
+    <ul className='mb-8 flex-1 space-y-4'>
       {features.map((feature, i) => (
         <li key={i} className='flex items-start gap-3'>
           <div

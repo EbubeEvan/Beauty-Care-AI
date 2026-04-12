@@ -2,7 +2,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CircleUser } from 'lucide-react';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -31,6 +30,7 @@ import { beautyProfileSchema, beautyProfileType, userType } from '@/lib/types';
 
 import { FormInput } from '../design-system/FormInput';
 import { SelectItems } from '../onboarding/select-items';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Spinner } from '../ui/spinner';
 
 type ProfileDetailsProps = {
@@ -84,7 +84,11 @@ export default function ProfileDetails({ user }: Readonly<ProfileDetailsProps>) 
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardHeader>
           <div className='mb-10 flex flex-col items-center justify-center gap-2'>
-            <CircleUser className='text-brand min-w-24' size={80} />
+            <Avatar className='h-20 w-20 text-2xl'>
+              <AvatarFallback>
+                {`${user?.firstName?.[0] ?? ''}${user?.lastName?.[0] ?? ''}`.toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
             <p className='text-lg'>
               {user?.firstName} {user?.lastName}
             </p>

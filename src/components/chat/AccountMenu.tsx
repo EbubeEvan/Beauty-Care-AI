@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { ChevronsUpDownIcon, CircleUser, CreditCard, User, Wallet } from 'lucide-react';
+import { ChevronsUpDownIcon, CreditCard, User, Wallet } from 'lucide-react';
 import Link from 'next/link';
 
 import {
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import useStore from '@/lib/store/useStore';
 
+import { Avatar, AvatarFallback } from '../ui/avatar';
 import Logout from './Logout';
 
 export function AccountMenu({
@@ -30,7 +31,16 @@ export function AccountMenu({
             },
           )}
         >
-          <CircleUser size={35} />
+          <Avatar className='h-9 w-9'>
+            <AvatarFallback>
+              {userName
+                .split(' ')
+                .map((n) => n[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2)}
+            </AvatarFallback>
+          </Avatar>
           <div className='ml-3'>
             <p>{userName}</p>
             <div className='flex gap-2'>
