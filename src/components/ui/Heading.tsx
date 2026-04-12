@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { ModeToggle } from '../design-system/mode-toggle';
-import { Account } from './account';
 
 export default function Heading() {
   const pathname = usePathname();
@@ -19,7 +18,6 @@ export default function Heading() {
       </Link>
       <div className='flex items-center gap-4'>
         <ModeToggle tone={modeToggleTone} />
-        {pathname === '/' && <Account />}
       </div>
     </header>
   );
