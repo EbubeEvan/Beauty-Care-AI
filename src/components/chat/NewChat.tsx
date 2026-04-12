@@ -3,7 +3,7 @@
 import { type UIMessage, useChat } from '@ai-sdk/react';
 import { generateId } from 'ai';
 import { useRouter } from 'next/navigation';
-import { ComponentProps, useState } from 'react';
+import { ComponentProps, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import useStore from '@/lib/store/useStore';
@@ -19,6 +19,14 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
   const { setNewPrompt, credits, menuOpen } = useStore();
   const router = useRouter();
   const { error } = useChat<UIMessage>();
+
+  useEffect(() => {
+    if (!error) {
+      return;
+    }
+
+    toast.error(error.message || 'Uh oh. Something went wrong');
+  }, [error]);
 
   const submit = (e: PromptSubmitEvent) => {
     e.preventDefault();
@@ -36,7 +44,7 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
   };
 
   return (
-    <div className='flex h-full w-full flex-col overflow-hidden pt-6'>
+    <div className='flex h-full min-h-0 w-full flex-col overflow-hidden pt-6'>
       {/* greeting */}
       <div className='mx-auto mb-4 flex w-full max-w-4xl items-start gap-2 px-2 md:px-6'>
         <Card className='bg-surface-muted px-6 py-3 text-[1.11rem] font-medium'>
@@ -45,8 +53,6 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
       </div>
 
       <PromptInput input={input} setInput={setInput} onSubmit={submit} menuOpen={menuOpen} />
-
-      {error && <p className='my-3 text-red-500'>Uh oh. Something went wrong</p>}
     </div>
   );
 }

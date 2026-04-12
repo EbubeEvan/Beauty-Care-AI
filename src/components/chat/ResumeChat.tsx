@@ -138,11 +138,11 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
   };
 
   return (
-    <div className='flex h-full w-full flex-col overflow-hidden pt-6'>
+    <div className='flex h-full min-h-0 w-full flex-col overflow-hidden pt-6'>
       {/* Messages */}
       <ChatMessages messages={messages} />
 
-      <section className='flex justify-center'>
+      <section className='flex shrink-0 justify-center'>
         <PromptInput
           input={input}
           setInput={setInput}

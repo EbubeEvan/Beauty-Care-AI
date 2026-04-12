@@ -65,11 +65,13 @@ export default function SignupForm() {
   return (
     <Card className='mt-10 mb-10 w-full max-w-lg min-[1200px]:mt-16'>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <CardHeader>
-          <CardTitle className='mb-3 text-2xl'>Sign Up</CardTitle>
-          <CardDescription>Begin your journey to achieving your beauty goals</CardDescription>
+        <CardHeader className='px-8 pt-8 md:px-10 md:pt-10'>
+          <CardTitle className='mb-3 text-3xl'>Sign Up</CardTitle>
+          <CardDescription className='text-base'>
+            Begin your journey to achieving your beauty goals
+          </CardDescription>
         </CardHeader>
-        <CardContent className='grid gap-4'>
+        <CardContent className='grid gap-6 px-8 md:px-10'>
           {/* firstname */}
           <FormInput
             {...register('firstName')}
@@ -107,10 +109,10 @@ export default function SignupForm() {
             type='password'
           />
         </CardContent>
-        <CardFooter className='flex flex-col'>
+        <CardFooter className='flex flex-col px-8 pb-8 md:px-10 md:pb-10'>
           <Button
             type='submit'
-            className='bg-brand hover:bg-brand-hover w-full px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors focus:outline-none'
+            className='bg-brand hover:bg-brand-hover w-full px-6 py-4 text-base font-medium text-white shadow-sm transition-colors focus:outline-none'
             disabled={loading}
           >
             {loading ? (
@@ -120,7 +122,7 @@ export default function SignupForm() {
             )}
           </Button>
 
-          <p className='mt-5 text-sm'>
+          <p className='mt-6 text-base'>
             Already have an account?
             <Link href='/login' className='text-brand hover:underline'>
               {' '}

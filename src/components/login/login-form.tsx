@@ -49,13 +49,15 @@ export default function LoginForm() {
   };
 
   return (
-    <Card className='-mt-10 mb-10 w-full max-w-lg min-[1200px]:mt-16'>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CardHeader>
-          <CardTitle className='mb-3 text-2xl'>Login</CardTitle>
-          <CardDescription>Enter your email below to login to your account.</CardDescription>
+    <Card className='-mt-10 mb-10 w-full max-w-lg min-[1200px]:mt-16 md:min-h-[34rem]'>
+      <form onSubmit={handleSubmit(onSubmit)} className='flex h-full flex-col'>
+        <CardHeader className='px-8 pt-8 md:px-10 md:pt-10'>
+          <CardTitle className='mb-3 text-3xl'>Login</CardTitle>
+          <CardDescription className='text-base'>
+            Enter your email below to login to your account.
+          </CardDescription>
         </CardHeader>
-        <CardContent className='grid gap-4'>
+        <CardContent className='grid flex-1 gap-8 px-8 py-6 md:px-10'>
           {/* email */}
           <FormInput
             {...register('email')}
@@ -75,10 +77,10 @@ export default function LoginForm() {
             type='password'
           />
         </CardContent>
-        <CardFooter className='flex flex-col'>
+        <CardFooter className='flex flex-col px-8 pb-8 md:px-10 md:pb-10'>
           <Button
             type='submit'
-            className='bg-brand hover:bg-brand-hover w-full px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors focus:outline-none'
+            className='bg-brand hover:bg-brand-hover w-full px-6 py-4 text-base font-medium text-white shadow-sm transition-colors focus:outline-none'
             disabled={loading}
           >
             {loading ? (
@@ -87,7 +89,7 @@ export default function LoginForm() {
               'Login'
             )}
           </Button>
-          <p className='mt-5 text-sm'>
+          <p className='mt-6 text-base'>
             Don&apos;t have an account?{' '}
             <Link href='/signup' className='text-brand hover:underline'>
               {' '}

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { headers } from 'next/headers';
 
 import dbConnect from '@/database/dbConnect';
 import ChatHistory, { IChatHistory } from '@/database/models/chatHistory.model';
@@ -112,12 +113,18 @@ export const getUser = async (userEmail: string): Promise<userType | null> => {
   }
 };
 
-export const getPrices = async (clientIp: string): Promise<PriceResponse> => {
+export const getPricesForCurrentRequest = async (): Promise<PriceResponse> => {
   const exchangeKey = process.env.EXCHANGE_RATE_KEY;
 
   if (!exchangeKey) {
     throw new Error('Missing EXCHANGE_RATE_KEY');
   }
+
+  const requestHeaders = await headers();
+  const clientIp =
+    requestHeaders.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    requestHeaders.get('x-real-ip')?.trim() ||
+    '127.0.0.1';
 
   try {
     await dbConnect();

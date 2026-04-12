@@ -40,9 +40,9 @@ export default function SideNav({
   }, [newCredits?.credits, setCredits]);
 
   return (
-    <div className='flex h-full flex-col py-6'>
+    <div className='flex h-full min-h-0 flex-col overflow-hidden py-6'>
       {/* Main content area */}
-      <div className='flex flex-1 flex-col gap-5 px-3' style={{ maxHeight: 'calc(100vh - 100px)' }}>
+      <div className='flex min-h-0 flex-1 flex-col gap-5 px-3'>
         <div
           className={clsx('flex transition-all duration-300', {
             'justify-center': !menuOpen,
@@ -73,14 +73,12 @@ export default function SideNav({
         </div>
         {/* Make the history div scrollable */}
         <div
-          className={clsx(
-            'flex flex-col gap-3 overflow-y-auto', // Enables vertical scrolling
-            { hidden: !menuOpen },
-          )}
-          style={{ maxHeight: 'calc(100vh - 200px)' }} // Adjust the height as needed
+          className={clsx('flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-2', {
+            hidden: !menuOpen,
+          })}
         >
           {isLoading ? (
-            <div className='flex min-h-[200px] items-center justify-center'>
+            <div className='flex min-h-50 items-center justify-center'>
               <Spinner size='medium' className='text-white/80' />
             </div>
           ) : (
