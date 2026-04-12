@@ -18,7 +18,7 @@ export default async function page() {
   const pricing = await getPrices(clientIp);
 
   return (
-    <section className='bg-surface text-text-main min-h-screen w-full px-4 py-10 transition-colors duration-300 sm:px-6'>
+    <section className='bg-surface text-text-main min-h-screen w-full px-4 transition-colors duration-300 sm:px-6'>
       <Heading />
       <Pricing
         email={session?.user?.email || ''}

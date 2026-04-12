@@ -6,7 +6,7 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <section className='bg-surface text-text-main min-h-screen transition-colors duration-300'>
+    <section className='bg-surface text-text-main flex h-screen flex-col transition-colors duration-300'>
       <Heading />
       {children}
     </section>

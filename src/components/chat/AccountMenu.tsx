@@ -42,20 +42,14 @@ export function AccountMenu({
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='border-border-main bg-surface text-text-main w-56 border'>
-        <DropdownMenuItem>
-          <Link
-            href='/buy-credits'
-            className='hover:bg-brand-muted flex w-full gap-3 rounded-md px-5 py-2 transition-colors'
-          >
+        <DropdownMenuItem className='focus:bg-brand/15 focus:text-text-main dark:focus:bg-brand/15 dark:focus:text-text-main'>
+          <Link href='/buy-credits' className='flex w-full gap-3 rounded-md px-5 py-2'>
             <Wallet />
             <p>Buy credits</p>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            href='/profile'
-            className='hover:bg-brand-muted flex w-full gap-3 rounded-md px-5 py-2 transition-colors'
-          >
+        <DropdownMenuItem className='focus:bg-brand/15 focus:text-text-main dark:focus:bg-brand/15 dark:focus:text-text-main'>
+          <Link href='/profile' className='flex w-full gap-3 rounded-md px-5 py-2'>
             <User />
             <p>profile</p>
           </Link>

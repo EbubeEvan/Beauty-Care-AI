@@ -17,7 +17,7 @@ export function ChatMessages({ messages }: Readonly<ChatMessagesProps>) {
   const isPending = messages.length % 2 !== 0;
 
   return (
-    <div className='mb-30 flex w-full flex-1 flex-col gap-y-5 overflow-x-hidden overflow-y-auto pr-2 md:pr-20 md:pl-10'>
+    <div className='mx-auto mb-30 flex w-full max-w-4xl flex-1 flex-col gap-y-5 overflow-x-hidden overflow-y-auto px-2 md:px-6'>
       {messages.map((message) => (
         <div key={message.id}>
           <div

@@ -1,32 +1,34 @@
-"use server";
+'use server';
 
-import dbConnect from "@/database/dbConnect";
+import bcrypt from 'bcrypt';
+import { revalidatePath } from 'next/cache';
+import { AuthError } from 'next-auth';
+
+import { signIn, signOut } from '@/auth';
+import dbConnect from '@/database/dbConnect';
+import User, { IUser } from '@/database/models/user.model';
+
+import { beautyProfileDefault } from './data';
 import {
-  SignUpType,
-  LoginType,
-  beautyProfileType,
-  signUpFormSchema,
   beautyProfileSchema,
-  userReturn,
+  beautyProfileType,
   beautyReturn,
-} from "./types";
-import { beautyProfileDefault } from "./data";
-import User, { IUser } from "@/database/models/user.model";
-import bcrypt from "bcrypt";
-import { signIn, signOut } from "@/auth";
-import { AuthError } from "next-auth";
-import { revalidatePath } from "next/cache";
+  LoginType,
+  signUpFormSchema,
+  SignUpType,
+  userReturn,
+} from './types';
 
 export async function createUser(user: SignUpType): Promise<userReturn> {
   const validatedFields = signUpFormSchema.safeParse(user);
 
-  if (!validatedFields.success) {
+  if (validatedFields.success) {
+    console.log('validated successfully!');
+  } else {
     return {
-      message: "Missing fields. Failed to create user",
+      message: 'Missing fields. Failed to create user',
       errors: validatedFields.error.flatten().fieldErrors,
     };
-  } else {
-    console.log("validated successfully!");
   }
 
   const hashedPassword = await bcrypt.hash(validatedFields.data.password, 10);
@@ -45,11 +47,13 @@ export async function createUser(user: SignUpType): Promise<userReturn> {
 
     const savedUser = await newUser.save();
 
-    savedUser && console.log("User created successfully!");
+    if (savedUser) {
+      console.log('User created successfully!');
+    }
 
     return {
       id: savedUser._id.toString(),
-      message: "User created successfully!",
+      message: 'User created successfully!',
     };
   } catch (error: any) {
     console.log(`Database error : ${error.message}`);
@@ -59,19 +63,19 @@ export async function createUser(user: SignUpType): Promise<userReturn> {
   }
 }
 
-export async function  addBeautyProfile(
+export async function addBeautyProfile(
   profile: beautyProfileType,
-  userId: string
+  userId: string,
 ): Promise<beautyReturn> {
   const validatedFields = beautyProfileSchema.safeParse(profile);
 
-  if (!validatedFields.success) {
+  if (validatedFields.success) {
+    console.log('validated successfully!');
+  } else {
     return {
-      message: "Missing fields. Failed to create user",
+      message: 'Missing fields. Failed to create user',
       errors: validatedFields.error.flatten().fieldErrors,
     };
-  } else {
-    console.log("validated successfully!");
   }
 
   try {
@@ -80,19 +84,18 @@ export async function  addBeautyProfile(
     const user: IUser | null = await User.findOneAndUpdate(
       { _id: userId },
       { beautyProfile: validatedFields.data },
-      { new: true }
+      { new: true },
     );
 
-    if (!user) {
-      throw new Error("User not found");
+    if (user) {
+      console.log('Beauty profile added successfully!');
     } else {
-      console.log("Beauty profile added successfully!");
+      throw new Error('User not found');
     }
 
     return {
-      message: "Beauty profile added successfully",
+      message: 'Beauty profile added successfully',
     };
-    
   } catch (error: any) {
     console.log(`Database error : ${error.message}`);
     return {
@@ -102,46 +105,39 @@ export async function  addBeautyProfile(
 }
 
 export async function authenticate(
-  user: LoginType
-): Promise<"Invalid credentials." | "Something went wrong." | undefined> {
+  user: LoginType,
+): Promise<'Invalid credentials.' | 'Something went wrong.' | undefined> {
   try {
-    await signIn("credentials", user);
+    await signIn('credentials', user);
   } catch (error) {
     if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return "Invalid credentials.";
-        default:
-          return "Something went wrong.";
+      if (error.type === 'CredentialsSignin') {
+        return 'Invalid credentials.';
       }
+      return 'Something went wrong.';
     }
     throw error;
   }
 }
 
 export const logout = async () => {
-  "use server";
-  await signOut();
+  'use server';
+  await signOut({ redirectTo: '/login' });
 };
 
-export async function addCredits(
-  credits: number,
-  userId: string
-): Promise<string> {
+export async function addCredits(credits: number, userId: string): Promise<string> {
   try {
     await dbConnect();
 
     const user: IUser | null = await User.findOneAndUpdate(
       { _id: userId },
       { $inc: { creditBalance: credits } },
-      { new: true }
+      { new: true },
     );
 
     if (user) {
-      console.log(
-        `Updated credit balance for user ${userId}: ${credits}`
-      );
-      revalidatePath("/chat")
+      console.log(`Updated credit balance for user ${userId}: ${credits}`);
+      revalidatePath('/chat');
       return `${credits} credits added successfully!`;
     } else {
       console.log(`User with ID ${userId} not found.`);
@@ -152,4 +148,3 @@ export async function addCredits(
     return `Something went wrong. Unable to add credits`;
   }
 }
-

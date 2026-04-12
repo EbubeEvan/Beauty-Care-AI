@@ -2,7 +2,6 @@
 
 import { type UIMessage, useChat } from '@ai-sdk/react';
 import { generateId } from 'ai';
-import { FlowerIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ComponentProps, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -39,8 +38,7 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
   return (
     <div className='flex h-full w-full flex-col overflow-hidden pt-6'>
       {/* greeting */}
-      <div className='mb-4 flex items-start gap-2 md:pl-10'>
-        <FlowerIcon className='text-brand h-6 w-6' />
+      <div className='mx-auto mb-4 flex w-full max-w-4xl items-start gap-2 px-2 md:px-6'>
         <Card className='bg-surface-muted px-6 py-3 text-[1.11rem] font-medium'>
           {`Hello ${username}, how may I assist you?`}
         </Card>

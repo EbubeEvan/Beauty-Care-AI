@@ -8,7 +8,7 @@ export default async function page() {
   const user = await getUser(session?.user?.email || '');
 
   return (
-    <section className='bg-surface text-text-main min-h-dvh w-full px-4 py-10 transition-colors duration-300 sm:px-6'>
+    <section className='bg-surface text-text-main min-h-dvh w-full px-4 transition-colors duration-300 sm:px-6'>
       <Heading />
       <div className='flex w-full justify-center'>
         <ProfileDetails user={user} />

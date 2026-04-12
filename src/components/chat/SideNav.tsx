@@ -80,7 +80,9 @@ export default function SideNav({
           style={{ maxHeight: 'calc(100vh - 200px)' }} // Adjust the height as needed
         >
           {isLoading ? (
-            <Spinner size='medium' className='text-white/80' />
+            <div className='flex min-h-[200px] items-center justify-center'>
+              <Spinner size='medium' className='text-white/80' />
+            </div>
           ) : (
             history?.map((chat) => (
               <Link

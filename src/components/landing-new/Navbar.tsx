@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, Sparkles, X } from 'lucide-react';
+import { FlowerIcon, Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -31,7 +31,7 @@ export const Navbar = () => {
       <div className='mx-auto flex max-w-7xl items-center justify-between px-6 py-4'>
         <div className='flex items-center gap-2'>
           <div className='from-brand to-brand-hover shadow-brand/30 flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br shadow-lg'>
-            <Sparkles className='h-5 w-5 text-white' />
+            <FlowerIcon className='h-5 w-5 text-white' />
           </div>
           <span className='from-brand to-brand-hover bg-linear-to-r bg-clip-text text-xl font-bold text-transparent'>
             Beautycare AI
