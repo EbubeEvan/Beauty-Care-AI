@@ -25,12 +25,6 @@ import { Spinner } from '../ui/spinner';
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
 
-  const [errMsg, setErrMsg] = useState('');
-
-  if (errMsg.length > 0 && !errMsg.includes('NEXT')) {
-    toast.error(errMsg);
-  }
-
   const {
     register,
     handleSubmit,
@@ -43,7 +37,9 @@ export default function LoginForm() {
       const user = await authenticate(data);
       return user;
     } catch (error: any) {
-      setErrMsg(error.message);
+      if (!error.message.includes('NEXT')) {
+        toast.error(error.message);
+      }
       setLoading(false);
     }
   };

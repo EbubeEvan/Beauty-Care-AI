@@ -1,34 +1,38 @@
-import { create, StateCreator } from "zustand";
-import { persist, PersistOptions } from "zustand/middleware";
+import { create, StateCreator } from 'zustand';
+import { persist, PersistOptions } from 'zustand/middleware';
 
 interface UserDetailsType {
   id: string;
   setId: (data: string) => void;
   newPrompt: string | null;
   setNewPrompt: (data: string | null) => void;
+  newPromptAudio: string | null;
+  setNewPromptAudio: (data: string | null) => void;
   first: boolean;
   setFirst: (data: boolean) => void;
   menuOpen: boolean;
   setMenuOpen: (data: boolean) => void;
   messageCount: number;
-  setMessageCount: (data : number) => void;
+  setMessageCount: (data: number) => void;
   credits: number;
-  setCredits: (data : number) => void;
+  setCredits: (data: number) => void;
 }
 
 // Define the store type including persist options
 type MyPersist = (
   config: StateCreator<UserDetailsType>,
-  options: PersistOptions<UserDetailsType>
+  options: PersistOptions<UserDetailsType>,
 ) => StateCreator<UserDetailsType>;
 
 const useStore = create<UserDetailsType>(
   (persist as MyPersist)(
     (set) => ({
-      id: "",
+      id: '',
       setId: (data: string) => set({ id: data }),
       newPrompt: null,
       setNewPrompt: (data: string | null) => set({ newPrompt: data }),
+      newPromptAudio: null,
+      setNewPromptAudio: (data: string | null) => set({ newPromptAudio: data }),
       first: false,
       setFirst: (data: boolean) => set({ first: data }),
       messageCount: 0,
@@ -39,9 +43,10 @@ const useStore = create<UserDetailsType>(
       setCredits: (data: number) => set({ credits: data }),
     }),
     {
-      name: "user-storage",
-    }
-  )
+      name: 'user-storage',
+      partialize: (state) => state as UserDetailsType,
+    },
+  ),
 );
 
 export default useStore;

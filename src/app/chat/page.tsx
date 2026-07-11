@@ -8,7 +8,7 @@ export default async function page() {
 
   return (
     <div className='bg-surface text-text-main h-full w-full overflow-hidden transition-colors duration-300'>
-      <NewChat username={user?.firstName || 'User'} />
+      <NewChat username={user?.firstName || 'User'} userId={user?._id || ''} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { ImageIcon, Send, X } from 'lucide-react';
+import { ImageIcon, Mic, Send, Square, X } from 'lucide-react';
 import Image from 'next/image';
 import {
   ChangeEvent,
@@ -10,6 +10,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -29,6 +30,11 @@ type PromptInputProps = {
 
   className?: string;
   onRemoveFile?: (index: number) => void;
+
+  isRecording?: boolean;
+  isVoiceSupported?: boolean;
+  onToggleRecording?: () => void;
+  voiceError?: string | null;
 };
 
 export function PromptInput({
@@ -42,10 +48,18 @@ export function PromptInput({
   showImageUpload = false,
   onRemoveFile,
   className,
+  isRecording = false,
+  isVoiceSupported = false,
+  onToggleRecording,
+  voiceError,
 }: Readonly<PromptInputProps>) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   useEffect(() => {
     const textarea = textareaRef.current;
     if (!textarea) {
@@ -125,14 +139,31 @@ export function PromptInput({
           )}
 
           <Textarea
-            placeholder='Type your message...'
+            placeholder={isRecording ? 'Listening...' : 'Type your message...'}
             ref={textareaRef}
-            value={input}
+            value={isRecording ? input || (typeof window !== 'undefined' ? '' : '') : input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             rows={1}
-            className='text-text-main placeholder:text-text-main/70 max-h-40 min-h-11 flex-1 resize-none overflow-y-auto rounded-3xl border-none bg-transparent px-1 py-2 text-[1.05rem] focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-transparent'
+            disabled={isRecording}
+            className='text-text-main placeholder:text-text-main/70 max-h-40 min-h-11 flex-1 resize-none overflow-y-auto rounded-3xl border-none bg-transparent px-1 py-2 text-[1.05rem] focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-60 dark:bg-transparent'
           />
+
+          {/* Voice recording button */}
+          {mounted && isVoiceSupported && (
+            <button
+              type='button'
+              onClick={onToggleRecording}
+              className={`mb-2 shrink-0 rounded-full p-1.5 transition-colors ${
+                isRecording
+                  ? 'bg-brand animate-[pulse-mic_1.5s_ease-in-out_infinite] text-white'
+                  : 'text-text-muted hover:text-text-main hover:bg-surface-muted'
+              }`}
+              title={isRecording ? 'Stop recording' : 'Voice input'}
+            >
+              {isRecording ? <Square className='h-5 w-5' /> : <Mic className='h-5 w-5' />}
+            </button>
+          )}
 
           {input && (
             <button type='submit' className='mb-2 shrink-0'>
@@ -140,6 +171,8 @@ export function PromptInput({
             </button>
           )}
         </form>
+
+        {voiceError && <p className='mt-1 text-xs text-red-500'>{voiceError}</p>}
       </div>
     </div>
   );

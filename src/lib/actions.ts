@@ -104,17 +104,15 @@ export async function addBeautyProfile(
   }
 }
 
-export async function authenticate(
-  user: LoginType,
-): Promise<'Invalid credentials.' | 'Something went wrong.' | undefined> {
+export async function authenticate(user: LoginType): Promise<void> {
   try {
     await signIn('credentials', user);
   } catch (error) {
     if (error instanceof AuthError) {
       if (error.type === 'CredentialsSignin') {
-        return 'Invalid credentials.';
+        throw new Error('Invalid credentials.');
       }
-      return 'Something went wrong.';
+      throw new Error('Something went wrong.');
     }
     throw error;
   }
