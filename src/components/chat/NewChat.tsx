@@ -15,13 +15,16 @@ import { PromptInput } from './PromptInput';
 
 type PromptSubmitEvent = Parameters<NonNullable<ComponentProps<'form'>['onSubmit']>>[0];
 
-export default function NewChat({ username }: Readonly<{ username: string }>) {
+export default function NewChat({
+  username,
+  userId,
+}: Readonly<{ username: string; userId: string }>) {
   const [input, setInput] = useState('');
 
   const { setNewPrompt, setNewPromptAudio, credits, menuOpen } = useStore();
   const router = useRouter();
   const { error } = useChat<UIMessage>();
-  const { uploadFile } = useUpload();
+  const { uploadFile } = useUpload(userId);
 
   const {
     isRecording,

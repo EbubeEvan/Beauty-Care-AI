@@ -3,16 +3,13 @@
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import useStore from '@/lib/store/useStore';
-
 interface UploadResult {
   key: string;
   url: string;
 }
 
-export function useUpload() {
+export function useUpload(userId: string) {
   const [isUploading, setIsUploading] = useState(false);
-  const userId = useStore((s) => s.id);
 
   const uploadFile = useCallback(
     async (file: File): Promise<UploadResult> => {

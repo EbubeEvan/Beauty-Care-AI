@@ -36,7 +36,7 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
   const { newPrompt, newPromptAudio, credits, menuOpen, setNewPrompt, setNewPromptAudio } =
     useStore();
   const queryClient = useQueryClient();
-  const { uploadFile } = useUpload();
+  const { uploadFile } = useUpload(userId ?? '');
 
   const { messages, sendMessage, setMessages, error } = useChat<UIMessage>({
     id,

@@ -5,11 +5,6 @@ import { toast } from 'react-toastify';
 
 import { stripMarkdownForTts } from '@/lib/tts';
 
-interface TtsErrorResponse {
-  error?: string;
-  retryAfter?: number;
-}
-
 interface UseSpeechSynthesisOptions {
   onStart?: () => void;
   onEnd?: () => void;
@@ -27,6 +22,7 @@ export function useSpeechSynthesis(options?: UseSpeechSynthesisOptions): UseSpee
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const browserUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const isSupported = typeof window !== 'undefined';
 
@@ -36,30 +32,65 @@ export function useSpeechSynthesis(options?: UseSpeechSynthesisOptions): UseSpee
         audioRef.current.pause();
         audioRef.current = null;
       }
+      if (window.speechSynthesis?.speaking) {
+        window.speechSynthesis.cancel();
+      }
+      browserUtteranceRef.current = null;
     };
   }, []);
 
-  const getErrorMessage = useCallback(async (response: Response): Promise<string> => {
-    let errorData: TtsErrorResponse | null = null;
+  const speakWithBrowser = useCallback(
+    (text: string) => {
+      const synth = window.speechSynthesis;
+      if (!synth) return;
 
-    try {
-      errorData = (await response.json()) as TtsErrorResponse;
-    } catch {
-      errorData = null;
-    }
+      // Cancel any ongoing speech
+      synth.cancel();
 
-    if (response.status === 429) {
-      return errorData?.retryAfter
-        ? `Voice playback is busy right now. Please try again in ${errorData.retryAfter} seconds.`
-        : 'Voice playback is busy right now. Please try again later.';
-    }
+      const utterance = new SpeechSynthesisUtterance(text);
 
-    if (response.status === 504) {
-      return 'Voice playback took too long. Please try a shorter message.';
-    }
+      // Pick a female English voice if available
+      const voices = synth.getVoices();
+      const englishVoices = voices.filter((v) => v.lang.startsWith('en'));
+      const femaleVoice = englishVoices.find((v) =>
+        /samantha|karen|victoria|alice|zira|hazel|female|susan|moira|tessa|google.*female|fiona|kate|allison/i.test(
+          v.name,
+        ),
+      );
+      if (femaleVoice) {
+        utterance.voice = femaleVoice;
+      } else if (englishVoices.length > 0) {
+        utterance.voice = englishVoices[0];
+      }
 
-    return errorData?.error || 'Could not play this message aloud. Please try again.';
-  }, []);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+
+      utterance.onstart = () => {
+        setIsSpeaking(true);
+        setIsLoading(false);
+        options?.onStart?.();
+      };
+
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        setIsLoading(false);
+        browserUtteranceRef.current = null;
+        options?.onEnd?.();
+      };
+
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        setIsLoading(false);
+        browserUtteranceRef.current = null;
+        options?.onEnd?.();
+      };
+
+      browserUtteranceRef.current = utterance;
+      synth.speak(utterance);
+    },
+    [options],
+  );
 
   const speak = useCallback(
     async (text: string) => {
@@ -69,6 +100,9 @@ export function useSpeechSynthesis(options?: UseSpeechSynthesisOptions): UseSpee
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
+      }
+      if (window.speechSynthesis?.speaking) {
+        window.speechSynthesis.cancel();
       }
 
       const cleanText = stripMarkdownForTts(text);
@@ -84,9 +118,8 @@ export function useSpeechSynthesis(options?: UseSpeechSynthesisOptions): UseSpee
         });
 
         if (!response.ok) {
-          const message = await getErrorMessage(response);
-          toast.error(message);
-          console.error('TTS fetch failed:', response.status, message);
+          console.warn('TTS.ai failed, falling back to Web Speech API');
+          speakWithBrowser(cleanText);
           return;
         }
 
@@ -120,13 +153,11 @@ export function useSpeechSynthesis(options?: UseSpeechSynthesisOptions): UseSpee
         setIsLoading(false);
         options?.onStart?.();
       } catch (error) {
-        console.error('TTS error:', error);
-        toast.error('Could not start voice playback. Please try again.');
-        setIsSpeaking(false);
-        setIsLoading(false);
+        console.error('TTS error, falling back to Web Speech API:', error);
+        speakWithBrowser(cleanText);
       }
     },
-    [getErrorMessage, isSupported, options],
+    [isSupported, options, speakWithBrowser],
   );
 
   const stop = useCallback(() => {
@@ -134,6 +165,10 @@ export function useSpeechSynthesis(options?: UseSpeechSynthesisOptions): UseSpee
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       audioRef.current = null;
+    }
+    if (window.speechSynthesis?.speaking) {
+      window.speechSynthesis.cancel();
+      browserUtteranceRef.current = null;
     }
     setIsSpeaking(false);
     setIsLoading(false);

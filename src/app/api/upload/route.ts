@@ -23,7 +23,8 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!ALLOWED_TYPES.includes(contentType)) {
+    const baseType = contentType.split(';')[0].trim();
+    if (!ALLOWED_TYPES.includes(baseType)) {
       return NextResponse.json({ error: `File type not allowed: ${contentType}` }, { status: 400 });
     }
 
