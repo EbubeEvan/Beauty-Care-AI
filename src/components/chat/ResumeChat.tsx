@@ -6,6 +6,7 @@ import { ChangeEvent, ComponentProps, useCallback, useEffect, useRef, useState }
 import { toast } from 'react-toastify';
 
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
+import { useUpload } from '@/hooks/useUpload';
 import { useVoiceRecorder } from '@/hooks/useVoiceRecorder';
 import useStore from '@/lib/store/useStore';
 
@@ -13,20 +14,6 @@ import { ChatMessages } from './ChatMessages';
 import { PromptInput } from './PromptInput';
 
 type PromptSubmitEvent = Parameters<NonNullable<ComponentProps<'form'>['onSubmit']>>[0];
-
-const blobToDataUrl = (blob: Blob): Promise<string> =>
-  new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.readAsDataURL(blob);
-  });
-
-const fileToDataUrl = async (file: File): Promise<string> =>
-  new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.readAsDataURL(file);
-  });
 
 type ResumeChatProps = {
   email: string;
@@ -49,6 +36,7 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
   const { newPrompt, newPromptAudio, credits, menuOpen, setNewPrompt, setNewPromptAudio } =
     useStore();
   const queryClient = useQueryClient();
+  const { uploadFile } = useUpload();
 
   const { messages, sendMessage, setMessages, error } = useChat<UIMessage>({
     id,
@@ -190,14 +178,17 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
     if (isRecording) {
       const blob = await stop();
       if (blob && credits > 0) {
-        const dataUrl = await blobToDataUrl(blob);
+        const file = new File([blob], `voice-${Date.now()}.webm`, {
+          type: blob.type || 'audio/webm',
+        });
+        const { url } = await uploadFile(file);
         lastInputWasVoiceRef.current = true;
         sendMessage(
           {
             role: 'user',
             parts: [
               { type: 'text', text: '' },
-              { type: 'file', mediaType: blob.type || 'audio/webm', url: dataUrl },
+              { type: 'file', mediaType: blob.type || 'audio/webm', url },
             ],
           },
           { body: { id, email } },
@@ -208,7 +199,7 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
     } else {
       await start();
     }
-  }, [isRecording, start, stop, sendMessage, id, email, credits]);
+  }, [isRecording, start, stop, sendMessage, id, email, credits, uploadFile]);
 
   /* ---------------- handlers ---------------- */
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -235,12 +226,12 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
     if (files.length > 0) {
       const fileParts = await Promise.all(
         files.map(async (file) => {
-          const dataUrl = await fileToDataUrl(file);
+          const { url } = await uploadFile(file);
           return {
             type: 'file' as const,
             mediaType: file.type,
             filename: file.name,
-            url: dataUrl,
+            url,
           };
         }),
       );

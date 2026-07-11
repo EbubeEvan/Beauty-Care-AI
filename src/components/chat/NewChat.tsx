@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ComponentProps, useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
+import { useUpload } from '@/hooks/useUpload';
 import { useVoiceRecorder } from '@/hooks/useVoiceRecorder';
 import useStore from '@/lib/store/useStore';
 
@@ -14,19 +15,13 @@ import { PromptInput } from './PromptInput';
 
 type PromptSubmitEvent = Parameters<NonNullable<ComponentProps<'form'>['onSubmit']>>[0];
 
-const blobToDataUrl = (blob: Blob): Promise<string> =>
-  new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.readAsDataURL(blob);
-  });
-
 export default function NewChat({ username }: Readonly<{ username: string }>) {
   const [input, setInput] = useState('');
 
   const { setNewPrompt, setNewPromptAudio, credits, menuOpen } = useStore();
   const router = useRouter();
   const { error } = useChat<UIMessage>();
+  const { uploadFile } = useUpload();
 
   const {
     isRecording,
@@ -64,9 +59,12 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
     if (isRecording) {
       const blob = await stop();
       if (blob && credits > 0) {
-        const dataUrl = await blobToDataUrl(blob);
+        const file = new File([blob], `voice-${Date.now()}.webm`, {
+          type: blob.type || 'audio/webm',
+        });
+        const { url } = await uploadFile(file);
         setNewPrompt('');
-        setNewPromptAudio(dataUrl);
+        setNewPromptAudio(url);
         const newChatId = generateId();
         router.push(`/chat/${newChatId}`);
       } else if (!credits || credits <= 0) {
@@ -75,7 +73,7 @@ export default function NewChat({ username }: Readonly<{ username: string }>) {
     } else {
       await start();
     }
-  }, [isRecording, start, stop, credits, setNewPrompt, setNewPromptAudio, router]);
+  }, [isRecording, start, stop, credits, setNewPrompt, setNewPromptAudio, router, uploadFile]);
 
   return (
     <div className='flex h-full min-h-0 w-full flex-col overflow-hidden pt-6'>
