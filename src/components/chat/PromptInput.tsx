@@ -10,6 +10,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -54,6 +55,11 @@ export function PromptInput({
 }: Readonly<PromptInputProps>) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   useEffect(() => {
     const textarea = textareaRef.current;
     if (!textarea) {
@@ -144,7 +150,7 @@ export function PromptInput({
           />
 
           {/* Voice recording button */}
-          {isVoiceSupported && (
+          {mounted && isVoiceSupported && (
             <button
               type='button'
               onClick={onToggleRecording}
