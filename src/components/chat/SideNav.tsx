@@ -94,11 +94,7 @@ export default function SideNav({
                 key={chat.chatId}
               >
                 <MessageCircle className='max-w-4 min-w-4' />
-                <p className='truncate'>
-                  {chat.messages[0].parts[0]?.type === 'text'
-                    ? chat.messages[0].parts[0]?.text
-                    : 'Untitled Chat'}
-                </p>
+                <p className='truncate'>{chat.title || 'New Chat'}</p>
               </Link>
             ))
           )}

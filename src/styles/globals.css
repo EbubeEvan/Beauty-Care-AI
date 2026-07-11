@@ -93,6 +93,15 @@
 /* ----------------------------------------
    Keyframes
 ---------------------------------------- */
+@keyframes pulse-mic {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(244, 63, 94, 0);
+  }
+}
+
 @keyframes accordion-down {
   from {
     height: 0;

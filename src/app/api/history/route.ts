@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import dbConnect from '@/database/dbConnect';
 import ChatHistory from '@/database/models/chatHistory.model';
-import { HistoryType, type StoredMessage, toUIMessage } from '@/lib/types';
+import { HistoryType } from '@/lib/types';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -27,11 +27,10 @@ export async function GET(req: Request) {
 
     const userObjectId = new mongoose.Types.ObjectId(id);
 
-    const historyDocs = await ChatHistory.find({
-      userId: userObjectId,
-    })
+    const historyDocs = await ChatHistory.find({ userId: userObjectId })
       .sort({ createdAt: -1 })
-      .lean();
+      .lean()
+      .select({ chatId: 1, title: 1, createdAt: 1, userId: 1 });
 
     if (!historyDocs?.length) {
       return new Response(JSON.stringify([]), {
@@ -40,17 +39,12 @@ export async function GET(req: Request) {
       });
     }
 
-    // Convert ObjectId fields to strings and normalize messages
+    // Return lightweight sidebar data only
     const parsedHistory: HistoryType[] = historyDocs.map((doc) => ({
       userId: String(doc.userId),
       chatId: String(doc.chatId),
       title: doc.title,
-      // Ensure messages array exists and normalize each message to UIMessage format
-      messages: (doc.messages || []).map((msg: any) => {
-        // Cast to StoredMessage and normalize to UIMessage
-        const storedMsg = msg as StoredMessage;
-        return toUIMessage(storedMsg);
-      }),
+      messages: [],
     }));
 
     return new Response(JSON.stringify(parsedHistory), {

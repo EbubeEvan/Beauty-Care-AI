@@ -5,6 +5,7 @@ import { convertToModelMessages, generateId, streamText } from 'ai';
 import dbConnect from '@/database/dbConnect';
 import ChatHistory from '@/database/models/chatHistory.model';
 import User, { IUser } from '@/database/models/user.model';
+import { generateChatTitle } from '@/lib/generate-title';
 import { beautyProfileType } from '@/lib/types';
 import { creditsUpdate } from '@/lib/utils';
 
@@ -67,10 +68,19 @@ export async function POST(req: Request) {
           parts: [{ type: 'text', text }],
         };
 
-        // Extract title from first UI message
+        // Extract text content for title generation
         const firstMessage = uiMessages[0];
         const firstTextPart = firstMessage?.parts.find((p) => p.type === 'text');
-        const title = firstTextPart?.type === 'text' ? firstTextPart.text : 'New chat';
+        const userText = firstTextPart?.type === 'text' ? firstTextPart.text : '';
+
+        // Generate AI title (fire-and-forget, don't block response)
+        const title = await generateChatTitle(userText, text).catch(() => {
+          if (userText) {
+            const words = userText.split(/\s+/).slice(0, 6).join(' ');
+            return words.length > 50 ? words.substring(0, 47) + '...' : words || 'New Chat';
+          }
+          return 'New Chat';
+        });
 
         const existingChat = await ChatHistory.findByChatId(id);
 
@@ -101,7 +111,6 @@ export async function POST(req: Request) {
             const updatedChat = await ChatHistory.findOneAndUpdate(
               { chatId: id },
               { messages: messagesToSave },
-              { new: true },
             );
 
             if (!updatedChat) {
