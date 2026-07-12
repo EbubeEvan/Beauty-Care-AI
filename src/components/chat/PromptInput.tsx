@@ -34,7 +34,6 @@ type PromptInputProps = {
   isRecording?: boolean;
   isVoiceSupported?: boolean;
   onToggleRecording?: () => void;
-  voiceError?: string | null;
 };
 
 export function PromptInput({
@@ -51,7 +50,6 @@ export function PromptInput({
   isRecording = false,
   isVoiceSupported = false,
   onToggleRecording,
-  voiceError,
 }: Readonly<PromptInputProps>) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -171,8 +169,6 @@ export function PromptInput({
             </button>
           )}
         </form>
-
-        {voiceError && <p className='mt-1 text-xs text-red-500'>{voiceError}</p>}
       </div>
     </div>
   );

@@ -42,6 +42,11 @@ export default function NewChat({
     toast.error(error.message || 'Uh oh. Something went wrong');
   }, [error]);
 
+  useEffect(() => {
+    if (!voiceError) return;
+    toast.error(voiceError || 'Voice recording failed');
+  }, [voiceError]);
+
   const submit = (e: PromptSubmitEvent) => {
     e.preventDefault();
 
@@ -95,7 +100,6 @@ export default function NewChat({
         isRecording={isRecording}
         isVoiceSupported={isVoiceSupported}
         onToggleRecording={handleToggleRecording}
-        voiceError={voiceError}
       />
     </div>
   );

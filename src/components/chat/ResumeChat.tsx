@@ -50,6 +50,16 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
     isSupported: isVoiceSupported,
   } = useVoiceRecorder();
 
+  useEffect(() => {
+    if (!error) return;
+    toast.error(error.message || 'Uh oh. Something went wrong');
+  }, [error]);
+
+  useEffect(() => {
+    if (!voiceError) return;
+    toast.error(voiceError || 'Voice recording failed');
+  }, [voiceError]);
+
   const {
     speak,
     stop: stopSpeaking,
@@ -275,11 +285,8 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
           isRecording={isRecording}
           isVoiceSupported={isVoiceSupported}
           onToggleRecording={handleToggleRecording}
-          voiceError={voiceError}
         />
       </section>
-
-      {error && <p className='my-3 text-red-500'>Uh oh. Something went wrong</p>}
     </div>
   );
 }
