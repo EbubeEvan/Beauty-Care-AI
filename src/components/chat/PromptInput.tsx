@@ -75,7 +75,7 @@ export function PromptInput({
       return;
     }
 
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey && input.trim()) {
       event.preventDefault();
       event.currentTarget.form?.requestSubmit();
     }

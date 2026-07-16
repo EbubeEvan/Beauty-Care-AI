@@ -1,8 +1,16 @@
+const ELEVENLABS_API = 'https://api.elevenlabs.io/v1/text-to-speech';
+const ELEVENLABS_VOICE_ID = 'hpp4J3VqNfWAUOO0d1Us'; // Bella — warm, professional female
+const ELEVENLABS_MODEL = 'eleven_flash_v2_5';
 const TTS_AI_API = 'https://api.tts.ai/v1/tts/';
 const TTS_AI_RESULTS = 'https://api.tts.ai/v1/speech/results/';
 const MAX_CHARS_PER_CHUNK = 4500;
 const POLL_INTERVAL_MS = 800;
 const MAX_POLL_ATTEMPTS = 15;
+
+export interface TtsResult {
+  buffer: Buffer;
+  contentType: string;
+}
 
 export function stripMarkdownForTts(text: string): string {
   let cleaned = text;
@@ -103,6 +111,50 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+async function tryElevenLabs(text: string, signal: AbortSignal): Promise<TtsResult | null> {
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    const response = await fetch(`${ELEVENLABS_API}/${ELEVENLABS_VOICE_ID}/stream`, {
+      method: 'POST',
+      signal,
+      headers: {
+        'Content-Type': 'application/json',
+        'xi-api-key': apiKey,
+      },
+      body: JSON.stringify({
+        text,
+        model_id: ELEVENLABS_MODEL,
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.75,
+          style: 0.0,
+          speed: 1.0,
+          use_speaker_boost: true,
+        },
+      }),
+    });
+
+    if (response.ok) {
+      const arrayBuffer = await response.arrayBuffer();
+      return { buffer: Buffer.from(arrayBuffer), contentType: 'audio/mpeg' };
+    }
+
+    const status = response.status;
+    const errorBody = await response.text();
+    console.error(`ElevenLabs TTS error (${status}):`, errorBody);
+    if (status === 401 || status === 402 || status === 429 || status >= 500) {
+      return null;
+    }
+    return null;
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') throw error;
+    console.error('ElevenLabs TTS request failed:', error);
+    return null;
+  }
+}
+
 async function downloadAudio(url: string, signal: AbortSignal): Promise<Buffer> {
   const audioResponse = await fetch(url, { signal });
   if (!audioResponse.ok) {
@@ -152,62 +204,77 @@ async function pollForResult(
   throw new Error('TTS polling timed out');
 }
 
-export async function fetchTtsAudio(
-  text: string,
-  apiKey: string | undefined,
-  signal: AbortSignal,
-): Promise<Buffer> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (apiKey) {
-    headers['Authorization'] = `Bearer ${apiKey}`;
-  }
+async function tryTtsAi(text: string, signal: AbortSignal): Promise<TtsResult | null> {
+  const apiKey = process.env.TTS_AI_API_KEY;
+  if (!apiKey) return null;
 
-  const response = await fetch(TTS_AI_API, {
-    method: 'POST',
-    signal,
-    headers,
-    body: JSON.stringify({
-      model: 'kokoro',
-      text,
-      voice: 'af_bella',
-      format: 'mp3',
-    }),
-  });
-
-  if (!response.ok) {
-    const errorBody = await response.text();
-    console.error('TTS.ai API error:', response.status, errorBody);
-    throw new Error(`TTS request failed: ${response.status}`);
-  }
-
-  const contentType = response.headers.get('content-type') || '';
-
-  if (contentType.includes('application/json')) {
-    const data = (await response.json()) as {
-      result_url?: string;
-      uuid?: string;
-      status?: string;
-      error?: string;
-    };
-
-    if (data.error) {
-      throw new Error(`TTS.ai error: ${data.error}`);
+  try {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`;
     }
 
-    // Completed immediately (cached) — fetch result_url directly
-    if (data.status === 'completed' && data.result_url) {
-      return downloadAudio(data.result_url, signal);
+    const response = await fetch(TTS_AI_API, {
+      method: 'POST',
+      signal,
+      headers,
+      body: JSON.stringify({
+        model: 'kokoro',
+        text,
+        voice: 'af_bella',
+        format: 'mp3',
+      }),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error(`TTS.ai API error (${response.status}):`, errorBody);
+      return null;
     }
 
-    // Queued — poll until completed
-    if (data.uuid) {
-      return pollForResult(data.uuid, apiKey, signal);
+    const contentType = response.headers.get('content-type') || '';
+
+    if (contentType.includes('application/json')) {
+      const data = (await response.json()) as {
+        result_url?: string;
+        uuid?: string;
+        status?: string;
+        error?: string;
+      };
+
+      if (data.error) {
+        console.error('TTS.ai error:', data.error);
+        return null;
+      }
+
+      if (data.status === 'completed' && data.result_url) {
+        const buffer = await downloadAudio(data.result_url, signal);
+        return { buffer, contentType: 'audio/mpeg' };
+      }
+
+      if (data.uuid) {
+        const buffer = await pollForResult(data.uuid, apiKey, signal);
+        return { buffer, contentType: 'audio/mpeg' };
+      }
+
+      return null;
     }
 
-    throw new Error('No result_url or uuid in TTS.ai response');
+    const arrayBuffer = await response.arrayBuffer();
+    return { buffer: Buffer.from(arrayBuffer), contentType: 'audio/mpeg' };
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') throw error;
+    console.error('TTS.ai request failed:', error);
+    return null;
   }
+}
 
-  // Audio returned directly (fallback)
-  const arrayBuffer = await response.arrayBuffer();
-  return Buffer.from(arrayBuffer);
+export async function fetchTtsAudio(text: string, signal: AbortSignal): Promise<TtsResult | null> {
+  const elevenLabsResult = await tryElevenLabs(text, signal);
+  if (elevenLabsResult) return elevenLabsResult;
+
+  const ttsAiResult = await tryTtsAi(text, signal);
+  if (ttsAiResult) return ttsAiResult;
+
+  return null;
 }

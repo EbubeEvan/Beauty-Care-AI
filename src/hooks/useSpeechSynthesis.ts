@@ -118,7 +118,7 @@ export function useSpeechSynthesis(options?: UseSpeechSynthesisOptions): UseSpee
         });
 
         if (!response.ok) {
-          console.warn('TTS.ai failed, falling back to Web Speech API');
+          console.warn('All TTS providers failed, falling back to Web Speech API');
           speakWithBrowser(cleanText);
           return;
         }
