@@ -12,25 +12,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Text is required' }, { status: 400 });
     }
 
-    const apiKey = process.env.TTS_AI_API_KEY;
     const chunks = splitTextIntoChunks(text);
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
 
     try {
-      const audioBuffers: Buffer[] = [];
+      const audioBuffers: { buffer: Buffer; contentType: string }[] = [];
 
       for (const chunk of chunks) {
-        const buffer = await fetchTtsAudio(chunk, apiKey, controller.signal);
-        audioBuffers.push(buffer);
+        const result = await fetchTtsAudio(chunk, controller.signal);
+        if (!result) {
+          return NextResponse.json({ error: 'All TTS providers unavailable' }, { status: 503 });
+        }
+        audioBuffers.push(result);
       }
 
-      const combined = Buffer.concat(audioBuffers);
+      const combined = Buffer.concat(audioBuffers.map((r) => r.buffer));
+      const contentType = audioBuffers[0].contentType;
 
       return new NextResponse(new Uint8Array(combined), {
         headers: {
-          'Content-Type': 'audio/wav',
+          'Content-Type': contentType,
           'Cache-Control': 'public, max-age=3600',
         },
       });
