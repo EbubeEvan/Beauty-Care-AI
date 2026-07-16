@@ -150,8 +150,8 @@ export default function ResumeChat({ email, id, chat, userId }: Readonly<ResumeC
   useEffect(() => {
     if (!lastInputWasVoiceRef.current) return;
 
-    const lastMsg = messages[messages.length - 1];
-    if (!lastMsg || lastMsg.role !== 'assistant') return;
+    const lastMsg = messages.at(-1);
+    if (lastMsg?.role !== 'assistant') return;
     if (lastPlayedMsgIdRef.current === lastMsg.id) return;
 
     const text = lastMsg.parts
