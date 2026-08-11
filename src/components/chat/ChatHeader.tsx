@@ -13,7 +13,7 @@ export default function ChatHeader() {
     <header className='bg-surface flex h-14 items-center justify-between px-4 pt-6 lg:px-6'>
       <Menu size={27} className='text-brand md:hidden' onClick={() => setMenuOpen(true)} />
       <Link href='/' className='flex items-center gap-2'>
-        <FlowerIcon className='text-brand h-6 w-6 md:ml-5' />
+        <FlowerIcon className='text-brand h-6 w-6 md:ml-6 lg:ml-8' />
         <span className='text-text-main text-lg font-semibold'>Beautycare AI</span>
       </Link>
       <div className='flex items-center gap-4'>

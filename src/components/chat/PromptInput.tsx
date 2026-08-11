@@ -34,6 +34,8 @@ type PromptInputProps = {
   isRecording?: boolean;
   isVoiceSupported?: boolean;
   onToggleRecording?: () => void;
+
+  centered?: boolean;
 };
 
 export function PromptInput({
@@ -50,6 +52,7 @@ export function PromptInput({
   isRecording = false,
   isVoiceSupported = false,
   onToggleRecording,
+  centered = false,
 }: Readonly<PromptInputProps>) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -84,8 +87,14 @@ export function PromptInput({
   return (
     <div
       className={cn(
-        'fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 pb-8 transition-all duration-300 sm:px-6',
-        menuOpen && 'md:inset-x-auto md:left-[32%] md:w-[68%] md:px-6 lg:left-[20%] lg:w-[80%]',
+        centered
+          ? 'flex w-full justify-center'
+          : cn(
+              'fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 pb-8 transition-all duration-300 sm:px-6',
+              menuOpen
+                ? 'md:inset-x-auto md:left-[32%] md:w-[68%] md:px-6 lg:left-[20%] lg:w-[80%]'
+                : 'md:left-[5%] md:w-[95%]',
+            ),
         className,
       )}
     >

@@ -48,7 +48,7 @@ export default function LayoutContent({
         className={clsx(
           'bg-surface flex h-screen min-h-0 flex-1 flex-col overflow-hidden transition-all',
           {
-            'w-full md:w-[95%] md:pl-10 lg:pl-14': !menuOpen,
+            'w-full md:ml-[5%] md:w-[95%]': !menuOpen,
             'md:ml-[32%] md:w-[68%] lg:ml-[20%] lg:w-[80%]': menuOpen,
           },
         )}

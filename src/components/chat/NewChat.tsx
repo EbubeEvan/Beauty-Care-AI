@@ -2,6 +2,7 @@
 
 import { type UIMessage, useChat } from '@ai-sdk/react';
 import { generateId } from 'ai';
+import { Flower } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ComponentProps, useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -10,7 +11,6 @@ import { useUpload } from '@/hooks/useUpload';
 import { useVoiceRecorder } from '@/hooks/useVoiceRecorder';
 import useStore from '@/lib/store/useStore';
 
-import { Card } from '../ui/card';
 import { PromptInput } from './PromptInput';
 
 type PromptSubmitEvent = Parameters<NonNullable<ComponentProps<'form'>['onSubmit']>>[0];
@@ -84,13 +84,11 @@ export default function NewChat({
   }, [isRecording, start, stop, credits, setNewPrompt, setNewPromptAudio, router, uploadFile]);
 
   return (
-    <div className='flex h-full min-h-0 w-full flex-col overflow-hidden pt-6'>
-      {/* greeting */}
-      <div className='mx-auto mb-4 flex w-full max-w-4xl items-start gap-2 px-2 md:px-6'>
-        <Card className='bg-surface-muted px-6 py-3 text-[1.11rem] font-medium'>
-          {`Hello ${username}, how may I assist you?`}
-        </Card>
-      </div>
+    <div className='flex h-full min-h-0 w-full flex-col items-center justify-center gap-6 px-4 pb-24 md:gap-7'>
+      <Flower className='text-brand h-16 w-16 md:h-20 md:w-20' />
+      <p className='text-text-main text-center text-xl font-semibold md:text-2xl'>
+        {`Hello ${username}, how may I assist you?`}
+      </p>
 
       <PromptInput
         input={input}
@@ -100,6 +98,7 @@ export default function NewChat({
         isRecording={isRecording}
         isVoiceSupported={isVoiceSupported}
         onToggleRecording={handleToggleRecording}
+        centered
       />
     </div>
   );
