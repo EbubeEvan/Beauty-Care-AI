@@ -54,9 +54,12 @@ jobs:
       - run: npm run build
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI_TEST }}
+      # Local-only E2E: PLAYWRIGHT_BASE_URL must stay unset so the
+      # webServer block in playwright.config.ts boots `next start`.
+      # Runtime env is repeated here because `next start` needs it too.
       - run: npx playwright test
         env:
-          PLAYWRIGHT_BASE_URL: http://localhost:3000
+          MONGODB_URI: ${{ secrets.MONGODB_URI_TEST }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
